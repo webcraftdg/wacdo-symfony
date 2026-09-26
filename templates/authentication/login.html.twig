@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="min-h-screen bg-slate-100 flex items-center justify-center px-4">
+
+    <div class="w-full max-w-md">
+
+        {# En-tête #}
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-slate-900">
+                Connexion
+            </h1>
+
+            <p class="mt-2 text-sm text-slate-500">
+                Connectez-vous à votre espace
+            </p>
+        </div>
+
+        {# Carte #}
+        <div class="rounded-xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
+
+            {% if error %}
+                <div class="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 ring-1 ring-red-200">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            <form method="post" class="space-y-6">
+
+                {# Email #}
+                <div>
+                    <label
+                        for="username"
+                        class="block text-sm font-medium text-slate-700"
+                    >
+                        Votre email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="username"
+                        name="_username"
+                        value="{{ last_username }}"
+                        autocomplete="email"
+                        required
+                        autofocus
+                        placeholder="vous@exemple.fr"
+                        class="
+                            mt-2 block w-full rounded-lg border border-slate-300
+                            bg-white px-3 py-2.5
+                            text-slate-900 placeholder:text-slate-400
+                            outline-none
+                            transition
+                            focus:border-blue-500
+                            focus:ring-2 focus:ring-blue-500/20
+                        "
+                    >
+                </div>
+
+                {# Mot de passe #}
+                <div>
+                    <label
+                        for="password"
+                        class="block text-sm font-medium text-slate-700"
+                    >
+                        Mot de passe
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="_password"
+                        autocomplete="current-password"
+                        required
+                        class="
+                            mt-2 block w-full rounded-lg border border-slate-300
+                            bg-white px-3 py-2.5
+                            text-slate-900
+                            outline-none
+                            transition
+                            focus:border-blue-500
+                            focus:ring-2 focus:ring-blue-500/20
+                        "
+                    >
+                </div>
+
+                {# CSRF Symfony #}
+                <input
+                    type="hidden"
+                    name="_csrf_token"
+                    value="{{ csrf_token('authenticate') }}"
+                >
+
+                <button
+                    type="submit"
+                    class="
+                        w-full rounded-lg bg-blue-600
+                        px-4 py-2.5
+                        font-semibold text-white
+                        transition
+                        hover:bg-blue-700
+                        focus:outline-none
+                        focus:ring-2 focus:ring-blue-500
+                        focus:ring-offset-2
+                    "
+                >
+                    Se connecter
+                </button>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

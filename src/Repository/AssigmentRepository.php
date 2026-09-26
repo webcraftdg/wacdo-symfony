@@ -16,6 +16,35 @@ class AssigmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Assigment::class);
     }
 
+
+    public function findCriteriaAssignments(
+        int $limit = 5,
+        string $criteria = 'a.dateEnd <= :today',
+        array $parameters = ['today' => new \DateTimeImmutable()]): array
+    {
+        $query = $this->createQueryBuilder('a')
+            ->andWhere($criteria)
+            ->orderBy('a.dateEnd', 'ASC')
+            ->setMaxResults($limit);
+        foreach($parameters as $key => $value) {
+            $query->setParameter($key, $value);
+        }
+        return $query->getQuery()
+            ->getResult();
+
+    }
+
+    public function findUpcomingAssignments(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.dateEnd >= :today')
+            ->setParameter('today', new \DateTimeImmutable())
+            ->orderBy('a.dateEnd', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Assigment[] Returns an array of Assigment objects
 //     */

@@ -120,4 +120,9 @@ class Fonction
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return ucFirst($this->name);
+    }
 }

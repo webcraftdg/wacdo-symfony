@@ -1,0 +1,278 @@
+{% extends 'templatesAdmin/layout.html.twig' %}
+
+{% block main %}
+
+    {# =========================================================
+       STATISTIQUES
+       ========================================================= #}
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+
+                        <div>
+                            <div class="text-muted small">
+                                Utilisateurs
+                            </div>
+
+                            <div class="fs-2 fw-bold mt-1">
+                                {{ statistics.users }}
+                            </div>
+                        </div>
+
+                        <div class="fs-2 text-primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+
+                        <div>
+                            <div class="text-muted small">
+                                Restaurants
+                            </div>
+
+                            <div class="fs-2 fw-bold mt-1">
+                                {{ statistics.restaurants }}
+                            </div>
+                        </div>
+
+                        <div class="fs-2 text-primary">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+
+                        <div>
+                            <div class="text-muted small">
+                                Affectations actives
+                            </div>
+
+                            <div class="fs-2 fw-bold mt-1">
+                                {{ statistics.assignments }}
+                            </div>
+                        </div>
+
+                        <div class="fs-2 text-primary">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+
+                        <div>
+                            <div class="text-muted small">
+                                Fonctions
+                            </div>
+
+                            <div class="fs-2 fw-bold mt-1">
+                                {{ statistics.functions }}
+                            </div>
+                        </div>
+
+                        <div class="fs-2 text-primary">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    {# =========================================================
+       PROCHAINES FINS D'AFFECTATION
+       ========================================================= #}
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <h2 class="h5 mb-1">
+                Prochaines fins d'affectation
+            </h2>
+
+            <div class="text-muted small">
+                Affectations arrivant prochainement à leur terme
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>Collaborateur</th>
+                            <th>Restaurant</th>
+                            <th>Fonction</th>
+                            <th>Date de début</th>
+                            <th>Date de fin</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for assignment in upcomingAssignments %}
+
+                        <tr>
+                            <td class="fw-semibold">
+                                {{ assignment.user }}
+                            </td>
+
+                            <td>
+                                {{ assignment.restaurant }}
+                            </td>
+
+                            <td>
+                                {{ assignment.fonction }}
+                            </td>
+
+                            <td>
+                                {{ assignment.dateStart|date('d/m/Y') }}
+                            </td>
+
+                            <td>
+                                <span class="badge text-bg-warning">
+                                    {{ assignment.dateEnd|date('d/m/Y') }}
+                                </span>
+                            </td>
+                        </tr>
+
+                    {% else %}
+
+                        <tr>
+                            <td
+                                colspan="5"
+                                class="text-center text-muted py-4"
+                            >
+                                Aucune fin d'affectation à venir.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {# =========================================================
+       DERNIÈRES AFFECTATIONS TERMINÉES
+       ========================================================= #}
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <h2 class="h5 mb-1">
+                Dernières affectations terminées
+            </h2>
+
+            <div class="text-muted small">
+                Derniers mouvements enregistrés
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>Collaborateur</th>
+                            <th>Restaurant</th>
+                            <th>Fonction</th>
+                            <th>Date de début</th>
+                            <th>Date de fin</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for assignment in pastAssignments %}
+
+                        <tr>
+                            <td class="fw-semibold">
+                                {{ assignment.user }}
+                            </td>
+
+                            <td>
+                                {{ assignment.restaurant }}
+                            </td>
+
+                            <td>
+                                {{ assignment.fonction }}
+                            </td>
+
+                            <td>
+                                {{ assignment.dateStart|date('d/m/Y') }}
+                            </td>
+
+                            <td class="text-muted">
+                                {{ assignment.dateEnd|date('d/m/Y') }}
+                            </td>
+                        </tr>
+
+                    {% else %}
+
+                        <tr>
+                            <td
+                                colspan="5"
+                                class="text-center text-muted py-4"
+                            >
+                                Aucune affectation terminée.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

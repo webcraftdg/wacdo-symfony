@@ -7,12 +7,14 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const ROLE_COLLAB = 'ROLE_COLLAB';
@@ -60,9 +62,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Assigment::class, mappedBy: 'user')]
     private Collection $assigments;
 
+    /**
+     * @var Collection<int, Restaurant>
+     */
+    #[ORM\OneToMany(targetEntity: Restaurant::class, mappedBy: 'owner')]
+    private Collection $restaurants;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isAdmin = null;
+
     public function __construct()
     {
         $this->assigments = new ArrayCollection();
+        $this->restaurants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -246,5 +258,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Restaurant>
+     */
+    public function getRestaurants(): Collection
+    {
+        return $this->restaurants;
+    }
+
+    public function addRestaurant(Restaurant $restaurant): static
+    {
+        if (!$this->restaurants->contains($restaurant)) {
+            $this->restaurants->add($restaurant);
+            $restaurant->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRestaurant(Restaurant $restaurant): static
+    {
+        if ($this->restaurants->removeElement($restaurant)) {
+            // set the owning side to null (unless already changed)
+            if ($restaurant->getOwner() === $this) {
+                $restaurant->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(?bool $isAdmin): static
+    {
+        $this->isAdmin = $isAdmin;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->lastname.' - '.$this->firstname;
     }
 }

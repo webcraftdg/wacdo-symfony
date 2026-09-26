@@ -25,28 +25,51 @@ class AppFixtures extends Fixture
         $userAdmin->setEmail('admin@webcraftdg.fr')
         ->setDateRecruitment(new DateTime())
         ->setFirstname('admin')
+        ->setIsAdmin(true)
         ->setLastname('admin')
         ->setPassword($this->userPaswwordHasher->hashPassword($userAdmin, 'redcat'))
         ->setRoles([User::ROLE_ADMIN]);
         $manager->persist($userAdmin);
 
-        $userOwner = new User();
-        $userOwner->setEmail('owner@webcraftdg.fr')
-        ->setDateRecruitment(new DateTime())
-        ->setFirstname('owner')
-        ->setLastname('owner')
-        ->setPassword($this->userPaswwordHasher->hashPassword($userOwner, 'redcat'))
-        ->setRoles([User::ROLE_RETAURANT_OWNER]);
-        $manager->persist($userOwner);
+        $ownerRawList = [
+            'owner1@webcraftdg.fr',
+            'owner2@webcraftdg.fr',
+            'owner3@webcraftdg.fr',
+            'owner4@webcraftdg.fr',
+        ];
+        $owners = [];
+        foreach($ownerRawList as $email) {
+            $userOwner = new User();
+            $userOwner->setEmail($email)
+            ->setDateRecruitment(new DateTime())
+            ->setIsAdmin(false)
+            ->setFirstname(ucFirst($faker->word()))
+            ->setLastname(ucFirst($faker->word()))
+            ->setPassword($this->userPaswwordHasher->hashPassword($userOwner, 'redcat'))
+            ->setRoles([User::ROLE_RETAURANT_OWNER]);
+            $manager->persist($userOwner);
+            $owners[] = $userOwner;
+        }
 
-        $userCollab = new User();
-        $userCollab->setEmail('collab@webcraftdg.fr')
-        ->setDateRecruitment(new DateTime())
-        ->setFirstname('collab')
-        ->setLastname('collab')
-        ->setPassword($this->userPaswwordHasher->hashPassword($userCollab, 'redcat'))
-        ->setRoles([User::ROLE_COLLAB]);
-        $manager->persist($userCollab);
+        $collabRawList = [
+            'collab1@webcraftdg.fr',
+            'collab2@webcraftdg.fr',
+            'collab3@webcraftdg.fr',
+            'collab4@webcraftdg.fr',
+        ];
+        $collabs = [];
+        foreach($collabRawList as $email) {
+            $userCollab = new User();
+            $userCollab->setEmail($email)
+                ->setDateRecruitment(new DateTime())
+                ->setIsAdmin(false)
+                ->setFirstname(ucFirst($faker->word()))
+                ->setLastname(ucFirst($faker->word()))
+                ->setPassword($this->userPaswwordHasher->hashPassword($userCollab, 'redcat'))
+                ->setRoles([User::ROLE_COLLAB]);
+            $manager->persist($userCollab);
+            $collabs[] = $userCollab;
+        }
 
         $fonctions = [
             'Cuisinier',
@@ -64,27 +87,33 @@ class AppFixtures extends Fixture
         }
 
         $restaurants = [
-            'Arc de Thriomphe'
+            'Arc de Triomphe',
+            'Tour d\'Argent',
+            'Tour Eiffel : Panoramique',
+            'Fouquets',
         ];
         $restos = [];
 
-        foreach($restaurants as $item) {
+        foreach($restaurants as $index => $item) {
             $restaurant = new Restaurant();
             $restaurant->setName($item)
+            ->setOwner($owners[$index])
             ->setAddress($faker->sentence(6))
             ->setZipCode($faker->numberBetween(60000, 95000))
             ->setCity($faker->word());
             $manager->persist($restaurant);
             $restos[] = $restaurant;
         }
+        for($i=0; $i < 4; $i++) {
+            $assigment = new Assigment();
+            $assigment->setFonction($fonctColla[array_rand($fonctColla)])
+            ->setRestaurant($restos[$i])
+            ->setUser($collabs[$i])
+            ->setDateStart(new DateTime())
+            ->setDateEnd($faker->dateTimeThisMonth());
+            $manager->persist($assigment);
+            $manager->flush();
+        }
 
-        $assigment = new Assigment();
-        $assigment->setFonction($fonctColla[array_rand($fonctColla)])
-        ->setRestaurant($restos[array_rand($restos)])
-        ->setUser($userCollab)
-        ->setDateStart($faker->dateTimeThisMonth())
-        ->setDateEnd(new DateTime());
-        $manager->persist($assigment);
-        $manager->flush();
     }
 }

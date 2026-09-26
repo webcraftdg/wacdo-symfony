@@ -41,6 +41,9 @@ class Restaurant
     #[ORM\OneToMany(targetEntity: Assigment::class, mappedBy: 'restaurant')]
     private Collection $assigments;
 
+    #[ORM\ManyToOne(inversedBy: 'restaurants')]
+    private ?User $owner = null;
+
     public function __construct()
     {
         $this->assigments = new ArrayCollection();
@@ -163,5 +166,22 @@ class Restaurant
         }
 
         return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return ucFirst($this->name);
     }
 }
