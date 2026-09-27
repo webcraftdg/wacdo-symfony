@@ -7,6 +7,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: RestaurantRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -26,6 +27,7 @@ class Restaurant
     #[ORM\Column]
     private ?int $zipCode = null;
 
+
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
@@ -42,6 +44,7 @@ class Restaurant
     private Collection $assigments;
 
     #[ORM\ManyToOne(inversedBy: 'restaurants')]
+    #[NotBlank(message:'Veuillez choisir un propriétaire')]
     private ?User $owner = null;
 
     public function __construct()
@@ -88,6 +91,11 @@ class Restaurant
         $this->zipCode = $zipCode;
 
         return $this;
+    }
+
+    public function getPotalCode() : ?string
+    {
+        return ($this->zipCode !== null) ? str_pad((string)$this->zipCode, 5, '0', STR_PAD_LEFT) : '';
     }
 
     public function getCity(): ?string

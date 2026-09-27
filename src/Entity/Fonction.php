@@ -7,9 +7,15 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: FonctionRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(
+    fields: ['name'],
+    message: 'Une fonction avec ce nom existe déjà.'
+)]
 class Fonction
 {
     #[ORM\Id]
@@ -18,6 +24,7 @@ class Fonction
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank(message:'Veuillez saisir un nom de fonction')]
     private ?string $name = null;
 
     #[ORM\Column]

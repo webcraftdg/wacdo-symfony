@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -36,10 +37,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     /**
+     * $role
+     *
+     * @var string|null
+     */
+    #[NotBlank(
+        message:'Le droit doit-être choisie'
+    )]
+    private ?string $role = null;
+
+    /**
      * @var string The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    /**
+     * $plainPassword
+     *
+     * @var string|null
+     */
+    #[NotBlank(
+        message:'Le mot de passe doit-être saisie',
+        groups:['create']
+    )]
+    private ?string $plainPassword = null;
 
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
@@ -48,6 +70,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $firstname = null;
 
     #[ORM\Column]
+    #[NotBlank(
+        message:'Veuillez saisir une date de recrutement',
+        groups:['create', 'Default']
+    )]
     private ?\DateTime $dateRecruitment = null;
 
     #[ORM\Column]
@@ -77,6 +103,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->restaurants = new ArrayCollection();
     }
 
+    public static function getAvailableRoles() : array
+    {
+        return [
+            'Propriétaire' => self::ROLE_RETAURANT_OWNER,
+            'Collaborateur' => self::ROLE_COLLAB,
+        ];
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -110,10 +143,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
+    }
+
+    public function getRole() : ?string
+    {
+        $roles = $this->roles;
+        $this->role = ($roles[0]) ?? null;
+        return $this->role;
     }
 
     /**
@@ -123,6 +160,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->roles = $roles;
 
+        return $this;
+    }
+
+    public function setRole(?string $role = null): static
+    {
+        $this->role = $role;
+        $this->roles = [$role];
         return $this;
     }
 
@@ -137,6 +181,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): static
+    {
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }
