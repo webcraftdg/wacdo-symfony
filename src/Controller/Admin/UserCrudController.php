@@ -142,7 +142,7 @@ class UserCrudController extends AbstractCrudController
         ->setPageTitle('edit', 'Administration : Modifier un utilisateur');
         //Ajout des groups selon l'action ('new', 'edit')
         $crud->setFormOptions(
-            ['validation_groups' => ['Default', 'create']], // Action NEW
+            ['validation_groups' => ['Default', 'user:create']], // Action NEW
             ['validation_groups' => ['Default']]            // EDIT
         );
         return $crud;

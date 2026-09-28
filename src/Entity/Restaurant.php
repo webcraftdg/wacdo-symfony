@@ -19,16 +19,20 @@ class Restaurant
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank(message:'Veuillez saisir le nom')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank(message:'Veuillez saisir une address')]
     private ?string $address = null;
 
     #[ORM\Column]
+    #[NotBlank(message:'Veuillez saisir un code postal')]
     private ?int $zipCode = null;
 
 
     #[ORM\Column(length: 255)]
+    #[NotBlank(message:'Veuillez saisir une ville')]
     private ?string $city = null;
 
     #[ORM\Column]

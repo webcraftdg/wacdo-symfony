@@ -4,7 +4,7 @@
 <div class="max-w-3xl mx-auto px-6 py-10">
 
     <h1 class="text-2xl font-bold text-slate-900">
-        Modifier
+        Modifier une affectation
     </h1>
 
     <div class="mt-8 bg-white rounded-xl shadow-sm
@@ -12,19 +12,24 @@
                 {{ form_start(form) }}
                     <div class="space-y-5">
 
-                        {{ form_row(form.email) }}
+                        {{ form_row(form.user) }}
+                        {{ form_row(form.restaurant) }}
+                        {{ form_row(form.fonction) }}
+
                         <div class="grid sm:grid-cols-3 gap-5">
 
                             <div>
-                                {{ form_row(form.firstname) }}
+                                {{ form_row(form.dateStart) }}
                             </div>
 
                             <div class="sm:col-span-2">
-                                {{ form_row(form.lastname) }}
+                                {{ form_row(form.dateEnd) }}
                             </div>
-
+                            <div class="sm:col-span-2">
+                                {{ form_row(form.status) }}
+                            </div>
                         </div>
-                        {{ form_row(form.plainPassword) }}
+
                     </div>
 
                     <div class="mt-8 flex justify-end">

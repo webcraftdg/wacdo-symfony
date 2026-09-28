@@ -23,6 +23,7 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+                csrf_token_id: authenticate
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -34,8 +35,8 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
     role_hierarchy:
-        ROLE_ADMIN: ROLE_RETAURANT_OWNER
-        ROLE_RETAURANT_OWNER: ROLE_COLLAB
+        ROLE_ADMIN: ROLE_RESTAURANT_OWNER
+        ROLE_RESTAURANT_OWNER: ROLE_COLLAB
     # Note: Only the *first* matching rule is applied
     access_control:
         - { path: ^/, roles: PUBLIC_ACCESS }

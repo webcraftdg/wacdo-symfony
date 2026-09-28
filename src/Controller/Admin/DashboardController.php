@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Attribute\PageTitle;
+use App\Controller\RestaurantController;
 use App\Repository\AssigmentRepository;
 use App\Repository\FonctionRepository;
 use App\Repository\RestaurantRepository;
@@ -64,6 +65,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkTo(FonctionCrudController::class, 'Les fonctions', 'fas fa-briefcase');
         yield MenuItem::linkTo(RestaurantCrudController::class, 'Les restaurants', 'fas fa-utensils');
         yield MenuItem::linkTo(AssigmentCrudController::class, 'Les affectations', 'fas fa-person-walking-luggage');
+        yield MenuItem::linkToRoute( 'Site restaurateurs', 'fas fa-shop', 'app_restaurant_home');
 
     }
 }

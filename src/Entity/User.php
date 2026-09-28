@@ -42,7 +42,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string|null
      */
     #[NotBlank(
-        message:'Le droit doit-être choisie'
+        message:'Le droit doit-être choisie',
+        groups:['user:create']
     )]
     private ?string $role = null;
 
@@ -59,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[NotBlank(
         message:'Le mot de passe doit-être saisie',
-        groups:['create']
+        groups:['user:create']
     )]
     private ?string $plainPassword = null;
 
@@ -72,7 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[NotBlank(
         message:'Veuillez saisir une date de recrutement',
-        groups:['create', 'Default']
+        groups:['user:create', 'Default']
     )]
     private ?\DateTime $dateRecruitment = null;
 

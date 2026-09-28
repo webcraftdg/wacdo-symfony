@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use App\Enum\AssisnmentStatus;
 use App\Repository\AssigmentRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: AssigmentRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -16,18 +18,23 @@ class Assigment
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'assigments')]
+    #[NotBlank(message:'Veuillez choisir un utilisateur')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'assigments')]
+    #[NotBlank(message:'Veuillez choisir un restaurant')]
     private ?Restaurant $restaurant = null;
 
     #[ORM\ManyToOne(inversedBy: 'assigments')]
+    #[NotBlank(message:'Veuillez choisir une fonction')]
     private ?Fonction $fonction = null;
 
     #[ORM\Column]
+    #[NotBlank(message:'Veuillez saisir une date de début')]
     private ?\DateTime $dateStart = null;
 
     #[ORM\Column]
+    #[NotBlank(message:'Veuillez saisir une date de fin')]
     private ?\DateTime $dateEnd = null;
 
     #[ORM\Column]
@@ -35,6 +42,9 @@ class Assigment
 
     #[ORM\Column]
     private ?\DateTime $dateUpdate = null;
+
+    #[ORM\Column(enumType: AssisnmentStatus::class)]
+    private ?AssisnmentStatus $status = null;
 
     public function getId(): ?int
     {
@@ -124,7 +134,7 @@ class Assigment
 
         return $this;
     }
-        #[ORM\PrePersist]
+    #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function updateTimestamp(): void
     {
@@ -135,5 +145,17 @@ class Assigment
     public function createTimestamp(): void
     {
         $this->dateCreate = new DateTime();
+    }
+
+    public function getStatus(): ?AssisnmentStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(AssisnmentStatus $status): static
+    {
+        $this->status = $status;
+
+        return $this;
     }
 }

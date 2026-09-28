@@ -16,9 +16,11 @@ final class DispatchController extends AbstractController
     public function index(): Response
     {
         if ($this->isGranted(User::ROLE_ADMIN) === true) {
-            $response = $this->redirect('admin');
+            $response = $this->redirectToRoute('admin');
+        } elseif ($this->isGranted(User::ROLE_RETAURANT_OWNER)) {
+            $response = $this->redirectToRoute('app_restaurant_home');
         } else {
-            $response = $this->redirect('app_home');
+            $response = $this->redirectToRoute('app_assigment_home');
         }
         return $response;
     }
