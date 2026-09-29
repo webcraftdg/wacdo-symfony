@@ -20,7 +20,7 @@ final class DispatchController extends AbstractController
         } elseif ($this->isGranted(User::ROLE_RETAURANT_OWNER)) {
             $response = $this->redirectToRoute('app_restaurant_home');
         } else {
-            $response = $this->redirectToRoute('app_assigment_home');
+            $response = $this->redirectToRoute('app_assignment_home');
         }
         return $response;
     }

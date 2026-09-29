@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Restaurant;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,15 @@ class RestaurantRepository extends ServiceEntityRepository
         parent::__construct($registry, Restaurant::class);
     }
 
-//    /**
-//     * @return Restaurant[] Returns an array of Restaurant objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Restaurant
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findForUser(User $user): array
+    {
+        return match ($user->getRole()) {
+            User::ROLE_RETAURANT_OWNER => $this->createQueryBuilder('r')
+                ->andWhere('r.owner = :owner')
+                ->setParameter('owner', $user)
+                ->getQuery()
+                ->getResult(),
+            default => $this->findAll(),
+        };
+    }
 }

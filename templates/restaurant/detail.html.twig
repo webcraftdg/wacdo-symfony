@@ -88,7 +88,7 @@
 
                 {% for assignment in assignments %}
 
-                    <tr>
+                    <tr class="{{assignment.status.borderClass}}">
 
                         <td class="px-6 py-4 font-medium text-slate-900 text-center">
                             {{ assignment.user.firstname }}

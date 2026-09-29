@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Enum\AssisnmentStatus;
 use App\Repository\AssigmentRepository;
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -42,9 +43,6 @@ class Assigment
 
     #[ORM\Column]
     private ?\DateTime $dateUpdate = null;
-
-    #[ORM\Column(enumType: AssisnmentStatus::class)]
-    private ?AssisnmentStatus $status = null;
 
     public function getId(): ?int
     {
@@ -149,13 +147,15 @@ class Assigment
 
     public function getStatus(): ?AssisnmentStatus
     {
-        return $this->status;
-    }
+        $today = new DateTimeImmutable('today');
+        $status = AssisnmentStatus::EN_COURS;
+        if ($this->dateStart > $today) {
+            $status = AssisnmentStatus::EN_ATTENTE;
+        }
 
-    public function setStatus(AssisnmentStatus $status): static
-    {
-        $this->status = $status;
-
-        return $this;
+        if ($this->dateEnd !== null && $this->dateEnd < $today) {
+            $status = AssisnmentStatus::FINI;
+        }
+        return $status;
     }
 }

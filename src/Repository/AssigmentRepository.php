@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Assigment;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -43,6 +44,28 @@ class AssigmentRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findForUser(User $user): array
+    {
+        return match ($user->getRole()) {
+            User::ROLE_ADMIN => $this->findAll(),
+
+            User::ROLE_RETAURANT_OWNER => $this->createQueryBuilder('a')
+                ->join('a.restaurant', 'r')
+                ->andWhere('r.owner = :owner')
+                ->setParameter('owner', $user)
+                ->getQuery()
+                ->getResult(),
+
+            User::ROLE_COLLAB => $this->createQueryBuilder('a')
+                ->andWhere('a.user = :user')
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getResult(),
+
+            default => [],
+        };
     }
 
 //    /**

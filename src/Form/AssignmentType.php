@@ -7,15 +7,23 @@ use App\Entity\Fonction;
 use App\Entity\Restaurant;
 use App\Entity\User;
 use App\Enum\AssisnmentStatus;
+use App\Repository\RestaurantRepository;
+use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AssignmentType extends AbstractType
 {
+
+    public function __construct(
+        private readonly Security $security,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -27,29 +35,27 @@ class AssignmentType extends AbstractType
             [
                 'label' => 'Date de début'
             ])
-            ->add('status', EnumType::class, [
-                'label' => 'Statut',
-                'class' => AssisnmentStatus::class,
-                'choice_label' => function (AssisnmentStatus $status): string {
-                    return match ($status) {
-                        AssisnmentStatus::EN_ATTENTE => 'En attente',
-                        AssisnmentStatus::EN_COURS => 'En cours',
-                        AssisnmentStatus::REFUSER => 'Refuser',
-                        AssisnmentStatus::VALIDER => 'Valider',
-                    };
-                },
-            ])
             ->add('user', EntityType::class, [
                 'label' => 'Collaborateur',
                 'class' => User::class,
+                'placeholder' => 'Sélectionner un collaborateur',
+                'query_builder' => function (UserRepository $repository) {
+                        return $repository
+                            ->createQueryBuilder('u')
+                            ->andWhere('u.roles LIKE :role')
+                            ->setParameter('role', '%ROLE_COLLAB%')
+                            ->orderBy('u.lastname', 'ASC');
+                }
             ])
             ->add('restaurant', EntityType::class, [
                 'label' => 'Restaurant',
                 'class' => Restaurant::class,
+                'placeholder' => 'Sélectionner un restaurant',
             ])
             ->add('fonction', EntityType::class, [
                 'label' => 'Fonction',
                 'class' => Fonction::class,
+                'placeholder' => 'Sélectionner une fonction'
             ])
         ;
     }
