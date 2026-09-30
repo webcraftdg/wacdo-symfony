@@ -4,13 +4,20 @@ namespace App\Entity;
 
 use App\Enum\AssisnmentStatus;
 use App\Repository\AssigmentRepository;
+use App\Validator\NoAssignmentOverlap;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\GreaterThan;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: AssigmentRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[NoAssignmentOverlap(
+    message:'Ce Collaborateur {{ collab }} est déjà plannifier sur tout ou en partie de la période saisie',
+    groups:['assignement:create', 'assignement:update']
+)]
 class Assigment
 {
     #[ORM\Id]
@@ -32,10 +39,20 @@ class Assigment
 
     #[ORM\Column]
     #[NotBlank(message:'Veuillez saisir une date de début')]
+    #[GreaterThanOrEqual(
+        'today',
+        message: 'La date de début ne peut pas être antérieure à aujourd’hui.',
+        groups: ['assignement:create',]
+    )]
     private ?\DateTime $dateStart = null;
 
     #[ORM\Column]
     #[NotBlank(message:'Veuillez saisir une date de fin')]
+    #[GreaterThan(
+        propertyPath: 'dateStart',
+        message: 'La date de fin doit être égale ou postérieure à la date de début.',
+        groups: ['assignement:create',]
+    )]
     private ?\DateTime $dateEnd = null;
 
     #[ORM\Column]

@@ -42,7 +42,7 @@ final class AssigmentController extends AbstractController
     public function create(Request $request): Response
     {
         $assigment = new Assigment();
-        $form = $this->createForm(AssignmentType::class, $assigment);
+        $form = $this->createForm(AssignmentType::class, $assigment, ['validation_groups' => ['assignement:create']]);
         $response = $this->manageAssignement($form, $assigment, $request, 'app_assignment_home');
         if ($response === null) {
             $response = $this->render('assigment/create.html.twig', [
@@ -58,7 +58,7 @@ final class AssigmentController extends AbstractController
     #[PageTitle(title:'Affectations', section:'Mettre à jour')]
     public function update(Assigment $assigment, Request $request): Response
     {
-        $form = $this->createForm(AssignmentType::class, $assigment);
+        $form = $this->createForm(AssignmentType::class, $assigment, ['validation_groups' => ['assignement:update']]);
         $response = $this->manageAssignement($form, $assigment, $request, 'app_assignment_home');
         if ($response === null) {
             $response = $this->render('assigment/update.html.twig', [
@@ -67,6 +67,13 @@ final class AssigmentController extends AbstractController
             ]);
         }
         return $response;
+    }
+
+    #[Route('/{id}/supprimer', name: 'delete')]
+    public function delete(Assigment $assigment)
+    {
+        $this->entityManagerInterface->remove($assigment);
+        $this->entityManagerInterface->flush();
     }
 
     protected function manageAssignement(

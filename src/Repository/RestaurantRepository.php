@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Restaurant;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,15 +18,14 @@ class RestaurantRepository extends ServiceEntityRepository
         parent::__construct($registry, Restaurant::class);
     }
 
-    public function findForUser(User $user): array
+    public function createBuilderForUser(User $user): QueryBuilder
     {
         return match ($user->getRole()) {
             User::ROLE_RETAURANT_OWNER => $this->createQueryBuilder('r')
                 ->andWhere('r.owner = :owner')
                 ->setParameter('owner', $user)
-                ->getQuery()
-                ->getResult(),
-            default => $this->findAll(),
+                ->orderBy('r.name', 'asc'),
+            default => $this->createQueryBuilder('r'),
         };
     }
 }

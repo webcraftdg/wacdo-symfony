@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Assigment;
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -68,28 +69,27 @@ class AssigmentRepository extends ServiceEntityRepository
         };
     }
 
-//    /**
-//     * @return Assigment[] Returns an array of Assigment objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function hasOverlappingAssignment(
+        User $user,
+        DateTime $dateStart,
+        ?DateTime $dateEnd
+    ): bool {
+        $qb = $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->andWhere('a.user = :user')
+            ->setParameter('user', $user)
+            // L'affectation existante ne doit pas être terminée
+            // avant le début de la nouvelle.
+            ->andWhere('(a.dateEnd IS NULL OR a.dateEnd >= :dateStart)')
+            ->setParameter('dateStart', $dateStart);
 
-//    public function findOneBySomeField($value): ?Assigment
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if ($dateEnd !== null) {
+            // L'affectation existante doit commencer
+            // avant la fin de la nouvelle.
+            $qb->andWhere('a.dateStart <= :dateEnd')
+                ->setParameter('dateEnd', $dateEnd);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult() > 0;
+    }
 }

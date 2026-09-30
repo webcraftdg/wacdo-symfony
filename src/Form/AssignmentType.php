@@ -51,6 +51,9 @@ class AssignmentType extends AbstractType
                 'label' => 'Restaurant',
                 'class' => Restaurant::class,
                 'placeholder' => 'Sélectionner un restaurant',
+                'query_builder'=> function(RestaurantRepository $repository) {
+                     return $repository->createBuilderForUser($this->security->getUser());
+                }
             ])
             ->add('fonction', EntityType::class, [
                 'label' => 'Fonction',
