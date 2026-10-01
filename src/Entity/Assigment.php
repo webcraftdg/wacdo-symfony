@@ -7,6 +7,7 @@ use App\Repository\AssigmentRepository;
 use App\Validator\NoAssignmentOverlap;
 use DateTime;
 use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
@@ -15,7 +16,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[ORM\Entity(repositoryClass: AssigmentRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[NoAssignmentOverlap(
-    message:'Ce Collaborateur {{ collab }} est déjà plannifier sur tout ou en partie de la période saisie',
+    message:'Ce Collaborateur {{ collab }} est déjà plannifier sur toute ou en partie de la période sélectionnée',
     groups:['assignement:create', 'assignement:update']
 )]
 class Assigment
@@ -37,23 +38,23 @@ class Assigment
     #[NotBlank(message:'Veuillez choisir une fonction')]
     private ?Fonction $fonction = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[NotBlank(message:'Veuillez saisir une date de début')]
     #[GreaterThanOrEqual(
         'today',
         message: 'La date de début ne peut pas être antérieure à aujourd’hui.',
         groups: ['assignement:create',]
     )]
-    private ?\DateTime $dateStart = null;
+    private ?\DateTimeImmutable $dateStart = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[NotBlank(message:'Veuillez saisir une date de fin')]
     #[GreaterThan(
         propertyPath: 'dateStart',
         message: 'La date de fin doit être égale ou postérieure à la date de début.',
         groups: ['assignement:create',]
     )]
-    private ?\DateTime $dateEnd = null;
+    private ?\DateTimeImmutable $dateEnd = null;
 
     #[ORM\Column]
     private ?\DateTime $dateCreate = null;
@@ -102,24 +103,24 @@ class Assigment
         return $this;
     }
 
-    public function getDateStart(): ?\DateTime
+    public function getDateStart(): ?\DateTimeImmutable
     {
         return $this->dateStart;
     }
 
-    public function setDateStart(\DateTime $dateStart): static
+    public function setDateStart(\DateTimeImmutable $dateStart): static
     {
         $this->dateStart = $dateStart;
 
         return $this;
     }
 
-    public function getDateEnd(): ?\DateTime
+    public function getDateEnd(): ?\DateTimeImmutable
     {
         return $this->dateEnd;
     }
 
-    public function setDateEnd(\DateTime $dateEnd): static
+    public function setDateEnd(\DateTimeImmutable $dateEnd): static
     {
         $this->dateEnd = $dateEnd;
 
@@ -164,7 +165,7 @@ class Assigment
 
     public function getStatus(): ?AssisnmentStatus
     {
-        $today = new DateTimeImmutable('today');
+        $today = new DateTime('today');
         $status = AssisnmentStatus::EN_COURS;
         if ($this->dateStart > $today) {
             $status = AssisnmentStatus::EN_ATTENTE;

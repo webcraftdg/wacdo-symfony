@@ -164,7 +164,7 @@ class UserCrudController extends AbstractCrudController
             EmailField::new('email')->setLabel('Email'),
             TextField::new('lastname')->setLabel('Nom'),
             TextField::new('firstname')->setLabel('Prénom'),
-            DateField::new('dateRecruitment')->setLabel('Date de recrutement')->setFormat('d/m/Y'),
+            DateField::new('dateRecruitment')->setLabel('Date de recrutement')->setFormat('dd/MM/Y'),
         ];
 
         //Afficher les champs pour les action 'edit' et 'new'

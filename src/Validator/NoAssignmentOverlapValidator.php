@@ -22,7 +22,8 @@ class NoAssignmentOverlapValidator extends ConstraintValidator
              $overlap = $this->repository->hasOverlappingAssignment(
                 $value->getUser(),
                 $value->getDateStart(),
-                $value->getDateEnd()
+                $value->getDateEnd(),
+                $value
             );
 
             if ($overlap) {

@@ -38,8 +38,8 @@ class AssigmentCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            DateField::new('dateStart')->setLabel('Date de début')->setFormat('d/m/Y'),
-            DateField::new('dateEnd')->setLabel('Date de fin')->setFormat('d/m/Y'),
+            DateField::new('dateStart')->setLabel('Date de début')->setFormat('dd/MM/Y'),
+            DateField::new('dateEnd')->setLabel('Date de fin')->setFormat('dd/MM/Y'),
             AssociationField::new('user')
                 ->setLabel('Collaborateur')
                 ->setQueryBuilder(
@@ -75,7 +75,6 @@ class AssigmentCrudController extends AbstractCrudController
         $actions->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
             return $action->setLabel('Enregistrer et Ajouter');
         });
-
         return $actions;
     }
 }

@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Assigment;
 use App\Entity\User;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,7 +22,7 @@ class AssigmentRepository extends ServiceEntityRepository
     public function findCriteriaAssignments(
         int $limit = 5,
         string $criteria = 'a.dateEnd <= :today',
-        array $parameters = ['today' => new \DateTimeImmutable()]): array
+        array $parameters = ['today' => new DateTimeImmutable()]): array
     {
         $query = $this->createQueryBuilder('a')
             ->andWhere($criteria)
@@ -40,7 +40,7 @@ class AssigmentRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.dateEnd >= :today')
-            ->setParameter('today', new \DateTimeImmutable())
+            ->setParameter('today', new DateTimeImmutable())
             ->orderBy('a.dateEnd', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()
@@ -71,8 +71,9 @@ class AssigmentRepository extends ServiceEntityRepository
 
     public function hasOverlappingAssignment(
         User $user,
-        DateTime $dateStart,
-        ?DateTime $dateEnd
+        DateTimeImmutable $dateStart,
+        ?DateTimeImmutable $dateEnd,
+        ?Assigment $excludedAssignment = null
     ): bool {
         $qb = $this->createQueryBuilder('a')
             ->select('COUNT(a.id)')
@@ -89,7 +90,11 @@ class AssigmentRepository extends ServiceEntityRepository
             $qb->andWhere('a.dateStart <= :dateEnd')
                 ->setParameter('dateEnd', $dateEnd);
         }
-
+        //Si il s'agit d'une mis à jour, il faut exclure l'assignment de la requête
+        if ($excludedAssignment?->getId() !== null) {
+            $qb->andWhere('a.id != :excludedId')
+            ->setParameter('excludedId', $excludedAssignment->getId());
+        }
         return (int) $qb->getQuery()->getSingleScalarResult() > 0;
     }
 }

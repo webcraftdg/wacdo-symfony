@@ -39,6 +39,7 @@ final class AssigmentController extends AbstractController
 
     #[Route('/creer', name: 'create')]
     #[PageTitle(title:'Affectations', section:'créer')]
+    #[IsGranted(User::ROLE_RETAURANT_OWNER)]
     public function create(Request $request): Response
     {
         $assigment = new Assigment();
@@ -56,6 +57,7 @@ final class AssigmentController extends AbstractController
 
     #[Route('/{id}/mise_a_jour', name: 'update')]
     #[PageTitle(title:'Affectations', section:'Mettre à jour')]
+    #[IsGranted(User::ROLE_RETAURANT_OWNER)]
     public function update(Assigment $assigment, Request $request): Response
     {
         $form = $this->createForm(AssignmentType::class, $assigment, ['validation_groups' => ['assignement:update']]);
@@ -69,11 +71,21 @@ final class AssigmentController extends AbstractController
         return $response;
     }
 
-    #[Route('/{id}/supprimer', name: 'delete')]
-    public function delete(Assigment $assigment)
+    #[Route('/{id}/supprimer', name: 'delete', methods: ['DELETE'])]
+    #[IsGranted(User::ROLE_RETAURANT_OWNER)]
+    public function delete(Assigment $assigment) : Response
     {
-        $this->entityManagerInterface->remove($assigment);
-        $this->entityManagerInterface->flush();
+        /**@var USer $user */
+        $user = $this->getUser();
+        if ($this->isGranted(User::ROLE_ADMIN) || in_array($assigment->getRestaurant(), $user->getRestaurants()->toArray()) === true) {
+            $this->entityManagerInterface->remove($assigment);
+            $this->entityManagerInterface->flush();
+            $response = $this->json(null, Response::HTTP_NO_CONTENT);
+        } else {
+            $response = $this->json(null, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $response;
     }
 
     protected function manageAssignement(
