@@ -1,0 +1,78 @@
+
+<tr
+    class="hover:bg-slate-50"
+    data-controller="delete"
+    data-delete-delete-url-value="{{ path('app_assignment_delete', {id: assignment.id}) }}"
+    data-delete-context-name-value="{{ assignment.fonction.name ~ ' : ' ~ assignment.user}}"
+    data-delete-csrf-value="{{ csrf_token('delete-assignment-' ~ assignment.id) }}"
+>
+
+    <td class="px-5 py-4 font-semibold text-slate-900">
+        {{ assignment.restaurant.name }}
+    </td>
+
+    <td class="px-5 py-4 text-slate-700">
+        {{ assignment.user }}
+    </td>
+
+    <td class="px-5 py-4 text-slate-700">
+        {{ assignment.fonction.name }}
+    </td>
+
+    <td class="px-5 py-4 text-slate-600 whitespace-nowrap">
+        {{ assignment.dateStart|date('d/m/Y') }}
+    </td>
+
+    <td class="px-5 py-4 text-slate-600 whitespace-nowrap">
+        {% if assignment.dateEnd %}
+            {{ assignment.dateEnd|date('d/m/Y') }}
+        {% else %}
+            —
+        {% endif %}
+    </td>
+
+    <td class="px-5 py-4">
+        <span
+            class="inline-flex rounded-full px-3 py-1
+                    text-xs font-semibold
+                    {{ assignment.status.badgeClass }}"
+        >
+            {{ assignment.status.label }}
+        </span>
+    </td>
+
+    {% if is_granted('ROLE_RESTAURANT_OWNER') %}
+        <td class="px-5 py-4">
+            <div class="flex justify-end gap-2">
+
+                <button
+                    type="button"
+                    data-action="assignment#delete"
+                    class="inline-flex items-center justify-center
+                            rounded-lg border border-red-300
+                            px-3 py-2 text-red-700
+                            hover:bg-red-50"
+                    title="Supprimer"
+                >
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+                <a
+                    href="{{ path(
+                        'app_assignment_update',
+                        {id: assignment.id}
+                    ) }}"
+                    class="inline-flex items-center justify-center
+                            rounded-lg bg-blue-600
+                            px-3 py-2 text-white
+                            hover:bg-blue-700"
+                    title="Éditer"
+                >
+                    <i class="fa-solid fa-pen"></i>
+                </a>
+
+            </div>
+        </td>
+    {% endif %}
+
+</tr>

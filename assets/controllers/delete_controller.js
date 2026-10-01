@@ -13,7 +13,8 @@ export default class extends Controller {
 
     static values = {
         deleteUrl: String,
-        contextName:String
+        contextName:String,
+        csrf:String
     }
 
    async confirmDelete() {

@@ -1,0 +1,68 @@
+<div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 overflow-hidden p-2">
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+
+            <thead class="bg-slate-50 border-b border-slate-200">
+                <tr class="text-sm text-slate-600">
+
+                    <th class="px-5 py-3 font-semibold">
+                        Restaurant
+                    </th>
+
+                    <th class="px-5 py-3 font-semibold">
+                        Collaborateur
+                    </th>
+
+                    <th class="px-5 py-3 font-semibold">
+                        Fonction
+                    </th>
+
+                    <th class="px-5 py-3 font-semibold">
+                        Début
+                    </th>
+
+                    <th class="px-5 py-3 font-semibold">
+                        Fin
+                    </th>
+
+                    <th class="px-5 py-3 font-semibold">
+                        Statut
+                    </th>
+
+                    {% if is_granted('ROLE_RESTAURANT_OWNER') %}
+                        <th class="px-5 py-3 font-semibold text-right">
+                            Actions
+                        </th>
+                    {% endif %}
+
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-slate-200">
+
+                {% for assignment in assignments %}
+                        {% include 'assigment/_itemList.html.twig'
+                        with { assignment: assignment } %}
+
+                {% else %}
+
+                    <tr>
+                        <td
+                            colspan="7"
+                            class="px-5 py-10 text-center text-slate-500"
+                        >
+                            <i class="fa-solid fa-magnifying-glass mb-2"></i>
+
+                            <p>
+                                Aucune affectation ne correspond à votre recherche.
+                            </p>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>

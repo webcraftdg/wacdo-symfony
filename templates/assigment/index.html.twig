@@ -22,26 +22,8 @@
         </div>
     </div>
 
-    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-
-        {% for assignment in assignments %}
-
-                   {% include 'assigment/_article.html.twig'
-                        with { assignment: assignment } %}
-
-        {% else %}
-
-            <div class="col-span-full text-center bg-white
-                        rounded-xl ring-1 ring-slate-200 p-8
-                        text-slate-500">
-
-                Aucune affectation.
-
-            </div>
-
-        {% endfor %}
-
-    </div>
+    {% include 'assigment/_list.html.twig'
+                    with { assignments: assignments } %}
 
 </div>
 
