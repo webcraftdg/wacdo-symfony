@@ -3,9 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Restaurant;
-use App\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,6 +26,9 @@ class RestaurantType extends AbstractType
             ])
             ->add('city', TextType::class, [
                 'label' => 'Ville',
+            ])->add('dateArchived', DateType::class, [
+                'label' => 'Archiver le restaurant',
+                'required' => false,
             ]);
         ;
     }

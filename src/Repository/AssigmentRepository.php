@@ -6,6 +6,8 @@ use App\Entity\Assigment;
 use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -18,16 +20,24 @@ class AssigmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Assigment::class);
     }
 
+    public function searchWithCriteria(User $user, ?array $criteria = null) : QueryBuilder
+    {
+        $queryBuilder = $this->findForUser($user);
+        if (is_array($criteria) === true) {
+            if (isset($criteria['user']) === true) {
+                $queryBuilder->andWhere('a.user = :user')->setParameter('user', $user);
+            }
+        }
+        return $queryBuilder;
+    }
 
     public function findCriteriaAssignments(
-        int $limit = 5,
         string $criteria = 'a.dateEnd <= :today',
         array $parameters = ['today' => new DateTimeImmutable()]): array
     {
         $query = $this->createQueryBuilder('a')
             ->andWhere($criteria)
-            ->orderBy('a.dateEnd', 'ASC')
-            ->setMaxResults($limit);
+            ->orderBy('a.dateEnd', 'ASC');
         foreach($parameters as $key => $value) {
             $query->setParameter($key, $value);
         }
@@ -47,28 +57,42 @@ class AssigmentRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findForUser(User $user): array
+    /**
+     * findForUser
+     *
+     * @param  \App\Entity\User           $user
+     *
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findForUser(User $user): QueryBuilder
     {
-        return match ($user->getRole()) {
-            User::ROLE_ADMIN => $this->findAll(),
-
-            User::ROLE_RETAURANT_OWNER => $this->createQueryBuilder('a')
+        $queryBuilder = $this->createQueryBuilder('a')
+            ->join('a.restaurant', 'r');
+        $queryBuilder = match ($user->getRole()) {
+            User::ROLE_RETAURANT_OWNER => $queryBuilder
                 ->join('a.restaurant', 'r')
                 ->andWhere('r.owner = :owner')
-                ->setParameter('owner', $user)
-                ->getQuery()
-                ->getResult(),
-
+                ->setParameter('owner', $user),
             User::ROLE_COLLAB => $this->createQueryBuilder('a')
                 ->andWhere('a.user = :user')
-                ->setParameter('user', $user)
-                ->getQuery()
-                ->getResult(),
+                ->setParameter('user', $user),
 
-            default => [],
+            default => $queryBuilder,
         };
+
+        return $queryBuilder;
     }
 
+    /**
+     * hasOverlappingAssignment
+     *
+     * @param  \App\Entity\User           $user
+     * @param  \DateTimeImmutable         $dateStart
+     * @param  \DateTimeImmutable|null    $dateEnd
+     * @param  \App\Entity\Assigment|null $excludedAssignment
+     *
+     * @return bool
+     */
     public function hasOverlappingAssignment(
         User $user,
         DateTimeImmutable $dateStart,

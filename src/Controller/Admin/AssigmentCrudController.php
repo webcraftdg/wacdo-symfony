@@ -48,7 +48,10 @@ class AssigmentCrudController extends AbstractCrudController
                         ->setParameter('role', '%ROLE_COLLAB%')
                         ->orderBy('entity.lastname', 'ASC')),
             AssociationField::new('restaurant')
-                ->setLabel('Restaurant'),
+                ->setLabel('Restaurant')
+                 ->setQueryBuilder(
+                    fn (QueryBuilder $qb) => $qb
+                        ->orderBy('entity.name', 'ASC')),
             AssociationField::new('fonction')
                 ->setLabel('Fonction'),
         ];

@@ -47,28 +47,26 @@
 
                 <button
                     type="button"
-                    data-action="assignment#delete"
+                    data-action="click->delete#confirmDelete"
                     class="inline-flex items-center justify-center
                             rounded-lg border border-red-300
                             px-3 py-2 text-red-700
                             hover:bg-red-50"
                     title="Supprimer"
                 >
-                    <i class="fa-solid fa-trash"></i>
+                    <i data-controller="icon" data-icon-name-value="trash"></i>
                 </button>
 
                 <a
-                    href="{{ path(
-                        'app_assignment_update',
-                        {id: assignment.id}
-                    ) }}"
+                    href="{{ path('app_assignment_update',{id: assignment.id}) }}"
                     class="inline-flex items-center justify-center
                             rounded-lg bg-blue-600
                             px-3 py-2 text-white
                             hover:bg-blue-700"
+                    data-turbo-prefetch="false"
                     title="Éditer"
                 >
-                    <i class="fa-solid fa-pen"></i>
+                    <i data-controller="icon" data-icon-name-value="edit"></i>
                 </a>
 
             </div>

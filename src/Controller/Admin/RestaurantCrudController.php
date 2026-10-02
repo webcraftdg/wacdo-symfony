@@ -3,20 +3,37 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Restaurant;
+use DateTime;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Override;
 
 class RestaurantCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
         return Restaurant::class;
+    }
+
+
+    public function deleteEntity(
+        EntityManagerInterface $entityManager,
+        object $entityInstance): void
+    {
+        if ($entityInstance instanceof Restaurant) {
+            $entityInstance->setDateArchived(new DateTime());
+            $entityManager->flush();
+        }
     }
 
 
@@ -39,16 +56,17 @@ class RestaurantCrudController extends AbstractCrudController
     {
         return [
             TextField::new('name'),
-            TextField::new('address'),
-            NumberField::new('zipCode')->onlyOnForms(),
-            TextField::new('postalCode')->onlyOnDetail(),
-            TextField::new('city'),
             AssociationField::new('owner')->setLabel('Propriétaire')
                 ->setQueryBuilder(
                     fn (QueryBuilder $qb) => $qb
                         ->andWhere('entity.roles LIKE :role')
                         ->setParameter('role', '%ROLE_RESTAURANT_OWNER%')
-                        ->orderBy('entity.lastname', 'ASC'))
+                        ->orderBy('entity.lastname', 'ASC')),
+            TextField::new('address'),
+            NumberField::new('zipCode')->onlyOnForms(),
+            TextField::new('postalCode')->onlyOnDetail(),
+            TextField::new('city'),
+            DateTimeField::new('dateArchived')->setLabel('Date archivée')->setFormat('dd/MM/Y'),
         ];
     }
 

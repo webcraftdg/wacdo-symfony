@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Attribute\PageTitle;
 use App\Entity\Assigment;
 use App\Entity\User;
+use App\Form\AssignmentSearchType;
 use App\Form\AssignmentType;
 use App\Repository\AssigmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,11 +29,15 @@ final class AssigmentController extends AbstractController
     #[Route('/accueil', name: 'home')]
     #[IsGranted(User::ROLE_COLLAB)]
     #[PageTitle(title:'Affectations', section:'Liste')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $assignments = $this->assigmentRepository->findForUser($this->getUser());
+        $searchForm = $this->createForm(AssignmentSearchType::class);
+        $searchForm->handleRequest($request);
+        $criteria = $searchForm->getData();
+        $assignments = $this->assigmentRepository->findForUser($this->getUser(), $criteria)->getQuery()->getResult();
         return $this->render('assigment/index.html.twig', [
             'assignments' => $assignments,
+            'searchForm' => $searchForm
         ]);
     }
 

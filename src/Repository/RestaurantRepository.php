@@ -23,6 +23,7 @@ class RestaurantRepository extends ServiceEntityRepository
         return match ($user->getRole()) {
             User::ROLE_RETAURANT_OWNER => $this->createQueryBuilder('r')
                 ->andWhere('r.owner = :owner')
+                ->andWhere('r.dateArchived is NULL')
                 ->setParameter('owner', $user)
                 ->orderBy('r.name', 'asc'),
             default => $this->createQueryBuilder('r'),
