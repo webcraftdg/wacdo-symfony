@@ -1,33 +1,77 @@
+<div data-controller="modal">
 
-   {{ form_start(form, {method:'GET', action:path('app_assignment_home'), class:'bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-5 mb-6'}) }}
-        <div class="space-y-5">
+    <button
+        type="button"
+        class="px-4 py-2 rounded-lg bg-blue-600
+                        text-white font-medium
+                        hover:bg-blue-700
+                        focus:outline-none focus:ring-2
+                        focus:ring-blue-500 focus:ring-offset-2"
+        data-action="modal#open">
+        Filtrer
+    </button>
 
-            {{ form_row(form.user) }}
-            {{ form_row(form.restaurant) }}
-            {{ form_row(form.fonction) }}
+    <div data-modal-target="modal" class="hidden fixed bg-gray-800 inset-0 flex items-center justify-center">
+        {# fenêtre #}
+        <div class="relative bg-white p-6 rounded shadow-lg text-center">
+            <button
+                type="button"
+                class=" absolute top-0 right-0  p-2 m-2 rounded-lg bg-red-600
+                                text-white font-medium
+                                hover:bg-red-700
+                                focus:outline-none focus:ring-2
+                                focus:ring-red-500 focus:ring-offset-2"
+                data-action="modal#close">
+                <i data-controller="icon" data-icon-name-value="delete"></i>
+            </button>
+            {{ form_start(form, {
+                method:'POST',
+                action:path('app_assignment_home'),
+                class:'bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-5 mb-6',
+                attr: {
+                    'data-turbo': 'false'
+                }}) }}
 
+            <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-3">
+                    {{ form_row(form.keyword) }}
+                </div>
+                {% if form.user is defined %}
+                    {{ form_row(form.user) }}
+                {% endif %}
+                {{ form_row(form.restaurant) }}
+                {{ form_row(form.fonction) }}
+            </div>
             <div class="grid sm:grid-cols-3 gap-5">
-
                 <div>
                     {{ form_row(form.dateStart) }}
                 </div>
-
-                <div class="sm:col-span-2">
+                <div>
                     {{ form_row(form.dateEnd) }}
                 </div>
             </div>
-        </div>
-        <div class="mt-8 flex justify-start">
-             <button
-                type="submit"
-                class="px-4 py-2 rounded-lg bg-blue-600
-                    text-white font-medium
-                    hover:bg-blue-700
-                    focus:outline-none focus:ring-2
-                    focus:ring-blue-500 focus:ring-offset-2">
-                Rechercher
-            </button>
-        </div>
+            <div class="mt-2 flex justify-start">
+                <a href="{{ path('app_assignment_home') }}" class="px-4 py-2 rounded-lg bg-red-600
+                        text-white font-medium
+                        mr-2
+                        hover:bg-red-700
+                        focus:outline-none focus:ring-2
+                        focus:ring-red-500 focus:ring-offset-2">
+                    Réinitialiser
+                </a>
+                <button
+                    type="submit"
+                    class="px-4 py-2 rounded-lg bg-blue-600
+                        text-white font-medium
+                        hover:bg-blue-700
+                        focus:outline-none focus:ring-2
+                        focus:ring-blue-500 focus:ring-offset-2">
+                    Rechercher
+                </button>
+            </div>
 
-    {{ form_end(form) }}
+        {{ form_end(form) }}
+        </div>
+    </div>
+</div>
 

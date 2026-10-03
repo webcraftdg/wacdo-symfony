@@ -33,8 +33,12 @@ final class AssigmentController extends AbstractController
     {
         $searchForm = $this->createForm(AssignmentSearchType::class);
         $searchForm->handleRequest($request);
-        $criteria = $searchForm->getData();
-        $assignments = $this->assigmentRepository->findForUser($this->getUser(), $criteria)->getQuery()->getResult();
+        $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
+        $assignments = $this->assigmentRepository->findforUserWithCriteria(
+            user:$this->getUser(),
+            criteria:$criteria
+        )->getQuery()->getResult();
+
         return $this->render('assigment/index.html.twig', [
             'assignments' => $assignments,
             'searchForm' => $searchForm

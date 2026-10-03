@@ -6,6 +6,7 @@ use App\Entity\Assigment;
 use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,12 +21,38 @@ class AssigmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Assigment::class);
     }
 
-    public function searchWithCriteria(User $user, ?array $criteria = null) : QueryBuilder
+    public function findforUserWithCriteria(User $user, ?array $criteria = null) : QueryBuilder
     {
         $queryBuilder = $this->findForUser($user);
-        if (is_array($criteria) === true) {
-            if (isset($criteria['user']) === true) {
-                $queryBuilder->andWhere('a.user = :user')->setParameter('user', $user);
+        if ($criteria !== null) {
+            foreach($criteria as $key => $value) {
+                $queryBuilder = $this->parseCriteria($key, $queryBuilder, $value);
+            }
+        }
+        return $queryBuilder;
+    }
+
+    private function parseCriteria(string $key, QueryBuilder $queryBuilder, mixed $value = null) : QueryBuilder
+    {
+        if ($value !== null && $value !== '') {
+            if ($key === 'keyword') {
+                $queryBuilder->andWhere($queryBuilder->expr()->orX(
+                    'u.firstname LIKE :keyword',
+                    'u.lastname LIKE :keyword',
+                    'r.name LIKE :keyword',
+                    'r.city LIKE :keyword',
+                    'f.name LIKE :keyword',
+                ))->setParameter($key, '%'.$value.'%');
+
+            }
+            $expression = match($key) {
+                'dateStart' => 'a.'.$key.'>=:'.$key,
+                'dateEnd' => 'a.'.$key.'<=:'.$key,
+                'keyword' => null,
+                default =>'a.'.$key.'=:'.$key,
+            };
+            if ($expression !== null) {
+                $queryBuilder->andWhere($expression)->setParameter($key, $value);
             }
         }
         return $queryBuilder;
@@ -67,13 +94,14 @@ class AssigmentRepository extends ServiceEntityRepository
     public function findForUser(User $user): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('a')
-            ->join('a.restaurant', 'r');
+            ->join('a.restaurant', 'r')
+            ->join('a.user', 'u')
+            ->join('a.fonction', 'f');
         $queryBuilder = match ($user->getRole()) {
             User::ROLE_RETAURANT_OWNER => $queryBuilder
-                ->join('a.restaurant', 'r')
                 ->andWhere('r.owner = :owner')
                 ->setParameter('owner', $user),
-            User::ROLE_COLLAB => $this->createQueryBuilder('a')
+            User::ROLE_COLLAB => $queryBuilder
                 ->andWhere('a.user = :user')
                 ->setParameter('user', $user),
 
