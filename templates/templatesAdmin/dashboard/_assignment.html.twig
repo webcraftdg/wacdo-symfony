@@ -1,0 +1,78 @@
+<div class="card shadow-sm mb-4">
+
+    <div class="card-header">
+        <h2 class="h5 mb-1">
+            {{title}}
+        </h2>
+
+        <div class="text-muted small">
+            {{subTitle}}
+        </div>
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead>
+                    <tr class="row m-1">
+                        <th class="col-lg-2">Collaborateur</th>
+                        <th class="col-lg-4">Restaurant</th>
+                        <th class="col-lg-2">Fonction</th>
+                        <th class="col-lg-2">Date de début</th>
+                        <th class="col-lg-2">Date de fin</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for assignment in assignments %}
+
+                    <tr class="row m-1 ">
+                        <td class="fw-semibold col-lg-2">
+                            {{ assignment.user }}
+                        </td>
+
+                        <td class="col-lg-4">
+                            {{ assignment.restaurant }}
+                        </td>
+
+                        <td class="col-lg-2">
+                            {{ assignment.fonction }}
+                        </td>
+
+                        <td class="col-lg-2">
+                            {{ assignment.dateStart|date('d/m/Y') }}
+                        </td>
+
+                        <td class="col-lg-2">
+                            <span class="{{ assignment.status.getAdminBadgeClass }}">
+                                {{ assignment.dateEnd|date('d/m/Y') }}
+                            </span>
+                        </td>
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td
+                            colspan="5"
+                            class="text-center text-muted py-4"
+                        >
+                            Aucune fin d'affectation à venir.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

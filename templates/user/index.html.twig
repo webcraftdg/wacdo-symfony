@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+<div class="max-w-7xl mx-auto px-6 py-10">
+
+    <div class=" flex justify-between mb-8 w-full">
+        <div class="">
+            <h1 class="text-2xl font-bold text-slate-900">Les collaborateurs{% if(noAffected == true)%} non affectés {%endif%}</h1>
+            <p class="mt-1 text-slate-500">
+                Consultez les collaborateurs{% if(noAffected == true)%} non affectés {%endif%}.
+            </p>
+        </div>
+        <div class="flex">
+            <div class="mt-6 mr-2">
+                {% if(noAffected == true)%}
+                    <a href="{{ path('app_user_home', {noAffected:false}) }}"
+                        class="px-4 py-2 rounded-lg bg-blue-600
+                            hover:bg-blue-700 text-white">
+                        Tous les collaborateurs
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_user_home', {noAffected:true}) }}"
+                        class="px-4 py-2 rounded-lg bg-blue-600
+                            hover:bg-blue-700 text-white">
+                        Collaborateurs non affectés
+                    </a>
+                {% endif %}
+            </div>
+            <div class="mt-6">
+                <a href="{{ path('app_user_create') }}"
+                    class="px-4 py-2 rounded-lg bg-blue-600
+                        hover:bg-blue-700 text-white">
+                    Créer
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    {% include 'user/_list.html.twig'
+                    with { collaborators: collaborators } %}
+
+</div>
+
+{% endblock %}

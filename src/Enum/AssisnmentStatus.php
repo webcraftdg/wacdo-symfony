@@ -43,4 +43,13 @@ enum AssisnmentStatus : string
             self::FINI => 'bg-red-200 text-red-700',
         };
     }
+
+    public function getAdminBadgeClass(): string
+    {
+        return match ($this) {
+            self::EN_ATTENTE  => 'badge text-bg-warning',
+            self::EN_COURS  => 'badge text-bg-info',
+            self::FINI => 'badge text-bg-danger',
+        };
+    }
 }

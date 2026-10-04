@@ -1,0 +1,55 @@
+
+<tr
+    class="hover:bg-slate-50"
+    data-controller="delete"
+    data-delete-delete-url-value="{{ path('app_user_delete', {id: collaborator.id}) }}"
+    data-delete-context-name-value="{{ collaborator.lastname ~ ' : ' ~ collaborator.firstname}}"
+    data-delete-csrf-value="{{ csrf_token('delete-user-' ~ collaborator.id) }}"
+>
+
+    <td class="px-5 py-4 font-semibold text-slate-900">
+        {{ collaborator.lastname}}
+    </td>
+
+    <td class="px-5 py-4 text-slate-700">
+        {{ collaborator.firstname }}
+    </td>
+
+    <td class="px-5 py-4 text-slate-700">
+        {{ collaborator.email }}
+    </td>
+
+    <td class="px-5 py-4 text-slate-600 whitespace-nowrap">
+        {{ collaborator.dateRecruitment|date('d/m/Y') }}
+    </td>
+    <td class="px-5 py-4">
+        <div class="flex justify-end gap-2">
+        {% if is_granted('ROLE_ADMIN') %}
+            <button
+                    type="button"
+                    data-action="click->delete#confirmDelete"
+                    class="inline-flex items-center justify-center
+                            rounded-lg border border-red-300
+                            px-3 py-2 text-red-700
+                            hover:bg-red-50"
+                    title="Supprimer"
+                >
+                    <i data-controller="icon" data-icon-name-value="trash"></i>
+                </button>
+        {% endif %}
+            <a
+                href="{{ path('app_user_update',{id: collaborator.id}) }}"
+                class="inline-flex items-center justify-center
+                        rounded-lg bg-blue-600
+                        px-3 py-2 text-white
+                        hover:bg-blue-700"
+                data-turbo-prefetch="false"
+                title="Éditer"
+            >
+                <i data-controller="icon" data-icon-name-value="edit"></i>
+            </a>
+
+        </div>
+    </td>
+
+</tr>

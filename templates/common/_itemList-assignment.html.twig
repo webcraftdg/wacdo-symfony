@@ -44,6 +44,7 @@
     {% if is_granted('ROLE_RESTAURANT_OWNER') %}
         <td class="px-5 py-4">
             <div class="flex justify-end gap-2">
+            {% if is_granted('ROLE_ADMIN') %}
 
                 <button
                     type="button"
@@ -56,7 +57,7 @@
                 >
                     <i data-controller="icon" data-icon-name-value="trash"></i>
                 </button>
-
+            {% endif %}
                 <a
                     href="{{ path('app_assignment_update',{id: assignment.id}) }}"
                     class="inline-flex items-center justify-center

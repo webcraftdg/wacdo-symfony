@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class RegistrationController extends AbstractController
 {
+
     #[Route('/mon-compte', name: 'app_account')]
     #[PageTitle(title:'Mettre à jour', section:'Utilisateurs')]
     #[IsGranted('IS_AUTHENTICATED')]

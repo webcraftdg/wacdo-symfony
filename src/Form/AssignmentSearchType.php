@@ -49,11 +49,7 @@ class AssignmentSearchType extends AbstractType
                     'placeholder' => 'Sélectionner un collaborateur',
                     'required' => false,
                     'query_builder' => function (UserRepository $repository) use ($user) {
-                            return  $repository
-                                ->findByUser($user)
-                                ->andWhere('u.roles LIKE :role')
-                                ->setParameter('role', '%ROLE_COLLAB%')
-                                ->orderBy('u.lastname', 'ASC');
+                            return  $repository->createCollaboratorQuery($user);
                     }
                 ]);
             }

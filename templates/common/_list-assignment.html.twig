@@ -41,8 +41,8 @@
 
             <tbody class="divide-y divide-slate-200">
 
-                {% for assignment in assignments %}
-                        {% include 'assigment/_itemList.html.twig'
+                {% for assignment in hydrator %}
+                        {% include 'common/_itemList-assignment.html.twig'
                         with { assignment: assignment } %}
 
                 {% else %}

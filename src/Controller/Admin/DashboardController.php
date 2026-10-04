@@ -47,7 +47,8 @@ class DashboardController extends AbstractDashboardController
                     'functions' => $this->fonctionRepository->count()
                 ],
                 'pastAssignments' => $this->assigmentRepository->findCriteriaAssignments(),
-                'upcomingAssignments' => $this->assigmentRepository->findCriteriaAssignments(criteria:'a.dateEnd >= :today')
+                'upcomingAssignments' => $this->assigmentRepository->findCriteriaAssignments(criteria:'a.dateStart >= :today'),
+                'inProgressAssignments' => $this->assigmentRepository->findCriteriaAssignments(criteria:'a.dateStart <= :today AND a.dateEnd >= :today')
             ]);
     }
 

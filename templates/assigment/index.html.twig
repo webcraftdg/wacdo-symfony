@@ -31,8 +31,8 @@
         </div>
     </div>
 
-    {% include 'assigment/_list.html.twig'
-                    with { assignments: assignments } %}
+    {% include 'common/_list-assignment.html.twig'
+                    with { hydrator: hydrator } %}
 
 </div>
 
