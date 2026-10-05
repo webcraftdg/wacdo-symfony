@@ -14,6 +14,7 @@ export default class extends Controller {
     static values = {
         deleteUrl: String,
         contextName:String,
+        keepElement: Boolean,
         csrf:String
     }
 
@@ -26,7 +27,11 @@ export default class extends Controller {
                 if (!reponse.ok) {
                     throw new Error("Une erreur c'est produite : statut de réponse : ${reponse.status}");
                 }
-                this.element.remove();
+                if (Boolean(this.keepElementValue) === false) {
+                    this.element.remove();
+                } else {
+                    window.location.reload();
+                }
             } catch (erreur) {
                 alert(erreur.message);
             }

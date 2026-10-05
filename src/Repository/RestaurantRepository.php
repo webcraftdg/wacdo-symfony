@@ -18,15 +18,27 @@ class RestaurantRepository extends ServiceEntityRepository
         parent::__construct($registry, Restaurant::class);
     }
 
-    public function createBuilderForUser(User $user): QueryBuilder
+    public function createBuilderForUser(User $user, $diplayArchived = true, ?array $criteria = null): QueryBuilder
     {
-        return match ($user->getRole()) {
+        $queryBuilder =  match ($user->getRole()) {
             User::ROLE_RETAURANT_OWNER => $this->createQueryBuilder('r')
                 ->andWhere('r.owner = :owner')
-                ->andWhere('r.dateArchived is NULL')
                 ->setParameter('owner', $user)
                 ->orderBy('r.name', 'asc'),
             default => $this->createQueryBuilder('r'),
         };
+        if ($diplayArchived === false) {
+            $queryBuilder->andWhere('r.dateArchived IS NULL');
+        }
+
+        if (isset($criteria['keyword']) === true) {
+            $queryBuilder->andWhere($queryBuilder->expr()->orX(
+                'r.name LIKE :keyword',
+                'r.address LIKE :keyword',
+                'r.zipCode LIKE :keyword',
+                'r.city LIKE :keyword'
+            ))->setParameter('keyword', '%'.$criteria['keyword'].'%');
+        }
+        return $queryBuilder;
     }
 }

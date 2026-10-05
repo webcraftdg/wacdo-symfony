@@ -66,7 +66,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function createCollaboratorQuery(?User $user = null, bool $noAffected = false) : QueryBuilder
+    public function createCollaboratorQuery(
+        ?User $user = null,
+        bool $noAffected = false,
+        ?array $criteria = null) : QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('u');
         if ($user instanceof User) {
@@ -86,6 +89,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 'a.dateStart <= :today AND (a.dateEnd IS NULL OR a.dateEnd >= :today)'
             )->andWhere('a.id IS NULL')
             ->setParameter('today', $today);
+        }
+
+        if (isset($criteria['keyword']) === true) {
+            $queryBuilder->andWhere($queryBuilder->expr()->orX(
+                'u.firstname LIKE :keyword',
+                'u.lastname LIKE :keyword',
+                'u.email LIKE :keyword'
+            ))->setParameter('keyword', '%'.$criteria['keyword'].'%');
         }
 
         $queryBuilder->andWhere('u.roles LIKE :role')

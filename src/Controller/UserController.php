@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Attribute\PageTitle;
 use App\Entity\User;
+use App\Form\GenericSearchType;
 use App\Form\RegistrationFormType;
 use App\Form\UserCollaboratorType;
 use App\Helper\EntityHydrator;
@@ -37,7 +38,19 @@ final class UserController extends AbstractController
     public function index(Request $request): Response
     {
         $noAffected = $request->query->get('noAffected', false);
-        $queryCollaborator = $this->userRepository->createCollaboratorQuery(noAffected:$noAffected);
+        $searchForm = $this->createForm(
+            type:GenericSearchType::class,
+            options: [
+                'placeholder' => 'Nom, prénom, email',
+                'action' => $this->generateUrl('app_user_home', ['noAffected' => $noAffected])
+            ]);
+        $searchForm->handleRequest($request);
+        $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
+
+        $queryCollaborator = $this->userRepository->createCollaboratorQuery(
+            noAffected:$noAffected,
+            criteria:$criteria
+        );
         if (boolval($noAffected) === true) {
             $collaborators = $queryCollaborator->getQuery()->getResult();
         } else {
@@ -45,7 +58,8 @@ final class UserController extends AbstractController
         }
         return $this->render('user/index.html.twig', [
             'collaborators' => $collaborators,
-            'noAffected' => boolval($noAffected)
+            'noAffected' => boolval($noAffected),
+            'searchForm' => $searchForm
         ]);
     }
 
