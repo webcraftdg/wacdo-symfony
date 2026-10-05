@@ -87,13 +87,13 @@ final class UserController extends AbstractController
         $form = $this->createForm(UserCollaboratorType::class, $user, ['validation_groups' => ['user:update']]);
         $response = $this->manageUser($form, $user, $request, 'app_user_home');
         $queryAssignments = $this->assigmentRepository->findForUser($user);
-        $hydrator = new EntityHydrator($queryAssignments);
+        $items = new EntityHydrator($queryAssignments);
 
         if ($response === null) {
             $response = $this->render('user/update.html.twig', [
                 'form' => $form,
                 'user' => $user,
-                'hydrator' => $hydrator
+                'items' => $items
             ]);
         }
         return $response;

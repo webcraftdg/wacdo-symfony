@@ -51,6 +51,10 @@
                     {{ form_end(form) }}
 
     </div>
+</div>
 
+<div class="max-w-7xl mx-auto px-6 py-10">
+   {% include 'common/_list-assignment.html.twig'
+                    with { items: items } %}
 </div>
 {% endblock %}

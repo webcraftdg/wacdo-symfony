@@ -39,9 +39,9 @@ final class AssigmentController extends AbstractController
             user:$this->getUser(),
             criteria:$criteria
         );
-        $hydrator = new EntityHydrator($queryBuilder);
+        $items = new EntityHydrator($queryBuilder);
         return $this->render('assigment/index.html.twig', [
-            'hydrator' => $hydrator,
+            'items' => $items,
             'searchForm' => $searchForm
         ]);
     }

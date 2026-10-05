@@ -55,17 +55,6 @@ final class RestaurantController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/detail', name: 'detail')]
-    #[PageTitle(title:'Détail', section:'Restaurant')]
-    public function detail(Restaurant $restaurant): Response
-    {
-
-        return $this->render('restaurant/detail.html.twig', [
-            'restaurant' => $restaurant,
-            'assignments' => $restaurant->getAssigments()
-        ]);
-    }
-
     #[Route('/{id}/mettre-a-jour', name: 'update')]
     #[PageTitle(title:'Mettre à jour', section:'Restaurant')]
     public function update(Restaurant $restaurant, Request $request): Response
@@ -81,6 +70,7 @@ final class RestaurantController extends AbstractController
         if ($response === null) {
             $response = $this->render('restaurant/update.html.twig', [
                 'restaurant' => $restaurant,
+                'items' => $restaurant->getAssigments(),
                 'form' => $form
             ]);
         }
