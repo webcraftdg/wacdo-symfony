@@ -8,6 +8,8 @@ use App\Entity\User;
 use App\Form\GenericSearchType;
 use App\Form\RestaurantType;
 use App\Helper\EntityHydrator;
+use App\Helper\EntityProvider;
+use App\Repository\AssigmentRepository;
 use App\Repository\RestaurantRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,6 +26,7 @@ final class RestaurantController extends AbstractController
 
     public function __construct(
         private RestaurantRepository $restaurantRepository,
+        private AssigmentRepository $assigmentRepository,
         private EntityManagerInterface $entityManagerInterface
     )
     {}
@@ -67,10 +70,18 @@ final class RestaurantController extends AbstractController
             $this->entityManagerInterface->flush();
             $response = $this->redirectToRoute('app_restaurant_home', ['id' => $restaurant->getId()]);
         }
+        $queryBuilder = $this->assigmentRepository->createBuilderforUserWithCriteria(
+            user:$this->getUser(),
+        );
+        $dataProvider = new EntityProvider(
+            queryBuilder: $queryBuilder,
+            request: $request,
+            pageSize: 10);
+
         if ($response === null) {
             $response = $this->render('restaurant/update.html.twig', [
                 'restaurant' => $restaurant,
-                'items' => $restaurant->getAssigments(),
+                'dataProvider' => $dataProvider,
                 'form' => $form
             ]);
         }

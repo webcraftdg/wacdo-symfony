@@ -7,6 +7,7 @@ use App\Entity\Fonction;
 use App\Entity\Restaurant;
 use App\Entity\User;
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -31,40 +32,37 @@ class AppFixtures extends Fixture
         ->setRoles([User::ROLE_ADMIN]);
         $manager->persist($userAdmin);
 
-        $ownerRawList = [
-            'owner1@webcraftdg.fr',
-            'owner2@webcraftdg.fr',
-            'owner3@webcraftdg.fr',
-            'owner4@webcraftdg.fr',
-        ];
+        $ownerRawList = 'owner-{code}@webcraftdg.fr';
         $owners = [];
-        foreach($ownerRawList as $email) {
+        $nbOwner = 10;
+
+        for($i =0; $i < $nbOwner; $i++) {
+            $code = str_pad((string)$i, 3, '0', STR_PAD_LEFT);
+            $email = str_replace('{code}', $code, $ownerRawList);
             $userOwner = new User();
             $userOwner->setEmail($email)
             ->setDateRecruitment(new DateTime())
             ->setIsAdmin(false)
-            ->setFirstname(ucFirst($faker->word()))
-            ->setLastname(ucFirst($faker->word()))
+            ->setFirstname(ucFirst($faker->word().'-'.$code))
+            ->setLastname(ucFirst($faker->word().'-'.$code))
             ->setPassword($this->userPaswwordHasher->hashPassword($userOwner, 'redcat'))
             ->setRoles([User::ROLE_RETAURANT_OWNER]);
             $manager->persist($userOwner);
             $owners[] = $userOwner;
         }
 
-        $collabRawList = [
-            'collab1@webcraftdg.fr',
-            'collab2@webcraftdg.fr',
-            'collab3@webcraftdg.fr',
-            'collab4@webcraftdg.fr',
-        ];
+        $collabRawList =  'collab-{code}@webcraftdg.fr';
         $collabs = [];
-        foreach($collabRawList as $email) {
+        $nbCollab = 150;
+        for($i = 0; $i < $nbCollab; $i++) {
+            $code = str_pad((string)$i, 3, '0', STR_PAD_LEFT);
+            $email = str_replace('{code}', $code, $collabRawList);
             $userCollab = new User();
             $userCollab->setEmail($email)
                 ->setDateRecruitment(new DateTime())
                 ->setIsAdmin(false)
-                ->setFirstname(ucFirst($faker->word()))
-                ->setLastname(ucFirst($faker->word()))
+                ->setFirstname(ucFirst($faker->word().'-'.$code))
+                ->setLastname(ucFirst($faker->word().'-'.$code))
                 ->setPassword($this->userPaswwordHasher->hashPassword($userCollab, 'redcat'))
                 ->setRoles([User::ROLE_COLLAB]);
             $manager->persist($userCollab);
@@ -75,8 +73,15 @@ class AppFixtures extends Fixture
             'Cuisinier',
             'Serveur',
             'Chef de salle',
-            'Caviste',
-            'Receptionniste'
+            'Sommelier',
+            'Receptionniste',
+            'Chef cuisinier',
+            'Commis de cuisine',
+            'Plongeur',
+            'Maitre D\'hotel',
+            'Chef de rang',
+            'Barman'
+
         ];
         $fonctColla = [];
         foreach($fonctions as $name) {
@@ -91,6 +96,12 @@ class AppFixtures extends Fixture
             'Tour d\'Argent',
             'Tour Eiffel : Panoramique',
             'Fouquets',
+            'Mac Donald',
+            'Burger King',
+            'Pizza Delarte',
+            'Pizza Hut',
+            'Tour de hanoi',
+            'Suchi en folie',
         ];
         $restos = [];
 
@@ -104,16 +115,25 @@ class AppFixtures extends Fixture
             $manager->persist($restaurant);
             $restos[] = $restaurant;
         }
-        for($i=0; $i < 4; $i++) {
-            $assigment = new Assigment();
-            $assigment->setFonction($fonctColla[array_rand($fonctColla)])
-            ->setRestaurant($restos[$i])
-            ->setUser($collabs[$i])
-            ->setDateStart(new DateTime())
-            ->setDateEnd($faker->dateTimeThisMonth());
-            $manager->persist($assigment);
-            $manager->flush();
-        }
 
+        for($i=0; $i < 75; $i++) {
+            $dateStart = $faker->dateTimeBetween('-2 years', '+6 months');
+
+            $dateEnd = (clone $dateStart)->modify(
+                '+' . random_int(1, 12) . ' months'
+            );
+
+            $assigment = new Assigment();
+
+            $assigment
+                ->setFonction($fonctColla[array_rand($fonctColla)])
+                ->setRestaurant($restos[array_rand($restos)])
+                ->setUser($collabs[array_rand($collabs)])
+                ->setDateStart(DateTimeImmutable::createFromMutable($dateStart))
+                ->setDateEnd(DateTimeImmutable::createFromMutable($dateEnd));
+
+            $manager->persist($assigment);
+        }
+        $manager->flush();
     }
 }

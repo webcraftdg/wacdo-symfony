@@ -29,7 +29,7 @@
 
             <tbody class="divide-y divide-slate-200">
 
-                {% for collaborator in collaborators %}
+                {% for collaborator in dataProvider %}
                         {% include 'user/_itemList.html.twig'
                         with { collaborator: collaborator } %}
 

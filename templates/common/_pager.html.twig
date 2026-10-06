@@ -1,0 +1,34 @@
+{% if dataProvider.pageCount > 1 %}
+    <nav class="flex items-center justify-center gap-1 mt-6"
+         aria-label="Pagination">
+
+        {% for page in 1..dataProvider.pageCount %}
+        {% set params = app.request.attributes.get('_route_params')|default({}) %}
+        {% set params = params|merge(app.request.query.all) %}
+        {% set params = params|merge({ page: page }) %}
+            <a
+                href="{{  path(
+                            route,
+                            params
+                        ) }}"
+                class="
+                    inline-flex items-center justify-center
+                    min-w-9 h-9 px-3
+                    rounded-md
+                    text-sm font-medium
+                    transition
+                    {{ page == dataProvider.currentPage
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-100'
+                    }}
+                "
+                {% if page == dataProvider.currentPage %}
+                    aria-current="page"
+                {% endif %}
+            >
+                {{ page }}
+            </a>
+        {% endfor %}
+
+    </nav>
+{% endif %}

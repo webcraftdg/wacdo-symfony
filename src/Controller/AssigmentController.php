@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Form\AssignmentSearchType;
 use App\Form\AssignmentType;
 use App\Helper\EntityHydrator;
+use App\Helper\EntityProvider;
 use App\Repository\AssigmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,13 +36,16 @@ final class AssigmentController extends AbstractController
         $searchForm = $this->createForm(AssignmentSearchType::class);
         $searchForm->handleRequest($request);
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
-        $queryBuilder = $this->assigmentRepository->findforUserWithCriteria(
+        $queryBuilder = $this->assigmentRepository->createBuilderforUserWithCriteria(
             user:$this->getUser(),
             criteria:$criteria
         );
-        $items = new EntityHydrator($queryBuilder);
+        $dataProvider = new EntityProvider(
+            queryBuilder: $queryBuilder,
+            request: $request,
+            pageSize: 10);
         return $this->render('assigment/index.html.twig', [
-            'items' => $items,
+            'dataProvider' => $dataProvider,
             'searchForm' => $searchForm
         ]);
     }

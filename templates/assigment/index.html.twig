@@ -29,7 +29,10 @@
     </div>
 
     {% include 'common/_list-assignment.html.twig'
-                    with { items: items } %}
+                    with { dataProvider: dataProvider } %}
+     {% include 'common/_pager.html.twig'
+                    with { dataProvider: dataProvider, route: 'app_assignment_home'} %}
+
 
 </div>
 

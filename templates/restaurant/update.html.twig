@@ -55,6 +55,8 @@
 
 <div class="max-w-7xl mx-auto px-6 py-10">
    {% include 'common/_list-assignment.html.twig'
-                    with { items: items } %}
+                    with { dataProvider: dataProvider } %}
+      {% include 'common/_pager.html.twig'
+                    with { dataProvider: dataProvider, route: 'app_restaurant_update'} %}
 </div>
 {% endblock %}

@@ -8,6 +8,7 @@ use App\Form\GenericSearchType;
 use App\Form\RegistrationFormType;
 use App\Form\UserCollaboratorType;
 use App\Helper\EntityHydrator;
+use App\Helper\EntityProvider;
 use App\Repository\AssigmentRepository;
 use App\Repository\UserRepository;
 use DateTime;
@@ -47,17 +48,17 @@ final class UserController extends AbstractController
         $searchForm->handleRequest($request);
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
 
-        $queryCollaborator = $this->userRepository->createCollaboratorQuery(
+        $queryBuilder = $this->userRepository->createCollaboratorQuery(
             noAffected:$noAffected,
             criteria:$criteria
         );
-        if (boolval($noAffected) === true) {
-            $collaborators = $queryCollaborator->getQuery()->getResult();
-        } else {
-            $collaborators = new EntityHydrator($queryCollaborator);
-        }
+
+         $dataProvider = new EntityProvider(
+            queryBuilder: $queryBuilder,
+            request: $request,
+            pageSize: 10);
         return $this->render('user/index.html.twig', [
-            'collaborators' => $collaborators,
+            'dataProvider' => $dataProvider,
             'noAffected' => boolval($noAffected),
             'searchForm' => $searchForm
         ]);
@@ -86,14 +87,19 @@ final class UserController extends AbstractController
     {
         $form = $this->createForm(UserCollaboratorType::class, $user, ['validation_groups' => ['user:update']]);
         $response = $this->manageUser($form, $user, $request, 'app_user_home');
-        $queryAssignments = $this->assigmentRepository->findForUser($user);
-        $items = new EntityHydrator($queryAssignments);
+        $queryBuilder = $this->assigmentRepository->findForUser($user);
+
+        $dataProvider = new EntityProvider(
+            queryBuilder: $queryBuilder,
+            request: $request,
+            pageSize: 10
+        );
 
         if ($response === null) {
             $response = $this->render('user/update.html.twig', [
                 'form' => $form,
                 'user' => $user,
-                'items' => $items
+                'dataProvider' => $dataProvider
             ]);
         }
         return $response;

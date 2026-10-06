@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Assigment;
 use App\Entity\User;
+use App\Helper\CriteriaBuilder;
+use App\Helper\CriteriaField;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Mapping\Entity;
@@ -21,29 +23,50 @@ class AssigmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Assigment::class);
     }
 
-    public function findforUserWithCriteria(User $user, ?array $criteria = null) : QueryBuilder
+    public function createBuilderforUserWithCriteria(
+        User $user,
+        ?array $criteria = null,
+        array $keyWordFields = [
+            'u.firstname' => 'LIKE',
+            'u.lastname' => 'LIKE',
+            'r.name' => 'LIKE',
+            'r.city' => 'LIKE',
+            'f.name' => 'LIKE',
+        ]
+    ) : QueryBuilder
     {
+        $criteriaBuilder = new CriteriaBuilder();
+        foreach($keyWordFields as $attribute => $operator) {
+            $criteriaField = new CriteriaField($attribute, $operator, 'keyword');
+            $criteriaBuilder->add($criteriaField);
+        }
         $queryBuilder = $this->findForUser($user);
         if ($criteria !== null) {
             foreach($criteria as $key => $value) {
-                $queryBuilder = $this->parseCriteria($key, $queryBuilder, $value);
+                $queryBuilder = $this->parseCriteria(
+                    queryBuilder: $queryBuilder,
+                    key: $key,
+                    criteriaBuilder:$criteriaBuilder,
+                    value: $value
+                );
             }
         }
         return $queryBuilder;
     }
 
-    private function parseCriteria(string $key, QueryBuilder $queryBuilder, mixed $value = null) : QueryBuilder
+    private function parseCriteria(
+        QueryBuilder $queryBuilder,
+        string $key,
+        CriteriaBuilder $criteriaBuilder,
+        mixed $value = null
+    ) : QueryBuilder
     {
         if ($value !== null && $value !== '') {
             if ($key === 'keyword') {
+                $expr = $criteriaBuilder->getExpression();
                 $queryBuilder->andWhere($queryBuilder->expr()->orX(
-                    'u.firstname LIKE :keyword',
-                    'u.lastname LIKE :keyword',
-                    'r.name LIKE :keyword',
-                    'r.city LIKE :keyword',
-                    'f.name LIKE :keyword',
+                    ...$expr
                 ))->setParameter($key, '%'.$value.'%');
-
             }
             $expression = match($key) {
                 'dateStart' => 'a.'.$key.'>=:'.$key,

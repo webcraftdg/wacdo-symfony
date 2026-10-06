@@ -42,7 +42,9 @@
     </div>
 
     {% include 'user/_list.html.twig'
-                    with { collaborators: collaborators } %}
+                    with { dataProvider: dataProvider } %}
+    {% include 'common/_pager.html.twig'
+                    with { dataProvider: dataProvider, route: 'app_user_home'} %}
 
 </div>
 
