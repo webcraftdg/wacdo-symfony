@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Attribute\Breadcrumb;
 use App\Attribute\PageTitle;
 use App\Entity\Assigment;
 use App\Entity\User;
@@ -31,9 +32,23 @@ final class AssigmentController extends AbstractController
     #[Route('/accueil', name: 'home')]
     #[IsGranted(User::ROLE_COLLAB)]
     #[PageTitle(title:'Affectations', section:'Liste')]
+    #[Breadcrumb([
+        [
+            'label' => 'Accueil',
+            'route' => 'app_home',
+        ],
+        [
+            'label' => 'liste des affectations',
+        ],
+    ])]
     public function index(Request $request): Response
     {
-        $searchForm = $this->createForm(AssignmentSearchType::class);
+        $searchForm = $this->createForm(AssignmentSearchType::class,
+          options: [
+                'placeholder' => 'Nom, adresse, code postal, ville',
+                'action' => $this->generateUrl('app_assignment_home')
+            ]
+        );
         $searchForm->handleRequest($request);
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
         $queryBuilder = $this->assigmentRepository->createBuilderforUserWithCriteria(
@@ -43,7 +58,8 @@ final class AssigmentController extends AbstractController
         $dataProvider = new EntityProvider(
             queryBuilder: $queryBuilder,
             request: $request,
-            pageSize: 10);
+            pageSize: 10
+        );
         return $this->render('assigment/index.html.twig', [
             'dataProvider' => $dataProvider,
             'searchForm' => $searchForm
@@ -51,14 +67,50 @@ final class AssigmentController extends AbstractController
     }
 
 
-    #[Route('/creer', name: 'create')]
+    #[Route(
+        '/creer/{user}',
+        name: 'create',
+        defaults: ['user' => null]
+    )]
     #[PageTitle(title:'Affectations', section:'créer')]
+    #[Breadcrumb([
+        [
+            'label' => 'Accueil',
+            'route' => 'app_home',
+        ],
+        [
+            'label' => 'liste des affectations',
+            'route' => 'app_assignment_home'
+        ],
+        [
+            'label' => 'création d\'une affectations',
+        ],
+    ])]
     #[IsGranted(User::ROLE_RETAURANT_OWNER)]
-    public function create(Request $request): Response
+    public function create(Request $request, ?User $user): Response
     {
         $assigment = new Assigment();
-        $form = $this->createForm(AssignmentType::class, $assigment, ['validation_groups' => ['assignement:create']]);
-        $response = $this->manageAssignement($form, $assigment, $request, 'app_assignment_home');
+        $form = $this->createForm(
+            AssignmentType::class,
+            $assigment,
+            [
+                'validation_groups' => ['assignement:create'],
+                'user' => $user
+            ]
+        );
+        $routeRedirectionName = 'app_assignment_home';
+        $parameters = [];
+        if($user !== null) {
+            $routeRedirectionName = 'app_user_detail';
+            $parameters['id'] = $user->getId();
+        }
+        $response = $this->manageAssignement(
+            $form,
+            $assigment,
+            $request,
+            $routeRedirectionName,
+            $parameters
+        );
         if ($response === null) {
             $response = $this->render('assigment/create.html.twig', [
                 'form' => $form,
@@ -71,6 +123,19 @@ final class AssigmentController extends AbstractController
 
     #[Route('/{id}/mise_a_jour', name: 'update')]
     #[PageTitle(title:'Affectations', section:'Mettre à jour')]
+    #[Breadcrumb([
+        [
+            'label' => 'Accueil',
+            'route' => 'app_home',
+        ],
+        [
+            'label' => 'liste des affectations',
+            'route' => 'app_assignment_home'
+        ],
+        [
+            'label' => 'affectation de : ',
+        ],
+    ])]
     #[IsGranted(User::ROLE_RETAURANT_OWNER)]
     public function update(Assigment $assigment, Request $request): Response
     {

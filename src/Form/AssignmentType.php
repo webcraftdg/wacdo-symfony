@@ -26,6 +26,7 @@ class AssignmentType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user = ($options['user']) ?? null;
         $builder
             ->add('dateStart', DateTimeType::class,
             [
@@ -38,6 +39,7 @@ class AssignmentType extends AbstractType
             ->add('user', EntityType::class, [
                 'label' => 'Collaborateur',
                 'class' => User::class,
+                'data' => $user,
                 'placeholder' => 'Sélectionner un collaborateur',
                 'query_builder' => function (UserRepository $repository) {
                         return $repository
@@ -67,6 +69,8 @@ class AssignmentType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Assigment::class,
+            'user' => null
         ]);
+        $resolver->setAllowedTypes('user', ['null', User::class]);
     }
 }

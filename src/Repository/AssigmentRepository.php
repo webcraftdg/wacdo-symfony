@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Assigment;
+use App\Entity\Restaurant;
 use App\Entity\User;
 use App\Helper\CriteriaBuilder;
 use App\Helper\CriteriaField;
@@ -25,6 +26,7 @@ class AssigmentRepository extends ServiceEntityRepository
 
     public function createBuilderforUserWithCriteria(
         User $user,
+        ?Restaurant $restaurant = null,
         ?array $criteria = null,
         array $keyWordFields = [
             'u.firstname' => 'LIKE',
@@ -40,7 +42,10 @@ class AssigmentRepository extends ServiceEntityRepository
             $criteriaField = new CriteriaField($attribute, $operator, 'keyword');
             $criteriaBuilder->add($criteriaField);
         }
-        $queryBuilder = $this->findForUser($user);
+        $queryBuilder = $this->createBuilderFromUserAndRestaurant(
+            user:$user,
+            restaurant:$restaurant
+        );
         if ($criteria !== null) {
             foreach($criteria as $key => $value) {
                 $queryBuilder = $this->parseCriteria(
@@ -83,38 +88,43 @@ class AssigmentRepository extends ServiceEntityRepository
 
     public function findCriteriaAssignments(
         string $criteria = 'a.dateEnd <= :today',
-        array $parameters = ['today' => new DateTimeImmutable()]): array
+        array $parameters = ['today' => new DateTimeImmutable()]): QueryBuilder
     {
-        $query = $this->createQueryBuilder('a')
+        $queryBuilder = $this->createQueryBuilder('a')
             ->andWhere($criteria)
             ->orderBy('a.dateEnd', 'ASC');
         foreach($parameters as $key => $value) {
-            $query->setParameter($key, $value);
+            $queryBuilder->setParameter($key, $value);
         }
-        return $query->getQuery()
-            ->getResult();
-
+        return $queryBuilder;
     }
 
-    public function findUpcomingAssignments(int $limit = 5): array
+    public function countPending() : int
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.dateEnd >= :today')
-            ->setParameter('today', new DateTimeImmutable())
-            ->orderBy('a.dateEnd', 'ASC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+        return (int)$this->findCriteriaAssignments(criteria:'a.dateStart >= :today')
+        ->select('count(a.id)')->getQuery()->getSingleScalarResult();
+    }
+
+    public function countCurrent() : int
+    {
+        return (int)$this->findCriteriaAssignments(criteria:'a.dateStart <= :today AND a.dateEnd >= :today')
+        ->select('count(a.id)')->getQuery()->getSingleScalarResult();
+    }
+
+       public function countFinished() : int
+    {
+        return (int)$this->findCriteriaAssignments()->select('count(a.id)')->getQuery()->getSingleScalarResult();
     }
 
     /**
-     * findForUser
+     * create bulder from user and restaurant
      *
-     * @param  \App\Entity\User           $user
+     * @param  \App\Entity\User            $user
+     * @param  \App\Entity\Restaurant|null $restaurant
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function findForUser(User $user): QueryBuilder
+    public function createBuilderFromUserAndRestaurant(User $user, ?Restaurant $restaurant = null): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('a')
             ->join('a.restaurant', 'r')
@@ -130,6 +140,10 @@ class AssigmentRepository extends ServiceEntityRepository
 
             default => $queryBuilder,
         };
+        if ($restaurant !== null) {
+            $queryBuilder->andWhere('a.restaurant =:restaurant')
+            ->setParameter('restaurant', $restaurant);
+        }
 
         return $queryBuilder;
     }

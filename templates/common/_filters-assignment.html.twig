@@ -26,23 +26,24 @@
             </button>
             {{ form_start(form, {
                 method:'POST',
-                action:path('app_assignment_home'),
                 class:'bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-5 mb-6',
                 attr: {
                     'data-turbo': 'false'
                 }}) }}
 
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid {{ form.user is defined and form.restaurant is defined ? 'grid-cols-3 gap-4' : 'grid-cols-2 gap-3'}}">
                 <div class="col-span-3">
                     {{ form_row(form.keyword) }}
                 </div>
                 {% if form.user is defined %}
                     {{ form_row(form.user) }}
                 {% endif %}
-                {{ form_row(form.restaurant) }}
+                {% if form.restaurant is defined %}
+                    {{ form_row(form.restaurant) }}
+                {% endif %}
                 {{ form_row(form.fonction) }}
             </div>
-            <div class="grid sm:grid-cols-3 gap-5">
+            <div class="grid sm:grid-cols-2 gap-3">
                 <div>
                     {{ form_row(form.dateStart) }}
                 </div>
@@ -51,7 +52,7 @@
                 </div>
             </div>
             <div class="mt-2 flex justify-start">
-                <a href="{{ path('app_assignment_home') }}" class="px-4 py-2 rounded-lg bg-red-600
+                <a href="{{ form.vars.action  }}" class="px-4 py-2 rounded-lg bg-red-600
                         text-white font-medium
                         mr-2
                         hover:bg-red-700

@@ -1,0 +1,36 @@
+<nav aria-label="Fil d'Ariane" class="mb-6">
+    <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+
+        {% for item in routes %}
+
+            <li class="flex items-center gap-2">
+
+                {% if not loop.first %}
+                    <span class="text-slate-300">/</span>
+                {% endif %}
+
+                {% if item.route %}
+                    <a
+                        href="{{ path(
+                            item.route,
+                            item.params|default({})
+                        ) }}"
+                        class="hover:text-blue-600 transition"
+                    >
+                        {{ item.label }}
+                    </a>
+                {% else %}
+                    <span
+                        class="font-medium text-slate-800"
+                        aria-current="page"
+                    >
+                        {{ item.label }}
+                    </span>
+                {% endif %}
+
+            </li>
+
+        {% endfor %}
+
+    </ol>
+</nav>

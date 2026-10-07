@@ -1,6 +1,6 @@
 
 <tr
-    class="hover:bg-slate-50 {{ item.dateArchived is null ? 'opacity-50' : '' }}"
+    class="hover:bg-slate-50 {{ item.dateArchived is null ? '' : 'opacity-50' }}"
     data-controller="delete"
     data-delete-delete-url-value="{{ path('app_restaurant_delete', {id: item.id}) }}"
     data-delete-context-name-value="{{ item.name ~ ' : ' ~ item.city}}"
@@ -33,6 +33,28 @@
     {% if is_granted('ROLE_RESTAURANT_OWNER') %}
         <td class="px-5 py-4">
             <div class="flex justify-end gap-2">
+               <a
+                    href="{{ path('app_restaurant_detail',{id: item.id}) }}"
+                    class="inline-flex items-center justify-center
+                            rounded-lg bg-blue-600
+                            px-3 py-2 text-white
+                            hover:bg-blue-700"
+                    data-turbo-prefetch="false"
+                    title="Détail"
+                >
+                    <i data-controller="icon" data-icon-name-value="details"></i>
+                </a>
+               <a
+                    href="{{ path('app_restaurant_update',{id: item.id}) }}"
+                    class="inline-flex items-center justify-center
+                            rounded-lg bg-blue-600
+                            px-3 py-2 text-white
+                            hover:bg-blue-700"
+                    data-turbo-prefetch="false"
+                    title="Éditer"
+                >
+                    <i data-controller="icon" data-icon-name-value="edit"></i>
+                </a>
             {% if is_granted('ROLE_ADMIN') and item.dateArchived is null %}
 
                 <button
@@ -47,18 +69,6 @@
                     <i data-controller="icon" data-icon-name-value="archive"></i>
                 </button>
             {% endif %}
-                <a
-                    href="{{ path('app_restaurant_update',{id: item.id}) }}"
-                    class="inline-flex items-center justify-center
-                            rounded-lg bg-blue-600
-                            px-3 py-2 text-white
-                            hover:bg-blue-700"
-                    data-turbo-prefetch="false"
-                    title="Éditer"
-                >
-                    <i data-controller="icon" data-icon-name-value="edit"></i>
-                </a>
-
             </div>
         </td>
     {% endif %}

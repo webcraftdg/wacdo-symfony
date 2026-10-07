@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Attribute\Breadcrumb;
 use App\Attribute\PageTitle;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
@@ -18,6 +19,15 @@ class RegistrationController extends AbstractController
 
     #[Route('/mon-compte', name: 'app_account')]
     #[PageTitle(title:'Mettre à jour', section:'Utilisateurs')]
+    #[Breadcrumb([
+        [
+            'label' => 'Accueil',
+            'route' => 'app_home',
+        ],
+        [
+            'label' => 'mon compte',
+        ],
+    ])]
     #[IsGranted('IS_AUTHENTICATED')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {

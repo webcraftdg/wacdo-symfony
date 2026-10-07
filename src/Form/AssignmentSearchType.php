@@ -27,13 +27,14 @@ class AssignmentSearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var User $user */
-        $user = $this->security->getUser();
+        $user = ($options['user']) ?? $this->security->getUser();
+        $restaurant = ($options['restaurant']) ?? null;
         $builder
             ->add('keyword', TextType::class, [
                 'label' => 'Rechercher',
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'Nom collaborateur, restaurant, ville...',
+               'attr' => [
+                    'placeholder' => ($options['placeholder']) ?? 'Rechercher ...',
                 ],
                 'label_attr' => [
                     'class' => 'text-left'
@@ -53,19 +54,21 @@ class AssignmentSearchType extends AbstractType
                     }
                 ]);
             }
-
-            $builder->add('restaurant', EntityType::class, [
-                'label' => 'Restaurant',
-                'class' => Restaurant::class,
-                'label_attr' => [
-                    'class' => 'text-left'
-                ],
-                'required' => false,
-                'placeholder' => 'Sélectionner un restaurant',
-                'query_builder'=> function(RestaurantRepository $repository) use ($user){
-                     return $repository->createBuilderForUser($user);
-                }
-            ])->add('fonction', EntityType::class, [
+            if ($restaurant === null) {
+                $builder->add('restaurant', EntityType::class, [
+                    'label' => 'Restaurant',
+                    'class' => Restaurant::class,
+                    'label_attr' => [
+                        'class' => 'text-left'
+                    ],
+                    'required' => false,
+                    'placeholder' => 'Sélectionner un restaurant',
+                    'query_builder'=> function(RestaurantRepository $repository) use ($user){
+                        return $repository->createBuilderForUser($user);
+                    }
+                ]);
+            }
+            $builder->add('fonction', EntityType::class, [
                 'label' => 'Fonction',
                 'class' => Fonction::class,
                 'label_attr' => [
@@ -94,7 +97,13 @@ class AssignmentSearchType extends AbstractType
     {
         $resolver->setDefaults([
             'method' => 'POST',
+            'placeholder' => 'Rechercher...',
+            'user' => null,
+            'restaurant' => null,
             'csrf_protection' => true,
         ]);
+        $resolver->setAllowedTypes('placeholder', 'string');
+        $resolver->setAllowedTypes('user', ['null', User::class]);
+        $resolver->setAllowedTypes('restaurant', ['null', Restaurant::class]);
     }
 }

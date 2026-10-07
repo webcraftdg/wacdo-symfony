@@ -10,18 +10,6 @@
     <div class="mt-8 bg-white rounded-xl shadow-sm
                 ring-1 ring-slate-200 p-6">
             {{ include('common/_form-collaborator.html.twig', {form:form})}}
-
-            <div class=" flex justify-between mb-8 w-full">
-                <div class="">
-                    <h1 class="text-2xl font-bold text-slate-900">Les affectations</h1>
-                </div>
-            </div>
     </div>
-</div>
-<div class="max-w-7xl mx-auto px-6 py-10">
-   {% include 'common/_list-assignment.html.twig'
-                    with { dataProvider: dataProvider } %}
-    {% include 'common/_pager.html.twig'
-                    with { dataProvider: dataProvider, route: 'app_user_update'} %}
 </div>
 {% endblock %}

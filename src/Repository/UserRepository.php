@@ -105,5 +105,23 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $queryBuilder;
     }
 
+    public function countAvailable() : int
+    {
+        return (int)$this->createCollaboratorQuery(
+            noAffected:true
+        )->select('count(u.id)')->getQuery()->getSingleScalarResult();
+    }
+
+    public function countBusy() : int
+    {
+        $today = new DateTimeImmutable();
+        return (int)$this->createCollaboratorQuery()->select('count(u.id)')->innerJoin(
+                'u.assigments',
+                'a',
+                Expr\Join::WITH,
+                'a.dateStart <= :today AND (a.dateEnd IS NULL OR a.dateEnd >= :today)'
+            )->setParameter('today', $today)->getQuery()->getSingleScalarResult();
+    }
+
 
 }
