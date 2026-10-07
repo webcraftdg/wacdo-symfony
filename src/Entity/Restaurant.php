@@ -51,6 +51,9 @@ class Restaurant
     #[NotBlank(message:'Veuillez choisir un propriétaire')]
     private ?User $owner = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $dateArchived = null;
+
     public function __construct()
     {
         $this->assigments = new ArrayCollection();
@@ -194,6 +197,22 @@ class Restaurant
 
     public function __toString()
     {
-        return ucFirst($this->name);
+        $str =  ucFirst($this->name);
+        if ($this->getDateArchived() !== null) {
+            $str .= ' - Archivé le : '.$this->getDateArchived()->format('d/m/Y');
+        }
+        return $str;
+    }
+
+    public function getDateArchived(): ?\DateTime
+    {
+        return $this->dateArchived;
+    }
+
+    public function setDateArchived(?\DateTime $dateArchived): static
+    {
+        $this->dateArchived = $dateArchived;
+
+        return $this;
     }
 }

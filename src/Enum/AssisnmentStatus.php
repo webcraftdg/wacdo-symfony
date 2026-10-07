@@ -34,4 +34,22 @@ enum AssisnmentStatus : string
             self::FINI => 'border-4 border-red-500',
         };
     }
+
+    public function getBadgeClass(): string
+    {
+        return match ($this) {
+            self::EN_ATTENTE  => 'bg-amber-100 text-amber-800',
+            self::EN_COURS  => 'bg-blue-100 text-blue-800',
+            self::FINI => 'bg-red-200 text-red-700',
+        };
+    }
+
+    public function getAdminBadgeClass(): string
+    {
+        return match ($this) {
+            self::EN_ATTENTE  => 'badge text-bg-warning',
+            self::EN_COURS  => 'badge text-bg-info',
+            self::FINI => 'badge text-bg-danger',
+        };
+    }
 }

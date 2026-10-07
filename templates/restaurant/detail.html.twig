@@ -1,153 +1,117 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+<div class="max-w-7xl mx-auto px-6 py-2">
+<section class="
+    bg-white
+    rounded-xl
+    shadow-sm
+    ring-1 ring-slate-200
+    p-6
+    mb-8
+">
 
-<div class="max-w-7xl mx-auto px-6 py-10">
+    <div class="flex items-start justify-between gap-4 mb-6">
 
-    <div class="flex items-start justify-between mb-8">
-
-        <div>
-            <a href="{{ path('app_restaurant_home') }}"
-               class="text-sm text-blue-600 hover:text-blue-700">
-                ← Les restaurants
-            </a>
-
-            <h1 class="mt-2 text-2xl font-bold text-slate-900">
-                {{ restaurant.name }}
-            </h1>
-        </div>
-
-        <a href="{{ path('app_restaurant_update', {
-            id: restaurant.id
-        }) }}"
-           class="p-2 rounded-lg bg-blue-600 text-white
-                  text-sm font-medium hover:bg-blue-700">
-            Modifier le restaurant
-        </a>
-
-    </div>
-
-
-    {# INFORMATIONS RESTAURANT #}
-
-    <section class="bg-white rounded-xl shadow-sm
-                    ring-1 ring-slate-200 p-6 mb-8">
-
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">
+        <h2 class="text-lg font-semibold text-slate-900">
             Informations
         </h2>
 
-        <dl class="grid sm:grid-cols-2 gap-5 text-sm">
+        {% if restaurant.dateArchived %}
+            <span class="
+                inline-flex items-center
+                rounded-full
+                bg-slate-100
+                px-3 py-1
+                text-xs font-medium text-slate-600
+            ">
+                Archivé
+            </span>
+        {% endif %}
 
-            <div>
-                <dt class="text-slate-500">Adresse</dt>
-                <dd class="mt-1 font-medium text-slate-900">
-                    {{ restaurant.address }}
-                </dd>
-            </div>
+    </div>
 
-            <div>
-                <dt class="text-slate-500">Ville</dt>
-                <dd class="mt-1 font-medium text-slate-900">
-                    {{ restaurant.zipCode }} {{ restaurant.city }}
-                </dd>
-            </div>
+    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
 
-        </dl>
-
-    </section>
-
-
-    {# COLLABORATEURS #}
-
-    <section class="bg-white rounded-xl shadow-sm
-                    ring-1 ring-slate-200 overflow-hidden">
-
-        <div class="p-6 border-b border-slate-200">
-            <h2 class="text-lg font-semibold text-slate-900">
-                Collaborateurs affectés
-            </h2>
+        <div>
+            <dt class="text-sm font-medium text-slate-500">
+                Nom
+            </dt>
+            <dd class="mt-1 text-slate-900">
+                {{ restaurant.name }}
+            </dd>
         </div>
 
-        <div class="overflow-x-auto">
-
-            <table class="w-full text-sm">
-
-                <thead class="bg-slate-50 text-center text-slate-500">
-                    <tr>
-                        <th class="px-6 py-3">Collaborateur</th>
-                        <th class="px-6 py-3">Fonction</th>
-                        <th class="px-6 py-3">Début</th>
-                        <th class="px-6 py-3">Fin</th>
-                        <th class="px-6 py-3">Statut</th>
-                        <th class="px-6 py-3"></th>
-                    </tr>
-                </thead>
-
-                <tbody class="divide-y divide-slate-200">
-
-                {% for assignment in assignments %}
-
-                    <tr class="{{assignment.status.borderClass}}">
-
-                        <td class="px-6 py-4 font-medium text-slate-900 text-center">
-                            {{ assignment.user.firstname }}
-                            {{ assignment.user.lastname }}
-                        </td>
-
-                        <td class="px-6 py-4 text-center">
-                            {{ assignment.fonction.name }}
-                        </td>
-
-                        <td class="px-6 py-4 text-center">
-                            {{ assignment.dateStart|date('d/m/Y') }}
-                        </td>
-
-                        <td class="px-6 py-4 text-center">
-                            {{ assignment.dateEnd
-                                ? assignment.dateEnd|date('d/m/Y')
-                                : '—'
-                            }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            {{ assignment.status.label }}
-                        </td>
-                        <td class="px-6 py-4 text-right">
-
-                            <a href="{{ path('app_assignment_update', {
-                                id: assignment.id
-                            }) }}"
-                               class="text-blue-600 hover:text-blue-700
-                                      font-medium">
-
-                                Modifier
-
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-                {% else %}
-
-                    <tr>
-                        <td colspan="5"
-                            class="px-6 py-8 text-center text-slate-500">
-
-                            Aucun collaborateur affecté.
-
-                        </td>
-                    </tr>
-
-                {% endfor %}
-
-                </tbody>
-
-            </table>
-
+        <div>
+            <dt class="text-sm font-medium text-slate-500">
+                Adresse
+            </dt>
+            <dd class="mt-1 text-slate-900">
+                {{ restaurant.address }}
+            </dd>
         </div>
 
-    </section>
+        <div>
+            <dt class="text-sm font-medium text-slate-500">
+                Code postal
+            </dt>
+            <dd class="mt-1 text-slate-900">
+                {{ restaurant.zipCode }}
+            </dd>
+        </div>
+
+        <div>
+            <dt class="text-sm font-medium text-slate-500">
+                Ville
+            </dt>
+            <dd class="mt-1 text-slate-900">
+                {{ restaurant.city }}
+            </dd>
+        </div>
+
+        {% if restaurant.dateArchived %}
+            <div>
+                <dt class="text-sm font-medium text-slate-500">
+                    Date d'archivage
+                </dt>
+                <dd class="mt-1 text-slate-900">
+                    {{ restaurant.dateArchived|date('d/m/Y') }}
+                </dd>
+            </div>
+        {% endif %}
+
+    </dl>
+</section>
 
 </div>
+
+
+
+
+    <div class="max-w-7xl mx-auto px-6">
+     <section class="mb-2">
+
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+
+            <div>
+                <h2 class="text-xl font-semibold text-slate-900">
+                    Affectations
+                </h2>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Collaborateurs affectés à ce restaurant.
+                </p>
+            </div>
+        </div>
+
+       {% include 'common/_filters-assignment.html.twig'
+            with { form: searchForm } %}
+
+    </section>
+    {% include 'common/_list-assignment.html.twig'
+                        with { dataProvider: dataProvider } %}
+        {% include 'common/_pager.html.twig'
+                        with { dataProvider: dataProvider, route: 'app_restaurant_detail'} %}
+    </div>
+
 {% endblock %}

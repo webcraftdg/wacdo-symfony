@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Attribute\Breadcrumb;
 use App\Attribute\PageTitle;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
@@ -12,12 +13,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
 {
+
     #[Route('/mon-compte', name: 'app_account')]
     #[PageTitle(title:'Mettre à jour', section:'Utilisateurs')]
+    #[Breadcrumb([
+        [
+            'label' => 'Accueil',
+            'route' => 'app_home',
+        ],
+        [
+            'label' => 'mon compte',
+        ],
+    ])]
     #[IsGranted('IS_AUTHENTICATED')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {

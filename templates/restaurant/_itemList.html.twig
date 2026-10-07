@@ -1,0 +1,76 @@
+
+<tr
+    class="hover:bg-slate-50 {{ item.dateArchived is null ? '' : 'opacity-50' }}"
+    data-controller="delete"
+    data-delete-delete-url-value="{{ path('app_restaurant_delete', {id: item.id}) }}"
+    data-delete-context-name-value="{{ item.name ~ ' : ' ~ item.city}}"
+    data-delete-csrf-value="{{ csrf_token('delete-restaurant-' ~ item.id) }}"
+    data-delete-keep-element-value="1"
+>
+
+    <td class="px-5 py-4 font-semibold text-slate-900">
+        {{ item.name }}
+    </td>
+
+    <td class="px-5 py-4 text-slate-700">
+        {{ item.address }}
+    </td>
+    <td class="px-5 py-4 text-slate-700">
+        {{ item.zipCode }}
+    </td>
+    <td class="px-5 py-4 text-slate-700">
+        {{ item.city }}
+    </td>
+
+    <td class="px-5 py-4 text-slate-600 whitespace-nowrap">
+        {% if item.dateArchived %}
+            {{ item.dateArchived|date('d/m/Y') }}
+        {% else %}
+            —
+        {% endif %}
+    </td>
+
+    {% if is_granted('ROLE_RESTAURANT_OWNER') %}
+        <td class="px-5 py-4">
+            <div class="flex justify-end gap-2">
+               <a
+                    href="{{ path('app_restaurant_detail',{id: item.id}) }}"
+                    class="inline-flex items-center justify-center
+                            rounded-lg bg-blue-600
+                            px-3 py-2 text-white
+                            hover:bg-blue-700"
+                    data-turbo-prefetch="false"
+                    title="Détail"
+                >
+                    <i data-controller="icon" data-icon-name-value="details"></i>
+                </a>
+               <a
+                    href="{{ path('app_restaurant_update',{id: item.id}) }}"
+                    class="inline-flex items-center justify-center
+                            rounded-lg bg-blue-600
+                            px-3 py-2 text-white
+                            hover:bg-blue-700"
+                    data-turbo-prefetch="false"
+                    title="Éditer"
+                >
+                    <i data-controller="icon" data-icon-name-value="edit"></i>
+                </a>
+            {% if is_granted('ROLE_ADMIN') and item.dateArchived is null %}
+
+                <button
+                    type="button"
+                    data-action="click->delete#confirmDelete"
+                    class="inline-flex items-center justify-center
+                            rounded-lg border border-orange-300
+                            px-3 py-2 text-orange-700
+                            hover:bg-orange-50"
+                    title="Archiver"
+                >
+                    <i data-controller="icon" data-icon-name-value="archive"></i>
+                </button>
+            {% endif %}
+            </div>
+        </td>
+    {% endif %}
+
+</tr>

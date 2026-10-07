@@ -15,7 +15,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(
+    fields: ['email'],
+    message: 'Cette Email n\'est pas disponnible',
+    groups: ['user:create', 'user:update'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const ROLE_COLLAB = 'ROLE_COLLAB';

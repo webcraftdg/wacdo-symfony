@@ -30,6 +30,12 @@
                         Les affectations
                     </a>
                 {% endif %}
+                 {% if is_granted('ROLE_RESTAURANT_OWNER') %}
+                    <a href="{{ path('app_user_home') }}"
+                    class="text-slate-600 hover:text-blue-600 text-sm font-medium rounded-lg border border-slate-300 px-4 py-2 ">
+                        Les collaborateurs
+                    </a>
+                {% endif %}
                 {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('admin') }}"
                     class="text-slate-600 hover:text-blue-600 text-sm font-medium rounded-lg border border-slate-300 px-4 py-2 ">

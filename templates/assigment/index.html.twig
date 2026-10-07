@@ -2,7 +2,13 @@
 
 {% block body %}
 
+
 <div class="max-w-7xl mx-auto px-6 py-10">
+
+           {% include 'common/_filters-assignment.html.twig'
+            with { form: searchForm } %}
+
+
 
     <div class=" flex justify-between mb-8 w-full">
         <div class="">
@@ -22,26 +28,11 @@
         </div>
     </div>
 
-    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+    {% include 'common/_list-assignment.html.twig'
+                    with { dataProvider: dataProvider } %}
+     {% include 'common/_pager.html.twig'
+                    with { dataProvider: dataProvider, route: 'app_assignment_home'} %}
 
-        {% for assignment in assignments %}
-
-                   {% include 'assigment/_article.html.twig'
-                        with { assignment: assignment } %}
-
-        {% else %}
-
-            <div class="col-span-full text-center bg-white
-                        rounded-xl ring-1 ring-slate-200 p-8
-                        text-slate-500">
-
-                Aucune affectation.
-
-            </div>
-
-        {% endfor %}
-
-    </div>
 
 </div>
 

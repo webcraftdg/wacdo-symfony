@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto px-6 py-10">
+
+    <h1 class="text-2xl font-bold text-slate-900">
+        Modifier
+    </h1>
+
+    <div class="mt-8 bg-white rounded-xl shadow-sm
+                ring-1 ring-slate-200 p-6">
+            {{ include('common/_form-collaborator.html.twig', {form:form})}}
+    </div>
+</div>
+{% endblock %}

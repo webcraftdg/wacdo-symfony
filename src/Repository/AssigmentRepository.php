@@ -3,9 +3,15 @@
 namespace App\Repository;
 
 use App\Entity\Assigment;
+use App\Entity\Restaurant;
 use App\Entity\User;
+use App\Helper\CriteriaBuilder;
+use App\Helper\CriteriaField;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -18,57 +24,140 @@ class AssigmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Assigment::class);
     }
 
+    public function createBuilderforUserWithCriteria(
+        User $user,
+        ?Restaurant $restaurant = null,
+        ?array $criteria = null,
+        array $keyWordFields = [
+            'u.firstname' => 'LIKE',
+            'u.lastname' => 'LIKE',
+            'r.name' => 'LIKE',
+            'r.city' => 'LIKE',
+            'f.name' => 'LIKE',
+        ]
+    ) : QueryBuilder
+    {
+        $criteriaBuilder = new CriteriaBuilder();
+        foreach($keyWordFields as $attribute => $operator) {
+            $criteriaField = new CriteriaField($attribute, $operator, 'keyword');
+            $criteriaBuilder->add($criteriaField);
+        }
+        $queryBuilder = $this->createBuilderFromUserAndRestaurant(
+            user:$user,
+            restaurant:$restaurant
+        );
+        if ($criteria !== null) {
+            foreach($criteria as $key => $value) {
+                $queryBuilder = $this->parseCriteria(
+                    queryBuilder: $queryBuilder,
+                    key: $key,
+                    criteriaBuilder:$criteriaBuilder,
+                    value: $value
+                );
+            }
+        }
+        return $queryBuilder;
+    }
+
+    private function parseCriteria(
+        QueryBuilder $queryBuilder,
+        string $key,
+        CriteriaBuilder $criteriaBuilder,
+        mixed $value = null
+    ) : QueryBuilder
+    {
+        if ($value !== null && $value !== '') {
+            if ($key === 'keyword') {
+                $expr = $criteriaBuilder->getExpression();
+                $queryBuilder->andWhere($queryBuilder->expr()->orX(
+                    ...$expr
+                ))->setParameter($key, '%'.$value.'%');
+            }
+            $expression = match($key) {
+                'dateStart' => 'a.'.$key.'>=:'.$key,
+                'dateEnd' => 'a.'.$key.'<=:'.$key,
+                'keyword' => null,
+                default =>'a.'.$key.'=:'.$key,
+            };
+            if ($expression !== null) {
+                $queryBuilder->andWhere($expression)->setParameter($key, $value);
+            }
+        }
+        return $queryBuilder;
+    }
 
     public function findCriteriaAssignments(
-        int $limit = 5,
         string $criteria = 'a.dateEnd <= :today',
-        array $parameters = ['today' => new DateTimeImmutable()]): array
+        array $parameters = ['today' => new DateTimeImmutable()]): QueryBuilder
     {
-        $query = $this->createQueryBuilder('a')
+        $queryBuilder = $this->createQueryBuilder('a')
             ->andWhere($criteria)
-            ->orderBy('a.dateEnd', 'ASC')
-            ->setMaxResults($limit);
+            ->orderBy('a.dateEnd', 'ASC');
         foreach($parameters as $key => $value) {
-            $query->setParameter($key, $value);
+            $queryBuilder->setParameter($key, $value);
         }
-        return $query->getQuery()
-            ->getResult();
-
+        return $queryBuilder;
     }
 
-    public function findUpcomingAssignments(int $limit = 5): array
+    public function countPending() : int
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.dateEnd >= :today')
-            ->setParameter('today', new DateTimeImmutable())
-            ->orderBy('a.dateEnd', 'ASC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+        return (int)$this->findCriteriaAssignments(criteria:'a.dateStart >= :today')
+        ->select('count(a.id)')->getQuery()->getSingleScalarResult();
     }
 
-    public function findForUser(User $user): array
+    public function countCurrent() : int
     {
-        return match ($user->getRole()) {
-            User::ROLE_ADMIN => $this->findAll(),
+        return (int)$this->findCriteriaAssignments(criteria:'a.dateStart <= :today AND a.dateEnd >= :today')
+        ->select('count(a.id)')->getQuery()->getSingleScalarResult();
+    }
 
-            User::ROLE_RETAURANT_OWNER => $this->createQueryBuilder('a')
-                ->join('a.restaurant', 'r')
+       public function countFinished() : int
+    {
+        return (int)$this->findCriteriaAssignments()->select('count(a.id)')->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * create bulder from user and restaurant
+     *
+     * @param  \App\Entity\User            $user
+     * @param  \App\Entity\Restaurant|null $restaurant
+     *
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function createBuilderFromUserAndRestaurant(User $user, ?Restaurant $restaurant = null): QueryBuilder
+    {
+        $queryBuilder = $this->createQueryBuilder('a')
+            ->join('a.restaurant', 'r')
+            ->join('a.user', 'u')
+            ->join('a.fonction', 'f');
+        $queryBuilder = match ($user->getRole()) {
+            User::ROLE_RETAURANT_OWNER => $queryBuilder
                 ->andWhere('r.owner = :owner')
-                ->setParameter('owner', $user)
-                ->getQuery()
-                ->getResult(),
-
-            User::ROLE_COLLAB => $this->createQueryBuilder('a')
+                ->setParameter('owner', $user),
+            User::ROLE_COLLAB => $queryBuilder
                 ->andWhere('a.user = :user')
-                ->setParameter('user', $user)
-                ->getQuery()
-                ->getResult(),
+                ->setParameter('user', $user),
 
-            default => [],
+            default => $queryBuilder,
         };
+        if ($restaurant !== null) {
+            $queryBuilder->andWhere('a.restaurant =:restaurant')
+            ->setParameter('restaurant', $restaurant);
+        }
+
+        return $queryBuilder;
     }
 
+    /**
+     * hasOverlappingAssignment
+     *
+     * @param  \App\Entity\User           $user
+     * @param  \DateTimeImmutable         $dateStart
+     * @param  \DateTimeImmutable|null    $dateEnd
+     * @param  \App\Entity\Assigment|null $excludedAssignment
+     *
+     * @return bool
+     */
     public function hasOverlappingAssignment(
         User $user,
         DateTimeImmutable $dateStart,

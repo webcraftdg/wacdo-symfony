@@ -19,10 +19,18 @@
         {% endif %}
     </head>
     <body>
-        {{include('header.html.twig')}}
+        {{include('common/header.html.twig')}}
         <main>
+            <div class="max-w-7xl mx-auto px-6 py-2">
+                {% set breadcrumb = app.request.attributes.get('breadcrumb') %}
+                {% if breadcrumb %}
+                    {{ include('common/_breadcrumb.html.twig', {
+                        routes: breadcrumb
+                    }) }}
+                {% endif %}
+            </div>
             {% block body %}{% endblock %}
         </main>
-        {{include('footer.html.twig')}}
+        {{include('common/footer.html.twig')}}
     </body>
 </html>

@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="max-w-7xl mx-auto px-6 py-2">
+<section class="
+    bg-white
+    rounded-xl
+    shadow-sm
+    ring-1 ring-slate-200
+    p-6
+    mb-8
+">
+
+    <div class="flex items-start justify-between gap-4 mb-6">
+
+        <h2 class="text-lg font-semibold text-slate-900">
+            Informations
+        </h2>
+         <a
+        href="{{ path('app_assignment_create', {
+            user: user.id
+        }) }}"
+        class="
+            inline-flex items-center justify-center
+            rounded-lg
+            bg-blue-600
+            px-4 py-2
+            text-sm font-medium text-white
+            hover:bg-blue-700
+            transition
+        "
+        >
+        Nouvelle affectation
+    </a>
+    </div>
+
+    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+
+        <div>
+            <dt class="text-sm font-medium text-slate-500">
+                Nom
+            </dt>
+            <dd class="mt-1 text-slate-900">
+                {{ user.lastname }}
+            </dd>
+        </div>
+
+        <div>
+            <dt class="text-sm font-medium text-slate-500">
+                Prénom
+            </dt>
+            <dd class="mt-1 text-slate-900">
+                {{ user.lastname }}
+            </dd>
+        </div>
+
+        <div>
+            <dt class="text-sm font-medium text-slate-500">
+                Email
+            </dt>
+            <dd class="mt-1 text-slate-900">
+                {{ user.email }}
+            </dd>
+        </div>
+
+        <div>
+            <dt class="text-sm font-medium text-slate-500">
+                Date de recrutement
+            </dt>
+            <dd class="mt-1 text-slate-900">
+                {{ user.dateRecruitment|date('d/m/Y') }}
+            </dd>
+        </div>
+    </dl>
+</section>
+</div>
+
+    <div class="max-w-7xl mx-auto px-6">
+     <section class="mb-2">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+
+            <div>
+                <h2 class="text-xl font-semibold text-slate-900">
+                    Affectations
+                </h2>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Collaborateurs affectés à ce collaborateur.
+                </p>
+            </div>
+        </div>
+
+       {% include 'common/_filters-assignment.html.twig'
+            with { form: searchForm } %}
+
+    </section>
+    {% include 'common/_list-assignment.html.twig'
+                        with { dataProvider: dataProvider } %}
+        {% include 'common/_pager.html.twig'
+                        with { dataProvider: dataProvider, route: 'app_user_detail'} %}
+    </div>
+{% endblock %}
