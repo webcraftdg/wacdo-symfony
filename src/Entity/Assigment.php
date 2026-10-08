@@ -43,7 +43,7 @@ class Assigment
     #[GreaterThanOrEqual(
         'today',
         message: 'La date de début ne peut pas être antérieure à aujourd’hui.',
-        groups: ['assignement:create',]
+        groups: ['assignement:create','assignement:update']
     )]
     private ?\DateTimeImmutable $dateStart = null;
 
@@ -52,7 +52,7 @@ class Assigment
     #[GreaterThan(
         propertyPath: 'dateStart',
         message: 'La date de fin doit être égale ou postérieure à la date de début.',
-        groups: ['assignement:create',]
+        groups: ['assignement:create', 'assignement:update']
     )]
     private ?\DateTimeImmutable $dateEnd = null;
 

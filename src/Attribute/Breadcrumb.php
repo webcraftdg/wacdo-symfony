@@ -2,6 +2,7 @@
 
 namespace App\Attribute;
 
+use App\Helper\BreadcrumbItem;
 use App\Helper\BreadcrumbRoute;
 use Attribute;
 
@@ -9,8 +10,11 @@ use Attribute;
 final class Breadcrumb
 {
    private array $routes = [];
+   private ?BreadcrumbItem $finalItem = null;
 
-    public function __construct(array $routes = [])
+    public function __construct(
+        array $routes = [],
+        array $finalItem = [])
     {
         foreach ($routes as $route) {
             $this->routes[] = new BreadcrumbRoute(
@@ -18,6 +22,9 @@ final class Breadcrumb
                 $route['route'] ?? null,
                 $route['params'] ?? [],
             );
+        }
+        if (count($finalItem) === 2) {
+            $this->finalItem = new BreadcrumbItem($finalItem[0], $finalItem[1]);
         }
     }
 
@@ -44,5 +51,10 @@ final class Breadcrumb
     public function getRoutes() : array
     {
         return $this->routes;
+    }
+
+    public function getFinalItem() : ?BreadcrumbItem
+    {
+        return $this->finalItem;
     }
 }

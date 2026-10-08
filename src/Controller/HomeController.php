@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
- #[IsGranted('ROLE_RESTAURANT_OWNER')]
+ #[IsGranted('ROLE_ADMIN')]
 final class HomeController extends AbstractController
 {
     public function __construct(
@@ -32,6 +32,7 @@ final class HomeController extends AbstractController
         $stats = [
             'restaurants' => $this->restaurantRepository->count(),
             'collaborators' => [
+                'total' => $this->userRepository->countTotat(),
                 'busy' => $this->userRepository->countBusy(),
                 'available' => $this->userRepository->countAvailable(),
             ],

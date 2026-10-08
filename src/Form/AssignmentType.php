@@ -30,16 +30,16 @@ class AssignmentType extends AbstractType
         $builder
             ->add('dateStart', DateTimeType::class,
             [
-                'label' => 'Date de début'
+                'label' => 'Date de début',
+
             ])
             ->add('dateEnd', DateTimeType::class,
             [
-                'label' => 'Date de début'
-            ])
-            ->add('user', EntityType::class, [
+
+            ]);
+            $optionsUserField = [
                 'label' => 'Collaborateur',
                 'class' => User::class,
-                'data' => $user,
                 'placeholder' => 'Sélectionner un collaborateur',
                 'query_builder' => function (UserRepository $repository) {
                         return $repository
@@ -48,7 +48,11 @@ class AssignmentType extends AbstractType
                             ->setParameter('role', '%ROLE_COLLAB%')
                             ->orderBy('u.lastname', 'ASC');
                 }
-            ])
+            ];
+            if ($user !== null) {
+                $optionsUserField['data'] = $user;
+            }
+            $builder->add('user', EntityType::class, $optionsUserField)
             ->add('restaurant', EntityType::class, [
                 'label' => 'Restaurant',
                 'class' => Restaurant::class,

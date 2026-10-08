@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -76,18 +77,24 @@ class AssignmentSearchType extends AbstractType
                 ],
                 'required' => false,
                 'placeholder' => 'Sélectionner une fonction'
-            ])->add('dateStart', DateTimeType::class,
+            ])->add('dateStart', DateType::class,
                 [
                     'label' => 'Date de début',
                     'label_attr' => [
                         'class' => 'text-left'
                     ],
+                    'attr' => [
+                        'data-controller' => 'datepicker'
+                    ],
                     'required' => false,
-            ])->add('dateEnd', DateTimeType::class,
+            ])->add('dateEnd', DateType::class,
                 [
                     'label' => 'Date de début',
                     'label_attr' => [
                         'class' => 'text-left'
+                    ],
+                    'attr' => [
+                        'data-controller' => 'datepicker'
                     ],
                     'required' => false,
             ]);

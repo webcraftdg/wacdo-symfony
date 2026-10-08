@@ -105,6 +105,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $queryBuilder;
     }
 
+    public function countTotat() : int
+    {
+        return (int) $this->createCollaboratorQuery()->select('count(u.id)')->getQuery()->getSingleScalarResult();
+    }
+
     public function countAvailable() : int
     {
         return (int)$this->createCollaboratorQuery(
