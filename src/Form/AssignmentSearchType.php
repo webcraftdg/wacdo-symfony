@@ -50,6 +50,8 @@ class AssignmentSearchType extends AbstractType
                     ],
                     'placeholder' => 'Sélectionner un collaborateur',
                     'required' => false,
+                    'autocomplete' => true,
+                    'no_results_found_text' => 'Aucun collaborateurs trouvé',
                     'query_builder' => function (UserRepository $repository) use ($user) {
                             return  $repository->createCollaboratorQuery($user);
                     }

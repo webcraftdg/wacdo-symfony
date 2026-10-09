@@ -111,9 +111,18 @@ class AssigmentRepository extends ServiceEntityRepository
         ->select('count(a.id)')->getQuery()->getSingleScalarResult();
     }
 
-       public function countFinished() : int
+    public function countFinished() : int
     {
         return (int)$this->findCriteriaAssignments()->select('count(a.id)')->getQuery()->getSingleScalarResult();
+    }
+
+     public function countCurrentByRestaurant() : mixed
+    {
+        return $this->findCriteriaAssignments(criteria:'a.dateStart <= :today AND a.dateEnd >= :today')
+            ->join('a.restaurant', 'r')
+            ->groupBy('r.name')
+            ->select('count(a.id) as nb, r.name')
+            ->getQuery()->getScalarResult();
     }
 
     /**

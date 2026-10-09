@@ -21,69 +21,44 @@
             Vue générale
         </h2>
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
 
             {# Restaurants #}
             <div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
                 <p class="text-sm font-medium text-slate-500">
-                    Restaurants
+                    Répartions des affectations par restaurant
                 </p>
 
                 <p class="mt-2 text-3xl font-semibold text-slate-900">
-                    {{ stats.restaurants }}
+                    Nombre total de restaurant : {{ stats.restaurants }}
                 </p>
+                <div class="relative w-full h-80">
+                    <canvas
+                        data-controller="chartjs"
+                        data-chartjs-type-value="doughnut"
+                        data-chartjs-data-value="{{ charDataRestaurant|json_encode|e('html_attr') }}"
+                    ></canvas>
+                </div>
             </div>
 
 
             {# Collaborateurs occupés #}
             <div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
                 <p class="text-sm font-medium text-slate-500">
-                    Collaborateurs affectés
+                    Répartition de collaborateurs affectés
                 </p>
-
-                <p class="mt-2 text-3xl font-semibold text-slate-900">
-                    {{ stats.collaborators.busy }}
+                 <p class="mt-2 text-3xl font-semibold text-slate-900">
+                    Nombre total de collaborateurs : {{ stats.collaborators.total }}
                 </p>
-
-                <p class="mt-1 text-xs text-slate-500">
-                    Actuellement en poste
-                </p>
-                <div class="w-full max-w-2xl h-80">
+                <div class="relative w-full h-80">
                     <canvas
-                    data-controller="chartjs"
-                    data-chartjs-title-value="Répartitions des collaborateurs"
-                    data-chartjs-total-value="{{stats.collaborators.total}}"
-                    data-chartjs-part-value="{{stats.collaborators.busy}}"
-                    data-chartjs-label-total-value="Collaborateurs totals"
-                    data-chartjs-label-part-value="Collaborateurs actifs"
-
+                        data-controller="chartjs"
+                        data-chartjs-type-value="pie"
+                        data-chartjs-data-value="{{ charDataCollab|json_encode|e('html_attr') }}"
                     ></canvas>
                 </div>
+
             </div>
-
-
-            {# Collaborateurs disponibles #}
-            <div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-                <p class="text-sm font-medium text-slate-500">
-                    Collaborateurs disponibles
-                </p>
-
-                <p class="mt-2 text-3xl font-semibold text-green-600">
-                    {{ stats.collaborators.available }}
-                </p>
-
-                <p class="mt-1 text-xs text-slate-500">
-                    Sans affectation en cours
-                </p>
-                 <div class="w-full max-w-2xl h-80">
-                    <canvas
-                    data-controller="chartjs"
-                    data-chartjs-labels-value='["Collaborateurs totals", "Collaborateurs disponibles"]'
-                    data-chartjs-datasets-value='[{ "data":{ {{stats.collaborators.total}}, {{stats.collaborators.available}} } }]'
-                    ></canvas>
-                </div>
-            </div>
-
         </div>
 
     </section>

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Attribute\Breadcrumb;
+use App\Helper\ChartDataBuilder;
 use App\Repository\AssigmentRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\UserRepository;
@@ -40,11 +41,28 @@ final class HomeController extends AbstractController
                 'pending' => $this->assignmentRepository->countPending(),
                 'current' => $this->assignmentRepository->countCurrent(),
                 'finished' => $this->assignmentRepository->countFinished(),
+                'repartitionByrestaurant' => $this->assignmentRepository->countCurrentByRestaurant(),
             ],
         ];
+        $charDataCollab = (new ChartDataBuilder())
+        ->addLabel('Collaborateurs actifs')
+        ->addLabel('Collaborateurs disponibles')
+        ->addDataset('Total', [$stats['collaborators']['busy'], $stats['collaborators']['available']]);
+
+        $charDataRestaurant = new ChartDataBuilder();
+        $nbRepart = [];
+        foreach($stats['assignments']['repartitionByrestaurant'] as $statResto) {
+            $charDataRestaurant->addLabel(($statResto['name'] ?? ''));
+            $nbRepart[] = ($statResto['nb']) ?? 0;
+        }
+        $charDataRestaurant->addDataset('Total', $nbRepart);
+
+
 
         return $this->render('home/index.html.twig', [
             'stats' => $stats,
+            'charDataCollab' => $charDataCollab->toArray(),
+            'charDataRestaurant' => $charDataRestaurant->toArray(),
         ]);
     }
 }

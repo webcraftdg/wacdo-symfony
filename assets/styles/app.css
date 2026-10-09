@@ -3,3 +3,14 @@
 body {
     background-color: skyblue;
 }
+.search-form .ts-wrapper {
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    background: white;
+}
+
+.search-form .ts-control {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+}

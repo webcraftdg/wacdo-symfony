@@ -4,17 +4,18 @@ import Chart from 'chart.js/auto';
 export default class extends Controller {
 
     static values = {
-        labels: Array,
-        datasets: Array
+        type: String,
+        data: Object
     }
 
     connect() {
-        console.log('initialisation chertjs', this.element);
+        console.log('initialisation chartjs', this.element);
         this.chart = new Chart(this.element, {
-            type: 'pie',
-            data: {
-                labels: this.labelsValue,
-                datasets: this.datasetsValue
+            type: (this.typeValue) ?? 'pie',
+            data: this.dataValue,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
             }
         });
     }
