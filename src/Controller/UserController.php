@@ -14,6 +14,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -96,6 +97,23 @@ final class UserController extends AbstractController
             $response = $this->render('user/create.html.twig', [
                 'form' => $form,
                 'user' => $user,
+                'action' => 'app_user_create'
+            ]);
+        }
+        return $response;
+    }
+
+    #[Route('/async-creer', name: 'async_create')]
+    public function asyncCreate(Request $request): Response
+    {
+        $user = new User();
+        $form = $this->createForm(UserCollaboratorType::class, $user, ['validation_groups' => ['user:create']]);
+        $response = $this->manageUser($form, $user, $request, 'app_user_home', true);
+        if ($response === null) {
+            $response = $this->render('common/_form-create-collaborator.html.twig', [
+                'form' => $form,
+                'user' => $user,
+                'action' => 'app_user_async_create'
             ]);
         }
         return $response;
@@ -183,12 +201,13 @@ final class UserController extends AbstractController
     }
 
     /**
-     * Manage entity
+     * mange user
      *
      * @param  \Symfony\Component\Form\FormInterface           $form
      * @param  \App\Entity\User                                $user
-     * @param  \Symfony\Component\BrowserKit\Request           $request
+     * @param  \Symfony\Component\HttpFoundation\Request       $request
      * @param  string                                          $routeName
+     * @param  bool                                            $async
      * @param  array                                           $routeParameters
      *
      * @return \Symfony\Component\HttpFoundation\Response|null
@@ -198,6 +217,7 @@ final class UserController extends AbstractController
         User $user,
         Request $request,
         string $routeName,
+        bool $async = false,
         array $routeParameters = []) : ?Response
     {
         $form->handleRequest($request);
@@ -210,7 +230,11 @@ final class UserController extends AbstractController
             }
             $this->entityManager->persist($user);
             $this->entityManager->flush();
-            $response = $this->redirectToRoute($routeName, $routeParameters);
+            if ($async === true) {
+                $response = $this->json($user, JsonResponse::HTTP_CREATED, context:['groups' => ['user:detail']]);
+            } else {
+                $response = $this->redirectToRoute($routeName, $routeParameters);
+            }
         }
         return $response;
     }

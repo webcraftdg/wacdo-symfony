@@ -11,6 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: AssigmentRepository::class)]
@@ -40,7 +41,7 @@ class Assigment
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[NotBlank(message:'Veuillez saisir une date de début')]
-    #[GreaterThanOrEqual(
+    #[LessThan(
         'today',
         message: 'La date de début ne peut pas être antérieure à aujourd’hui.',
         groups: ['assignement:create','assignement:update']

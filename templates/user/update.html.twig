@@ -9,7 +9,7 @@
 
     <div class="mt-8 bg-white rounded-xl shadow-sm
                 ring-1 ring-slate-200 p-6">
-            {{ include('common/_form-collaborator.html.twig', {form:form})}}
+            {{ include('common/_form-create-collaborator.html.twig', {form:form, , action : (action is defined) ? action : '' })}}
     </div>
 </div>
 {% endblock %}

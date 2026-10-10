@@ -3,14 +3,40 @@
 body {
     background-color: skyblue;
 }
-.search-form .ts-wrapper {
-    border: 1px solid #cbd5e1;
-    border-radius: 0.5rem;
-    background: white;
+.ts-control {
+    border: none !important;
+    padding: 2px 1px !important;
+    border-radius: unset !important;
+    box-sizing: unset !important;
+    box-shadow: unset !important;
+}
+.ts-wrapper.single .ts-control {
+    background-image: unset !important;
 }
 
-.search-form .ts-control {
-    border: none;
-    box-shadow: none;
-    background: transparent;
+.ts-dropdown,
+.ts-control,
+.ts-control input {
+    color: #0f172b !important;
+    font-size: 14px !important;
+    font-weight: 400;
+}
+
+.ts-control input::placeholder {
+    color: #0f172b !important;
+    opacity: 1;
+}
+.plugin-clear_button {
+    --ts-pr-clear-button: unset !important;
+}
+
+.ts-wrapper.single .ts-control::after {
+    right: 8px !important;
+}
+.ts-dropdown .option {
+    text-align: left !important;
+    padding: 8px 12px;
+}
+.ts-dropdown {
+    text-align: left;
 }

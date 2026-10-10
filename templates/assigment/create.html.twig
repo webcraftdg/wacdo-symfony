@@ -8,10 +8,12 @@
     </h1>
 
     <div class="mt-8 bg-white rounded-xl shadow-sm
-                ring-1 ring-slate-200 p-6">
-                {% include 'assigment/_form.html.twig'
+                ring-1 ring-slate-200 p-6"
+                data-controller="modal-create"
+                data-modal-create-url-value="{{ path('app_user_async_create') }}"
+                >
+                {% include 'common/_form-create-assignment.html.twig'
     with { form: form } %}
     </div>
-
 </div>
 {% endblock %}

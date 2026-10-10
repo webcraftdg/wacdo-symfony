@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div class="max-w-3xl mx-auto px-6 py-10">
+<div class="max-w-3xl mx-auto px-6 py-10" data-controller="modal">
 
     <h1 class="text-2xl font-bold text-slate-900">
         Modifier une affectation
@@ -9,7 +9,7 @@
 
     <div class="mt-8 bg-white rounded-xl shadow-sm
                 ring-1 ring-slate-200 p-6">
-                {% include 'assigment/_form.html.twig'
+                {% include 'assigment/_form-create-assignment.html.twig'
     with { form: form } %}
     </div>
 

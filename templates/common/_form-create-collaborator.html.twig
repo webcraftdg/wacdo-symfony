@@ -1,4 +1,6 @@
-  {{ form_start(form) }}
+  {{ form_start(form, {
+        action: path(action)
+  }) }}
     <div class="space-y-5">
 
         {{ form_row(form.email) }}

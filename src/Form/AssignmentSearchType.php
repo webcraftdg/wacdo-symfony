@@ -48,7 +48,7 @@ class AssignmentSearchType extends AbstractType
                     'label_attr' => [
                         'class' => 'text-left'
                     ],
-                    'placeholder' => 'Sélectionner un collaborateur',
+                    'placeholder' => 'Chercher un collaborateur',
                     'required' => false,
                     'autocomplete' => true,
                     'no_results_found_text' => 'Aucun collaborateurs trouvé',
