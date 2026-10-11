@@ -7,17 +7,14 @@ use App\Attribute\PageTitle;
 use App\Entity\User;
 use App\Form\AssignmentSearchType;
 use App\Form\GenericSearchType;
-use App\Form\RegistrationFormType;
 use App\Form\UserCollaboratorType;
-use App\Helper\EntityHydrator;
 use App\Helper\EntityProvider;
 use App\Repository\AssigmentRepository;
 use App\Repository\UserRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\Attributes\Before;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -42,7 +39,7 @@ final class UserController extends AbstractController
     #[Breadcrumb([
         [
             'label' => 'Accueil',
-            'route' => 'app_home',
+            'route' => 'app_dispatch',
         ],
         [
             'label' => 'liste des affectations',
@@ -81,7 +78,7 @@ final class UserController extends AbstractController
     #[Breadcrumb([
         [
             'label' => 'Accueil',
-            'route' => 'app_home',
+            'route' => 'app_dispatch',
         ],
         [
             'label' => 'liste des collaborateurs',
@@ -100,6 +97,23 @@ final class UserController extends AbstractController
             $response = $this->render('user/create.html.twig', [
                 'form' => $form,
                 'user' => $user,
+                'action' => $this->generateUrl('app_user_create')
+            ]);
+        }
+        return $response;
+    }
+
+    #[Route('/async-creer', name: 'async_create')]
+    public function asyncCreate(Request $request): Response
+    {
+        $user = new User();
+        $form = $this->createForm(UserCollaboratorType::class, $user, ['validation_groups' => ['user:create']]);
+        $response = $this->manageUser($form, $user, $request, 'app_user_home', true);
+        if ($response === null) {
+            $response = $this->render('common/_form-create-collaborator.html.twig', [
+                'form' => $form,
+                'user' => $user,
+                'action' => $this->generateUrl('app_user_async_create')
             ]);
         }
         return $response;
@@ -108,19 +122,19 @@ final class UserController extends AbstractController
 
     #[Route('/{id}/mise_a_jour', name: 'update')]
     #[PageTitle(title:'Collaborateurs', section:'Mettre à jour')]
-    #[Breadcrumb([
-        [
-            'label' => 'Accueil',
-            'route' => 'app_home',
+    #[Breadcrumb(
+        routes: [
+            [
+                'label' => 'Accueil',
+                'route' => 'app_dispatch',
+            ],
+            [
+                'label' => 'liste des collaborateurs',
+                'route' => 'app_user_home'
+            ],
         ],
-        [
-            'label' => 'liste des collaborateurs',
-            'route' => 'app_user_home'
-        ],
-        [
-            'label' => 'mettre à jour un collaborateur',
-        ]
-    ])]
+        finalItem:[User::class, ['lastname', 'firstname']]
+    )]
     public function update(User $user, Request $request): Response
     {
         $form = $this->createForm(UserCollaboratorType::class, $user, ['validation_groups' => ['user:update']]);
@@ -130,6 +144,7 @@ final class UserController extends AbstractController
             $response = $this->render('user/update.html.twig', [
                 'form' => $form,
                 'user' => $user,
+                'action' => $this->generateUrl('app_user_update', ['id' => $user->getId()])
             ]);
         }
         return $response;
@@ -137,19 +152,19 @@ final class UserController extends AbstractController
 
     #[Route('/{id}/detail', name: 'detail')]
     #[PageTitle(title:'Collaborateurs', section:'Détail')]
-    #[Breadcrumb([
-        [
-            'label' => 'Accueil',
-            'route' => 'app_home',
+    #[Breadcrumb(
+        routes: [
+            [
+                'label' => 'Accueil',
+                'route' => 'app_dispatch',
+            ],
+            [
+                'label' => 'liste des collaborateurs',
+                'route' => 'app_user_home'
+            ],
         ],
-        [
-            'label' => 'liste des collaborateurs',
-            'route' => 'app_user_home'
-        ],
-        [
-            'label' => 'détail du collaborateur',
-        ]
-    ])]
+        finalItem:[User::class, ['lastname', 'firstname']]
+    )]
     public function detail(User $user, Request $request): Response
     {
         $searchForm = $this->createForm(
@@ -187,12 +202,13 @@ final class UserController extends AbstractController
     }
 
     /**
-     * Manage entity
+     * mange user
      *
      * @param  \Symfony\Component\Form\FormInterface           $form
      * @param  \App\Entity\User                                $user
-     * @param  \Symfony\Component\BrowserKit\Request           $request
+     * @param  \Symfony\Component\HttpFoundation\Request       $request
      * @param  string                                          $routeName
+     * @param  bool                                            $async
      * @param  array                                           $routeParameters
      *
      * @return \Symfony\Component\HttpFoundation\Response|null
@@ -202,6 +218,7 @@ final class UserController extends AbstractController
         User $user,
         Request $request,
         string $routeName,
+        bool $async = false,
         array $routeParameters = []) : ?Response
     {
         $form->handleRequest($request);
@@ -214,7 +231,11 @@ final class UserController extends AbstractController
             }
             $this->entityManager->persist($user);
             $this->entityManager->flush();
-            $response = $this->redirectToRoute($routeName, $routeParameters);
+            if ($async === true) {
+                $response = $this->json($user, JsonResponse::HTTP_CREATED, context:['groups' => ['user:detail']]);
+            } else {
+                $response = $this->redirectToRoute($routeName, $routeParameters);
+            }
         }
         return $response;
     }

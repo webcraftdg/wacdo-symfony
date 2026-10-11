@@ -34,6 +34,9 @@ class AssigmentRepository extends ServiceEntityRepository
             'r.name' => 'LIKE',
             'r.city' => 'LIKE',
             'f.name' => 'LIKE',
+        ],
+        array $orderBy = [
+            'a.dateEnd' => 'desc'
         ]
     ) : QueryBuilder
     {
@@ -55,6 +58,9 @@ class AssigmentRepository extends ServiceEntityRepository
                     value: $value
                 );
             }
+        }
+        foreach($orderBy as $field => $order) {
+            $queryBuilder->orderBy($field, $order);
         }
         return $queryBuilder;
     }
@@ -111,9 +117,18 @@ class AssigmentRepository extends ServiceEntityRepository
         ->select('count(a.id)')->getQuery()->getSingleScalarResult();
     }
 
-       public function countFinished() : int
+    public function countFinished() : int
     {
         return (int)$this->findCriteriaAssignments()->select('count(a.id)')->getQuery()->getSingleScalarResult();
+    }
+
+     public function countCurrentByRestaurant() : mixed
+    {
+        return $this->findCriteriaAssignments(criteria:'a.dateStart <= :today AND a.dateEnd >= :today')
+            ->join('a.restaurant', 'r')
+            ->groupBy('r.name')
+            ->select('count(a.id) as nb, r.name')
+            ->getQuery()->getScalarResult();
     }
 
     /**

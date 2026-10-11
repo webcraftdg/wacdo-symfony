@@ -78,6 +78,12 @@ class AssigmentCrudController extends AbstractCrudController
         $actions->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
             return $action->setLabel('Enregistrer et Ajouter');
         });
+        $actions->update(Crud::PAGE_EDIT, Action::SAVE_AND_RETURN, function (Action $action) {
+            return $action->setLabel('Enregistrer');
+        });
+        $actions->update(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE, function (Action $action) {
+            return $action->setLabel('Enregistrer et Ajouter');
+        });
         return $actions;
     }
 }

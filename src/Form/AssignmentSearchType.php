@@ -10,8 +10,7 @@ use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -33,7 +32,7 @@ class AssignmentSearchType extends AbstractType
             ->add('keyword', TextType::class, [
                 'label' => 'Rechercher',
                 'required' => false,
-               'attr' => [
+                'attr' => [
                     'placeholder' => ($options['placeholder']) ?? 'Rechercher ...',
                 ],
                 'label_attr' => [
@@ -47,8 +46,10 @@ class AssignmentSearchType extends AbstractType
                     'label_attr' => [
                         'class' => 'text-left'
                     ],
-                    'placeholder' => 'Sélectionner un collaborateur',
+                    'placeholder' => 'Chercher un collaborateur',
                     'required' => false,
+                    'autocomplete' => true,
+                    'no_results_found_text' => 'Aucun collaborateurs trouvé',
                     'query_builder' => function (UserRepository $repository) use ($user) {
                             return  $repository->createCollaboratorQuery($user);
                     }
@@ -76,18 +77,24 @@ class AssignmentSearchType extends AbstractType
                 ],
                 'required' => false,
                 'placeholder' => 'Sélectionner une fonction'
-            ])->add('dateStart', DateTimeType::class,
+            ])->add('dateStart', DateType::class,
                 [
                     'label' => 'Date de début',
                     'label_attr' => [
                         'class' => 'text-left'
                     ],
+                    'attr' => [
+                        'data-controller' => 'datepicker'
+                    ],
                     'required' => false,
-            ])->add('dateEnd', DateTimeType::class,
+            ])->add('dateEnd', DateType::class,
                 [
                     'label' => 'Date de début',
                     'label_attr' => [
                         'class' => 'text-left'
+                    ],
+                    'attr' => [
+                        'data-controller' => 'datepicker'
                     ],
                     'required' => false,
             ]);

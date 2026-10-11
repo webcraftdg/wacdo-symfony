@@ -1,0 +1,49 @@
+
+   {{ form_start(form) }}
+        <div class="space-y-5">
+            <div class="grid items-center gap-3 {{ (addModelNewUser is true) ? 'grid-cols-2' : 'grid-cols-1' }}">
+                <div>
+                      {{ form_row(form.user) }}
+                </div>
+                {% if (addModelNewUser is true ) %}
+                <div class="mt-2 text-center">
+                    <button
+                        type="button"
+                        class="px-4 py-2 rounded-lg bg-blue-600
+                                        text-white font-medium
+                                        hover:bg-blue-700
+                                        focus:outline-none focus:ring-2
+                                        focus:ring-blue-500 focus:ring-offset-2"
+                        data-action="modal-create#open">
+                        Créer un collaborateur
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            {{ form_row(form.restaurant) }}
+            {{ form_row(form.fonction) }}
+
+            <div class="grid sm:grid-cols-2 gap-5">
+                {{ form_row(form.dateStart) }}
+                {{ form_row(form.dateEnd) }}
+            </div>
+        </div>
+        <div class="mt-8 flex justify-end">
+
+            <button
+                type="submit"
+                class="px-4 py-2 rounded-lg bg-blue-600
+                    text-white font-medium
+                    hover:bg-blue-700
+                    focus:outline-none focus:ring-2
+                    focus:ring-blue-500 focus:ring-offset-2">
+
+                Enregistrer
+            </button>
+        </div>
+    {{ form_end(form) }}
+{% if (addModelNewUser is true )%}
+{{
+    include('common/_modal-create.html.twig', {title:'Créer un collaborateur'})
+}}
+{% endif %}

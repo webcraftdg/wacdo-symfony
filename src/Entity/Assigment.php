@@ -11,6 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: AssigmentRepository::class)]
@@ -40,20 +41,19 @@ class Assigment
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[NotBlank(message:'Veuillez saisir une date de début')]
-    #[GreaterThanOrEqual(
-        'today',
-        message: 'La date de début ne peut pas être antérieure à aujourd’hui.',
-        groups: ['assignement:create',]
-    )]
     private ?\DateTimeImmutable $dateStart = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[NotBlank(message:'Veuillez saisir une date de fin')]
-    #[GreaterThan(
+    #[GreaterThanOrEqual(
         propertyPath: 'dateStart',
-        message: 'La date de fin doit être égale ou postérieure à la date de début.',
-        groups: ['assignement:create',]
+        message: 'La date de fin doit être postérieure ou égale à la date de début.',
+        groups: ['assignement:create', 'assignement:update']
     )]
+    #[GreaterThanOrEqual('today',
+        message:'la date de fin doit être postérieure à la date du jour',
+        groups:['assignement:create', 'assignement:update'])
+    ]
     private ?\DateTimeImmutable $dateEnd = null;
 
     #[ORM\Column]

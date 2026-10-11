@@ -8,10 +8,13 @@
     </h1>
 
     <div class="mt-8 bg-white rounded-xl shadow-sm
-                ring-1 ring-slate-200 p-6">
-                {% include 'assigment/_form.html.twig'
-    with { form: form } %}
+                ring-1 ring-slate-200 p-6"
+                {% if addModelNewUser is true %}
+                    data-controller="modal-create"
+                    data-modal-create-url-value="{{ path('app_user_async_create') }}"
+                {% endif %}
+                >
+                {% include 'common/_form-create-assignment.html.twig' with { form: form, addModelNewUser: addModelNewUser} %}
     </div>
-
 </div>
 {% endblock %}

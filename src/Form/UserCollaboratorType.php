@@ -20,7 +20,10 @@ class UserCollaboratorType extends AbstractType
             ->add('lastname')
             ->add('firstname')
             ->add('dateRecruitment', DateType::class, [
-                'label' => 'Date de recrutement'
+                'label' => 'Date de recrutement',
+                'attr' => [
+                    'data-controller' => 'datepicker'
+                ],
             ])
             ->add('role', ChoiceType::class, [
                 'label' => 'Droit utilisateur',

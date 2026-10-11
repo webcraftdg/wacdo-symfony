@@ -35,7 +35,7 @@ final class AssigmentController extends AbstractController
     #[Breadcrumb([
         [
             'label' => 'Accueil',
-            'route' => 'app_home',
+            'route' => 'app_dispatch',
         ],
         [
             'label' => 'liste des affectations',
@@ -76,7 +76,7 @@ final class AssigmentController extends AbstractController
     #[Breadcrumb([
         [
             'label' => 'Accueil',
-            'route' => 'app_home',
+            'route' => 'app_dispatch',
         ],
         [
             'label' => 'liste des affectations',
@@ -100,9 +100,11 @@ final class AssigmentController extends AbstractController
         );
         $routeRedirectionName = 'app_assignment_home';
         $parameters = [];
+        $addModelNewUser = true;
         if($user !== null) {
             $routeRedirectionName = 'app_user_detail';
             $parameters['id'] = $user->getId();
+            $addModelNewUser = false;
         }
         $response = $this->manageAssignement(
             $form,
@@ -115,6 +117,7 @@ final class AssigmentController extends AbstractController
             $response = $this->render('assigment/create.html.twig', [
                 'form' => $form,
                 'assigment' => $assigment,
+                'addModelNewUser' => $addModelNewUser
             ]);
         }
         return $response;
@@ -123,23 +126,26 @@ final class AssigmentController extends AbstractController
 
     #[Route('/{id}/mise_a_jour', name: 'update')]
     #[PageTitle(title:'Affectations', section:'Mettre à jour')]
-    #[Breadcrumb([
-        [
-            'label' => 'Accueil',
-            'route' => 'app_home',
+    #[Breadcrumb(
+        routes:[
+            [
+                'label' => 'Accueil',
+                'route' => 'app_dispatch',
+            ],
+            [
+                'label' => 'liste des affectations',
+                'route' => 'app_assignment_home'
+            ],
         ],
-        [
-            'label' => 'liste des affectations',
-            'route' => 'app_assignment_home'
-        ],
-        [
-            'label' => 'affectation de : ',
-        ],
-    ])]
+        finalItem: [Assigment::class, 'user']
+    )]
     #[IsGranted(User::ROLE_RETAURANT_OWNER)]
     public function update(Assigment $assigment, Request $request): Response
     {
-        $form = $this->createForm(AssignmentType::class, $assigment, ['validation_groups' => ['assignement:update']]);
+        $form = $this->createForm(
+            AssignmentType::class,
+            $assigment,
+            ['validation_groups' => ['assignement:update']]);
         $response = $this->manageAssignement($form, $assigment, $request, 'app_assignment_home');
         if ($response === null) {
             $response = $this->render('assigment/update.html.twig', [

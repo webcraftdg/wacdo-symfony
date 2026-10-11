@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -15,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -95,6 +97,16 @@ class UserCrudController extends AbstractCrudController
         $entityInstance->setIsAdmin(false);
         $entityInstance->setRoles([$entityInstance->getRole()]);
         parent::updateEntity($entityManager, $entityInstance);
+    }
+
+    public function deleteEntity(
+        EntityManagerInterface $entityManager,
+        object $entityInstance): void
+    {
+        if ($entityInstance instanceof User) {
+            $entityInstance->setDateArchived(new DateTime());
+            $entityManager->flush();
+        }
     }
 
     public static function getEntityFqcn(): string
@@ -189,6 +201,7 @@ class UserCrudController extends AbstractCrudController
             ->setChoices(User::getAvailableRoles())
             ->setFormTypeOption('placeholder', 'Choisissez un droit')
             ->allowMultipleChoices(false)->autocomplete();
+        $fields[] = DateTimeField::new('dateArchived')->setLabel('Date archivée')->setFormat('dd/MM/Y');
 
         return $fields;
     }
@@ -213,6 +226,12 @@ class UserCrudController extends AbstractCrudController
             return $action->setLabel('Enregistrer');
         });
         $actions->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
+            return $action->setLabel('Enregistrer et Ajouter');
+        });
+        $actions->update(Crud::PAGE_EDIT, Action::SAVE_AND_RETURN, function (Action $action) {
+            return $action->setLabel('Enregistrer');
+        });
+        $actions->update(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE, function (Action $action) {
             return $action->setLabel('Enregistrer et Ajouter');
         });
 

@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -28,9 +30,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[NotBlank(
+        message:'Email est obligatoire',
+        groups:['user:create', 'user:update']
+    )]
+    #[Email(
+        message:'Format de Email invalide',
+        groups:[
+            'user:create', 'user:update'
+        ]
+    )]
+    #[Groups(['user:detail'])]
     private ?string $email = null;
 
     /**
@@ -68,9 +82,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user:detail'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user:detail'])]
     private ?string $firstname = null;
 
     #[ORM\Column]
@@ -100,6 +116,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?bool $isAdmin = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $dateArchived = null;
 
     public function __construct()
     {
@@ -365,5 +384,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->lastname.' - '.$this->firstname;
+    }
+
+    public function getDateArchived(): ?\DateTime
+    {
+        return $this->dateArchived;
+    }
+
+    public function setDateArchived(?\DateTime $dateArchived): static
+    {
+        $this->dateArchived = $dateArchived;
+
+        return $this;
     }
 }

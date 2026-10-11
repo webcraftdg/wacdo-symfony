@@ -39,6 +39,9 @@ class Fonction
     #[ORM\OneToMany(targetEntity: Assigment::class, mappedBy: 'fonction')]
     private Collection $assigments;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $dateArchived = null;
+
     public function __construct()
     {
         $this->assigments = new ArrayCollection();
@@ -131,5 +134,17 @@ class Fonction
     public function __toString()
     {
         return ucFirst($this->name);
+    }
+
+    public function getDateArchived(): ?\DateTime
+    {
+        return $this->dateArchived;
+    }
+
+    public function setDateArchived(?\DateTime $dateArchived): static
+    {
+        $this->dateArchived = $dateArchived;
+
+        return $this;
     }
 }

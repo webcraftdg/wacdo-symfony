@@ -39,7 +39,7 @@ final class RestaurantController extends AbstractController
     #[Breadcrumb([
         [
             'label' => 'Accueil',
-            'route' => 'app_home',
+            'route' => 'app_dispatch',
         ],
         [
             'label' => 'liste des restaurant',
@@ -71,19 +71,19 @@ final class RestaurantController extends AbstractController
 
     #[Route('/{id}/mettre-a-jour', name: 'update')]
     #[PageTitle(title:'Mettre à jour', section:'Restaurant')]
-    #[Breadcrumb([
-        [
-            'label' => 'Accueil',
-            'route' => 'app_home',
+    #[Breadcrumb(
+        routes: [
+            [
+                'label' => 'Accueil',
+                'route' => 'app_dispatch',
+            ],
+            [
+                'label' => 'liste des restaurant',
+                'route' => 'app_restaurant_home'
+            ],
         ],
-        [
-            'label' => 'liste des restaurant',
-            'route' => 'app_restaurant_home'
-        ],
-        [
-            'label' => 'mettre à jour de : ',
-        ],
-    ])]
+        finalItem:[Restaurant::class, 'name']
+    )]
     public function update(Restaurant $restaurant, Request $request): Response
     {
         $form = $this->createForm(RestaurantType::class, $restaurant);
@@ -104,19 +104,19 @@ final class RestaurantController extends AbstractController
 
     #[Route('/{id}/detail', name: 'detail')]
     #[PageTitle(title:'detail', section:'Restaurant')]
-    #[Breadcrumb([
-        [
-            'label' => 'Accueil',
-            'route' => 'app_home',
+    #[Breadcrumb(
+        routes:[
+            [
+                'label' => 'Accueil',
+                'route' => 'app_dispatch',
+            ],
+            [
+                'label' => 'liste des restaurant',
+                'route' => 'app_restaurant_home'
+            ]
         ],
-       [
-            'label' => 'liste des restaurant',
-            'route' => 'app_restaurant_home'
-        ],
-        [
-            'label' => 'détail de : ',
-        ],
-    ])]
+        finalItem:[Restaurant::class, 'name']
+    )]
     public function detail(Restaurant $restaurant, Request $request): Response
     {
         $searchForm = $this->createForm(
