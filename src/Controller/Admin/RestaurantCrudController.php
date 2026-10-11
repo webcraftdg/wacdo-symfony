@@ -4,19 +4,16 @@ namespace App\Controller\Admin;
 
 use App\Entity\Restaurant;
 use DateTime;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Override;
 
 class RestaurantCrudController extends AbstractCrudController
 {
@@ -90,6 +87,12 @@ class RestaurantCrudController extends AbstractCrudController
             return $action->setLabel('Enregistrer');
         });
         $actions->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
+            return $action->setLabel('Enregistrer et Ajouter');
+        });
+          $actions->update(Crud::PAGE_EDIT, Action::SAVE_AND_RETURN, function (Action $action) {
+            return $action->setLabel('Enregistrer');
+        });
+        $actions->update(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE, function (Action $action) {
             return $action->setLabel('Enregistrer et Ajouter');
         });
 

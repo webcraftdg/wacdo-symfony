@@ -97,7 +97,7 @@ final class UserController extends AbstractController
             $response = $this->render('user/create.html.twig', [
                 'form' => $form,
                 'user' => $user,
-                'action' => 'app_user_create'
+                'action' => $this->generateUrl('app_user_create')
             ]);
         }
         return $response;
@@ -113,7 +113,7 @@ final class UserController extends AbstractController
             $response = $this->render('common/_form-create-collaborator.html.twig', [
                 'form' => $form,
                 'user' => $user,
-                'action' => 'app_user_async_create'
+                'action' => $this->generateUrl('app_user_async_create')
             ]);
         }
         return $response;
@@ -144,6 +144,7 @@ final class UserController extends AbstractController
             $response = $this->render('user/update.html.twig', [
                 'form' => $form,
                 'user' => $user,
+                'action' => $this->generateUrl('app_user_update', ['id' => $user->getId()])
             ]);
         }
         return $response;

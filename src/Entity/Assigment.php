@@ -41,20 +41,19 @@ class Assigment
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[NotBlank(message:'Veuillez saisir une date de début')]
-    #[LessThan(
-        'today',
-        message: 'La date de début ne peut pas être antérieure à aujourd’hui.',
-        groups: ['assignement:create','assignement:update']
-    )]
     private ?\DateTimeImmutable $dateStart = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[NotBlank(message:'Veuillez saisir une date de fin')]
-    #[GreaterThan(
+    #[GreaterThanOrEqual(
         propertyPath: 'dateStart',
-        message: 'La date de fin doit être égale ou postérieure à la date de début.',
+        message: 'La date de fin doit être postérieure ou égale à la date de début.',
         groups: ['assignement:create', 'assignement:update']
     )]
+    #[GreaterThanOrEqual('today',
+        message:'la date de fin doit être postérieure à la date du jour',
+        groups:['assignement:create', 'assignement:update'])
+    ]
     private ?\DateTimeImmutable $dateEnd = null;
 
     #[ORM\Column]

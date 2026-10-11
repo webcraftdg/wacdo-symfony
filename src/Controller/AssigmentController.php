@@ -100,9 +100,11 @@ final class AssigmentController extends AbstractController
         );
         $routeRedirectionName = 'app_assignment_home';
         $parameters = [];
+        $addModelNewUser = true;
         if($user !== null) {
             $routeRedirectionName = 'app_user_detail';
             $parameters['id'] = $user->getId();
+            $addModelNewUser = false;
         }
         $response = $this->manageAssignement(
             $form,
@@ -115,6 +117,7 @@ final class AssigmentController extends AbstractController
             $response = $this->render('assigment/create.html.twig', [
                 'form' => $form,
                 'assigment' => $assigment,
+                'addModelNewUser' => $addModelNewUser
             ]);
         }
         return $response;

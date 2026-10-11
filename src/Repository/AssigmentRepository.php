@@ -34,6 +34,9 @@ class AssigmentRepository extends ServiceEntityRepository
             'r.name' => 'LIKE',
             'r.city' => 'LIKE',
             'f.name' => 'LIKE',
+        ],
+        array $orderBy = [
+            'a.dateEnd' => 'desc'
         ]
     ) : QueryBuilder
     {
@@ -55,6 +58,9 @@ class AssigmentRepository extends ServiceEntityRepository
                     value: $value
                 );
             }
+        }
+        foreach($orderBy as $field => $order) {
+            $queryBuilder->orderBy($field, $order);
         }
         return $queryBuilder;
     }
