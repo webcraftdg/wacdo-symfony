@@ -40,12 +40,12 @@
         </div>
 
     </div>
-
+<turbo-frame id="users-list" data-turbo-action="advance">
     {% include 'user/_list.html.twig'
                     with { dataProvider: dataProvider } %}
     {% include 'common/_pager.html.twig'
                     with { dataProvider: dataProvider, route: 'app_user_home'} %}
-
+</turbo-frame>
 </div>
 
 {% endblock %}

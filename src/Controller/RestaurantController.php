@@ -145,13 +145,21 @@ final class RestaurantController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/supprimer', name: 'delete', methods: ['DELETE'])]
+    #[Route('/{id}/archiver', name: 'archived', methods: ['PATCH'])]
     #[IsGranted(User::ROLE_ADMIN)]
-    public function delete(Restaurant $restaurant) : Response
+    public function archived(Restaurant $restaurant, Request $request) : Response
     {
         $restaurant->setDateArchived(new DateTime());
         $this->entityManagerInterface->persist($restaurant);
         $this->entityManagerInterface->flush();
-        return $this->json(null, Response::HTTP_NO_CONTENT);;
+        $response =  new Response(status: Response::HTTP_NO_CONTENT);
+        if ($request->headers->contains('Accept', 'text/vnd.turbo-stream.html') === true) {
+            $response =  $this->render('restaurant/_rowList.stream.html.twig', [
+                'item' => $restaurant,
+            ], new Response(headers: [
+                'Content-Type' => 'text/vnd.turbo-stream.html',
+            ]));
+        }
+        return $response;
     }
 }

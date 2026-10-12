@@ -21,6 +21,11 @@
                     <th class="px-5 py-3 font-semibold">
                         Date de recrutement
                     </th>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <th class="px-5 py-3 font-semibold">
+                            Date d'archivage
+                        </th>
+                    {% endif %}
                     <th class="px-5 py-3 font-semibold text-right">
                         Actions
                     </th>
@@ -30,8 +35,8 @@
             <tbody class="divide-y divide-slate-200">
 
                 {% for collaborator in dataProvider %}
-                        {% include 'user/_itemList.html.twig'
-                        with { collaborator: collaborator } %}
+                        {% include 'user/_rowList.html.twig'
+                        with { item: collaborator } %}
 
                 {% else %}
 

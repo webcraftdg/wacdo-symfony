@@ -1,11 +1,12 @@
 
 <tr
+    id="restaurant_{{ item.id }}"
     class="hover:bg-slate-50 {{ item.dateArchived is null ? '' : 'opacity-50' }}"
-    data-controller="delete"
-    data-delete-delete-url-value="{{ path('app_restaurant_delete', {id: item.id}) }}"
-    data-delete-context-name-value="{{ item.name ~ ' : ' ~ item.city}}"
-    data-delete-csrf-value="{{ csrf_token('delete-restaurant-' ~ item.id) }}"
-    data-delete-keep-element-value="1"
+    data-controller="archived"
+    data-archived-archived-url-value="{{ path('app_restaurant_archived', {id: item.id}) }}"
+    data-archived-context-name-value="{{ item.name ~ ' : ' ~ item.city}}"
+    data-archived-csrf-value="{{ csrf_token('archived-restaurant-' ~ item.id) }}"
+    data-archived-mode-value="turbo"
 >
 
     <td class="px-5 py-4 font-semibold text-slate-900">
@@ -59,7 +60,7 @@
 
                 <button
                     type="button"
-                    data-action="click->delete#confirmDelete"
+                    data-action="click->archived#confirmDelete"
                     class="inline-flex items-center justify-center
                             rounded-lg border border-orange-300
                             px-3 py-2 text-orange-700

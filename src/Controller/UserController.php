@@ -11,6 +11,7 @@ use App\Form\UserCollaboratorType;
 use App\Helper\EntityProvider;
 use App\Repository\AssigmentRepository;
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -196,9 +197,28 @@ final class UserController extends AbstractController
     #[IsGranted(User::ROLE_ADMIN)]
     public function delete(User $user) : Response
     {
-        $this->entityManager->remove($user);
+        $user->setDateArchived(new DateTime());
+        $this->entityManager->persist($user);
         $this->entityManager->flush();
-        return $this->json(null, Response::HTTP_NO_CONTENT);;
+        return $this->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+     #[Route('/{id}/archiver', name: 'archived', methods: ['PATCH'])]
+    #[IsGranted(User::ROLE_ADMIN)]
+    public function archived(User $user, Request $request) : Response
+    {
+        $user->setDateArchived(new DateTime());
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        $response =  new Response(status: Response::HTTP_NO_CONTENT);
+        if ($request->headers->contains('Accept', 'text/vnd.turbo-stream.html') == true) {
+                $response =  $this->render('user/_rowList.stream.html.twig', [
+                    'item' => $user,
+                ], new Response(headers: [
+                    'Content-Type' => 'text/vnd.turbo-stream.html',
+                ]));
+        }
+        return $response;
     }
 
     /**
