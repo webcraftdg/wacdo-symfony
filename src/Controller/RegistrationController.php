@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * RegistrationController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller
+ */
 namespace App\Controller;
 
 use App\Attribute\Breadcrumb;
@@ -17,6 +25,17 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class RegistrationController extends AbstractController
 {
 
+/**
+ * register
+ *
+ * Udpate user
+ *
+ * @param  \Symfony\Component\HttpFoundation\Request                            $request
+ * @param  \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $userPasswordHasher
+ * @param  \Doctrine\ORM\EntityManagerInterface                                 $entityManager
+ *
+ * @return \Symfony\Component\HttpFoundation\Response
+ */
     #[Route('/mon-compte', name: 'app_account')]
     #[PageTitle(title:'Mettre à jour', section:'Utilisateurs')]
     #[Breadcrumb([

@@ -1,4 +1,13 @@
 <?php
+/**
+ * UserController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller
+ */
 
 namespace App\Controller;
 
@@ -35,6 +44,15 @@ final class UserController extends AbstractController
     )
     {}
 
+    /**
+     * index
+     *
+     * List user
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/accueil', name: 'home')]
     #[PageTitle(title:'Accueil', section:'Collaborateurs')]
     #[Breadcrumb([
@@ -74,6 +92,13 @@ final class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * create
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/creer', name: 'create')]
     #[PageTitle(title:'Collaborateurs', section:'créer')]
     #[Breadcrumb([
@@ -104,6 +129,15 @@ final class UserController extends AbstractController
         return $response;
     }
 
+    /**
+     * async-create
+     *
+     * Create user with ajax
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/async-creer', name: 'async_create')]
     public function asyncCreate(Request $request): Response
     {
@@ -121,6 +155,14 @@ final class UserController extends AbstractController
     }
 
 
+    /**
+     * Update
+     *
+     * @param  \App\Entity\User                           $user
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/{id}/mise_a_jour', name: 'update')]
     #[PageTitle(title:'Collaborateurs', section:'Mettre à jour')]
     #[Breadcrumb(
@@ -151,6 +193,14 @@ final class UserController extends AbstractController
         return $response;
     }
 
+    /**
+     * Detail
+     *
+     * @param User $user
+     * @param Request $request
+     *
+     * @return Response
+     */
     #[Route('/{id}/detail', name: 'detail')]
     #[PageTitle(title:'Collaborateurs', section:'Détail')]
     #[Breadcrumb(
@@ -193,17 +243,17 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/supprimer', name: 'delete', methods: ['DELETE'])]
-    #[IsGranted(User::ROLE_ADMIN)]
-    public function delete(User $user) : Response
-    {
-        $user->setDateArchived(new DateTime());
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-        return $this->json(null, Response::HTTP_NO_CONTENT);
-    }
-
-     #[Route('/{id}/archiver', name: 'archived', methods: ['PATCH'])]
+    /**
+     * Archived
+     *
+     * Set date archived
+     *
+     * @param User $user
+     * @param Request $request
+     *
+     * @requires Response
+     */
+    #[Route('/{id}/archiver', name: 'archived', methods: ['PATCH'])]
     #[IsGranted(User::ROLE_ADMIN)]
     public function archived(User $user, Request $request) : Response
     {
@@ -222,7 +272,7 @@ final class UserController extends AbstractController
     }
 
     /**
-     * mange user
+     * manage user
      *
      * @param  \Symfony\Component\Form\FormInterface           $form
      * @param  \App\Entity\User                                $user

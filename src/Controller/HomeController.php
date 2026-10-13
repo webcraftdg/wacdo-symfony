@@ -1,4 +1,13 @@
 <?php
+/**
+ * HomeController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller
+ */
 
 namespace App\Controller;
 
@@ -22,6 +31,10 @@ final class HomeController extends AbstractController
     )
     {
     }
+
+    /**
+     * index
+     */
     #[Route('/home', name: 'app_home')]
     #[Breadcrumb([
         [

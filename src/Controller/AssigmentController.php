@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * AssigmentController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller
+ */
 namespace App\Controller;
 
 use App\Attribute\Breadcrumb;
@@ -8,7 +16,6 @@ use App\Entity\Assigment;
 use App\Entity\User;
 use App\Form\AssignmentSearchType;
 use App\Form\AssignmentType;
-use App\Helper\EntityHydrator;
 use App\Helper\EntityProvider;
 use App\Repository\AssigmentRepository;
 use Doctrine\ORM\EntityManagerInterface;

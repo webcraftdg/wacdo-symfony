@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * 
+ */
 namespace App\Repository;
 
 use App\Entity\Assigment;
@@ -9,8 +11,6 @@ use App\Helper\CriteriaBuilder;
 use App\Helper\CriteriaField;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -185,7 +185,7 @@ class AssigmentRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             // L'affectation existante ne doit pas être terminée
             // avant le début de la nouvelle.
-            ->andWhere('(a.dateEnd IS NULL OR a.dateEnd >= :dateStart)')
+            ->andWhere('(a.dateEnd >= :dateStart)')
             ->setParameter('dateStart', $dateStart);
 
         if ($dateEnd !== null) {
