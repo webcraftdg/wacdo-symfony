@@ -25,11 +25,14 @@ class MenuBuilder
                 'activePattern' => 'app_user_',
             ];
         }
-        $items[] =  [
-            'label' => 'Affectations',
-            'route' => 'app_assignment_home',
-            'activePattern' => 'app_assignment_',
-        ];
+        if ($this->security->isGranted('IS_AUTHENTICATED')) {
+            $items[] =  [
+                'label' => 'Affectations',
+                'route' => 'app_assignment_home',
+                'activePattern' => 'app_assignment_',
+            ];
+        }
+
 
         if ($this->security->isGranted('ROLE_ADMIN')) {
             $items[] = [
@@ -38,11 +41,14 @@ class MenuBuilder
                 'activePattern' => 'admin',
             ];
         }
-        $items[] = [
-            'label' => 'Mon compte',
-            'route' => 'app_account',
-            'activePattern' => 'app_account',
-        ];
+        if ($this->security->isGranted('IS_AUTHENTICATED')) {
+            $items[] = [
+                'label' => 'Mon compte',
+                'route' => 'app_account',
+                'activePattern' => 'app_account',
+            ];
+        }
+
         return $items;
     }
 }

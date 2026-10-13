@@ -3,35 +3,35 @@
 namespace App\Entity;
 
 use App\Enum\AssisnmentStatus;
-use App\Repository\AssigmentRepository;
+use App\Repository\AssignmentRepository;
 use App\Validator\NoAssignmentOverlap;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
-#[ORM\Entity(repositoryClass: AssigmentRepository::class)]
+#[ORM\Entity(repositoryClass: AssignmentRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[NoAssignmentOverlap(
     message:'Ce Collaborateur {{ collab }} est déjà plannifier sur toute ou en partie de la période sélectionnée',
     groups:['assignement:create', 'assignement:update']
 )]
-class Assigment
+class Assignment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'assigments')]
+    #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[NotBlank(message:'Veuillez choisir un utilisateur')]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'assigments')]
+    #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[NotBlank(message:'Veuillez choisir un restaurant')]
     private ?Restaurant $restaurant = null;
 
-    #[ORM\ManyToOne(inversedBy: 'assigments')]
+    #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[NotBlank(message:'Veuillez choisir une fonction')]
     private ?Fonction $fonction = null;
 

@@ -20,7 +20,7 @@ use App\Form\GenericSearchType;
 use App\Form\RestaurantType;
 use App\Helper\EntityHydrator;
 use App\Helper\EntityProvider;
-use App\Repository\AssigmentRepository;
+use App\Repository\AssignmentRepository;
 use App\Repository\RestaurantRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,7 +37,7 @@ final class RestaurantController extends AbstractController
 
     public function __construct(
         private RestaurantRepository $restaurantRepository,
-        private AssigmentRepository $assigmentRepository,
+        private AssignmentRepository $assignmentRepository,
         private EntityManagerInterface $entityManagerInterface
     )
     {}
@@ -162,7 +162,7 @@ final class RestaurantController extends AbstractController
             ]);
         $searchForm->handleRequest($request);
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
-        $queryBuilder = $this->assigmentRepository->createBuilderforUserWithCriteria(
+        $queryBuilder = $this->assignmentRepository->createBuilderforUserWithCriteria(
             user:$this->getUser(),
             restaurant:$restaurant,
             criteria:$criteria

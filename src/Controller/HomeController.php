@@ -13,7 +13,7 @@ namespace App\Controller;
 
 use App\Attribute\Breadcrumb;
 use App\Helper\ChartDataBuilder;
-use App\Repository\AssigmentRepository;
+use App\Repository\AssignmentRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +27,7 @@ final class HomeController extends AbstractController
     public function __construct(
         private RestaurantRepository $restaurantRepository,
         private UserRepository $userRepository,
-        private AssigmentRepository $assignmentRepository
+        private AssignmentRepository $assignmentRepository
     )
     {
     }

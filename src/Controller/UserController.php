@@ -18,7 +18,7 @@ use App\Form\AssignmentSearchType;
 use App\Form\GenericSearchType;
 use App\Form\UserCollaboratorType;
 use App\Helper\EntityProvider;
-use App\Repository\AssigmentRepository;
+use App\Repository\AssignmentRepository;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,7 +39,7 @@ final class UserController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepository,
-        private AssigmentRepository $assigmentRepository,
+        private AssignmentRepository $assignmentRepository,
         private UserPasswordHasherInterface $userPasswordHasher
     )
     {}
@@ -227,7 +227,7 @@ final class UserController extends AbstractController
             ]);
         $searchForm->handleRequest($request);
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
-        $queryBuilder = $this->assigmentRepository->createBuilderforUserWithCriteria(
+        $queryBuilder = $this->assignmentRepository->createBuilderforUserWithCriteria(
             user:$user,
             criteria:$criteria
         );

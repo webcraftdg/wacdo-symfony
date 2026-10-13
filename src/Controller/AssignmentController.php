@@ -1,6 +1,6 @@
 <?php
 /**
- * AssigmentController.php
+ * AssignmentController.php
  *
  * PHP Version 8.3+
  *
@@ -12,12 +12,12 @@ namespace App\Controller;
 
 use App\Attribute\Breadcrumb;
 use App\Attribute\PageTitle;
-use App\Entity\Assigment;
+use App\Entity\Assignment;
 use App\Entity\User;
 use App\Form\AssignmentSearchType;
 use App\Form\AssignmentType;
 use App\Helper\EntityProvider;
-use App\Repository\AssigmentRepository;
+use App\Repository\AssignmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -28,10 +28,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/affectations', name: 'app_assignment_')]
 #[IsGranted('IS_AUTHENTICATED')]
-final class AssigmentController extends AbstractController
+final class AssignmentController extends AbstractController
 {
     public function __construct(
-        private AssigmentRepository $assigmentRepository,
+        private AssignmentRepository $assignmentRepository,
         private EntityManagerInterface $entityManagerInterface
     )
     {}
@@ -58,7 +58,7 @@ final class AssigmentController extends AbstractController
         );
         $searchForm->handleRequest($request);
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
-        $queryBuilder = $this->assigmentRepository->createBuilderforUserWithCriteria(
+        $queryBuilder = $this->assignmentRepository->createBuilderforUserWithCriteria(
             user:$this->getUser(),
             criteria:$criteria
         );
@@ -67,7 +67,7 @@ final class AssigmentController extends AbstractController
             request: $request,
             pageSize: 10
         );
-        return $this->render('assigment/index.html.twig', [
+        return $this->render('assignment/index.html.twig', [
             'dataProvider' => $dataProvider,
             'searchForm' => $searchForm
         ]);
@@ -96,10 +96,10 @@ final class AssigmentController extends AbstractController
     #[IsGranted(User::ROLE_RETAURANT_OWNER)]
     public function create(Request $request, ?User $user): Response
     {
-        $assigment = new Assigment();
+        $assignment = new Assignment();
         $form = $this->createForm(
             AssignmentType::class,
-            $assigment,
+            $assignment,
             [
                 'validation_groups' => ['assignement:create'],
                 'user' => $user
@@ -115,15 +115,15 @@ final class AssigmentController extends AbstractController
         }
         $response = $this->manageAssignement(
             $form,
-            $assigment,
+            $assignment,
             $request,
             $routeRedirectionName,
             $parameters
         );
         if ($response === null) {
-            $response = $this->render('assigment/create.html.twig', [
+            $response = $this->render('assignment/create.html.twig', [
                 'form' => $form,
-                'assigment' => $assigment,
+                'assignment' => $assignment,
                 'addModelNewUser' => $addModelNewUser
             ]);
         }
@@ -144,20 +144,20 @@ final class AssigmentController extends AbstractController
                 'route' => 'app_assignment_home'
             ],
         ],
-        finalItem: [Assigment::class, 'user']
+        finalItem: [Assignment::class, 'user']
     )]
     #[IsGranted(User::ROLE_RETAURANT_OWNER)]
-    public function update(Assigment $assigment, Request $request): Response
+    public function update(Assignment $assignment, Request $request): Response
     {
         $form = $this->createForm(
             AssignmentType::class,
-            $assigment,
+            $assignment,
             ['validation_groups' => ['assignement:update']]);
-        $response = $this->manageAssignement($form, $assigment, $request, 'app_assignment_home');
+        $response = $this->manageAssignement($form, $assignment, $request, 'app_assignment_home');
         if ($response === null) {
-            $response = $this->render('assigment/update.html.twig', [
+            $response = $this->render('assignment/update.html.twig', [
                 'form' => $form,
-                'assigment' => $assigment,
+                'assignment' => $assignment,
             ]);
         }
         return $response;
@@ -165,12 +165,12 @@ final class AssigmentController extends AbstractController
 
     #[Route('/{id}/supprimer', name: 'delete', methods: ['DELETE'])]
     #[IsGranted(User::ROLE_RETAURANT_OWNER)]
-    public function delete(Assigment $assigment) : Response
+    public function delete(Assignment $assignment) : Response
     {
         /**@var USer $user */
         $user = $this->getUser();
-        if ($this->isGranted(User::ROLE_ADMIN) || in_array($assigment->getRestaurant(), $user->getRestaurants()->toArray()) === true) {
-            $this->entityManagerInterface->remove($assigment);
+        if ($this->isGranted(User::ROLE_ADMIN) || in_array($assignment->getRestaurant(), $user->getRestaurants()->toArray()) === true) {
+            $this->entityManagerInterface->remove($assignment);
             $this->entityManagerInterface->flush();
             $response = $this->json(null, Response::HTTP_NO_CONTENT);
         } else {
@@ -182,7 +182,7 @@ final class AssigmentController extends AbstractController
 
     protected function manageAssignement(
         FormInterface $form,
-        Assigment $assigment,
+        Assignment $assignment,
         Request $request,
         string $routeName,
         array $routeParameters = []) : ?Response
@@ -190,7 +190,7 @@ final class AssigmentController extends AbstractController
         $form->handleRequest($request);
         $response = null;
         if ($form->isSubmitted() === true && $form->isValid() === true) {
-            $this->entityManagerInterface->persist($assigment);
+            $this->entityManagerInterface->persist($assignment);
             $this->entityManagerInterface->flush();
             $response = $this->redirectToRoute($routeName, $routeParameters);
         }

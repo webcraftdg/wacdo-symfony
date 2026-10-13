@@ -1,10 +1,10 @@
 <?php
 /**
- * 
+ *
  */
 namespace App\Repository;
 
-use App\Entity\Assigment;
+use App\Entity\Assignment;
 use App\Entity\Restaurant;
 use App\Entity\User;
 use App\Helper\CriteriaBuilder;
@@ -15,13 +15,13 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Assigment>
+ * @extends ServiceEntityRepository<Assignment>
  */
-class AssigmentRepository extends ServiceEntityRepository
+class AssignmentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Assigment::class);
+        parent::__construct($registry, Assignment::class);
     }
 
     public function createBuilderforUserWithCriteria(
@@ -169,7 +169,7 @@ class AssigmentRepository extends ServiceEntityRepository
      * @param  \App\Entity\User           $user
      * @param  \DateTimeImmutable         $dateStart
      * @param  \DateTimeImmutable|null    $dateEnd
-     * @param  \App\Entity\Assigment|null $excludedAssignment
+     * @param  \App\Entity\Assignment|null $excludedAssignment
      *
      * @return bool
      */
@@ -177,7 +177,7 @@ class AssigmentRepository extends ServiceEntityRepository
         User $user,
         DateTimeImmutable $dateStart,
         ?DateTimeImmutable $dateEnd,
-        ?Assigment $excludedAssignment = null
+        ?Assignment $excludedAssignment = null
     ): bool {
         $qb = $this->createQueryBuilder('a')
             ->select('COUNT(a.id)')

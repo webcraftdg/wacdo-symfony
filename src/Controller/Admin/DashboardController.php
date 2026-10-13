@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Attribute\PageTitle;
 use App\Controller\RestaurantController;
-use App\Repository\AssigmentRepository;
+use App\Repository\AssignmentRepository;
 use App\Repository\FonctionRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\UserRepository;
@@ -29,7 +29,7 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         private UserRepository $userRepository,
-        private AssigmentRepository $assigmentRepository,
+        private AssignmentRepository $assignmentRepository,
         private FonctionRepository $fonctionRepository,
         private RestaurantRepository $restaurantRepository
     )
@@ -43,12 +43,12 @@ class DashboardController extends AbstractDashboardController
                 'statistics' => [
                     'users' => $this->userRepository->count(['isAdmin' => false]),
                     'restaurants' => $this->restaurantRepository->count(),
-                    'assignments' => $this->assigmentRepository->count(),
+                    'assignments' => $this->assignmentRepository->count(),
                     'functions' => $this->fonctionRepository->count()
                 ],
-                'pastAssignments' => $this->assigmentRepository->findCriteriaAssignments()->getQuery()->getResult(),
-                'upcomingAssignments' => $this->assigmentRepository->findCriteriaAssignments(criteria:'a.dateStart >= :today')->getQuery()->getResult(),
-                'inProgressAssignments' => $this->assigmentRepository->findCriteriaAssignments(criteria:'a.dateStart <= :today AND a.dateEnd >= :today')->getQuery()->getResult()
+                'pastAssignments' => $this->assignmentRepository->findCriteriaAssignments()->getQuery()->getResult(),
+                'upcomingAssignments' => $this->assignmentRepository->findCriteriaAssignments(criteria:'a.dateStart >= :today')->getQuery()->getResult(),
+                'inProgressAssignments' => $this->assignmentRepository->findCriteriaAssignments(criteria:'a.dateStart <= :today AND a.dateEnd >= :today')->getQuery()->getResult()
             ]);
     }
 
@@ -65,7 +65,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkTo(UserCrudController::class, 'Les utilisateurs', 'fas fa-users');
         yield MenuItem::linkTo(FonctionCrudController::class, 'Les fonctions', 'fas fa-briefcase');
         yield MenuItem::linkTo(RestaurantCrudController::class, 'Les restaurants', 'fas fa-utensils');
-        yield MenuItem::linkTo(AssigmentCrudController::class, 'Les affectations', 'fas fa-person-walking-luggage');
+        yield MenuItem::linkTo(AssignmentCrudController::class, 'Les affectations', 'fas fa-person-walking-luggage');
         yield MenuItem::linkToRoute( 'Site restaurateurs', 'fas fa-shop', 'app_restaurant_home');
 
     }

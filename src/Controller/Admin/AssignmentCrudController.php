@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Assigment;
+use App\Entity\Assignment;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -14,11 +14,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class AssigmentCrudController extends AbstractCrudController
+class AssignmentCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Assigment::class;
+        return Assignment::class;
     }
 
     public function configureCrud(Crud $crud): Crud

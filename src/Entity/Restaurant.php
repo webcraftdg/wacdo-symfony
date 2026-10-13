@@ -42,10 +42,10 @@ class Restaurant
     private ?\DateTime $dateUpdate = null;
 
     /**
-     * @var Collection<int, Assigment>
+     * @var Collection<int, Assignment>
      */
-    #[ORM\OneToMany(targetEntity: Assigment::class, mappedBy: 'restaurant')]
-    private Collection $assigments;
+    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'restaurant')]
+    private Collection $assignments;
 
     #[ORM\ManyToOne(inversedBy: 'restaurants')]
     #[NotBlank(message:'Veuillez choisir un propriétaire')]
@@ -56,7 +56,7 @@ class Restaurant
 
     public function __construct()
     {
-        $this->assigments = new ArrayCollection();
+        $this->assignments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -154,29 +154,29 @@ class Restaurant
     }
 
     /**
-     * @return Collection<int, Assigment>
+     * @return Collection<int, Assignment>
      */
-    public function getAssigments(): Collection
+    public function getAssignments(): Collection
     {
-        return $this->assigments;
+        return $this->assignments;
     }
 
-    public function addAssigment(Assigment $assigment): static
+    public function addAssignment(Assignment $assignment): static
     {
-        if (!$this->assigments->contains($assigment)) {
-            $this->assigments->add($assigment);
-            $assigment->setRestaurant($this);
+        if (!$this->assignments->contains($assignment)) {
+            $this->assignments->add($assignment);
+            $assignment->setRestaurant($this);
         }
 
         return $this;
     }
 
-    public function removeAssigment(Assigment $assigment): static
+    public function removeAssignment(Assignment $assignment): static
     {
-        if ($this->assigments->removeElement($assigment)) {
+        if ($this->assignments->removeElement($assignment)) {
             // set the owning side to null (unless already changed)
-            if ($assigment->getRestaurant() === $this) {
-                $assigment->setRestaurant(null);
+            if ($assignment->getRestaurant() === $this) {
+                $assignment->setRestaurant(null);
             }
         }
 
