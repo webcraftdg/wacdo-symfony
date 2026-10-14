@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Enum\AssisnmentStatus;
+use App\Enum\AssignmentStatus;
 use App\Repository\AssignmentRepository;
 use App\Validator\NoAssignmentOverlap;
 use DateTime;
@@ -159,16 +159,16 @@ class Assignment
         $this->dateCreate = new DateTime();
     }
 
-    public function getStatus(): ?AssisnmentStatus
+    public function getStatus(): ?AssignmentStatus
     {
         $today = new DateTime('today');
-        $status = AssisnmentStatus::EN_COURS;
+        $status = AssignmentStatus::EN_COURS;
         if ($this->dateStart > $today) {
-            $status = AssisnmentStatus::EN_ATTENTE;
+            $status = AssignmentStatus::EN_ATTENTE;
         }
 
         if ($this->dateEnd !== null && $this->dateEnd < $today) {
-            $status = AssisnmentStatus::FINI;
+            $status = AssignmentStatus::FINI;
         }
         return $status;
     }

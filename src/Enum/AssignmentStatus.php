@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum AssisnmentStatus : string
+enum AssignmentStatus : string
 {
     case FINI = 'fini';
     case EN_ATTENTE = 'enAttente';
@@ -11,9 +11,9 @@ enum AssisnmentStatus : string
     public function label() : string
     {
         return match ($this) {
-            AssisnmentStatus::EN_ATTENTE => 'En attente',
-            AssisnmentStatus::EN_COURS => 'En cours',
-            AssisnmentStatus::FINI => 'Terminé',
+            AssignmentStatus::EN_ATTENTE => 'En attente',
+            AssignmentStatus::EN_COURS => 'En cours',
+            AssignmentStatus::FINI => 'Terminé',
         };
     }
 

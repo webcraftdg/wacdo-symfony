@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[UniqueEntity(
     fields: ['email'],
     message: 'Cette Email n\'est pas disponnible',
-    groups: ['user:create', 'user:update'])]
+    groups: ['user:create', 'user:update', 'user:create-command'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const ROLE_COLLAB = 'ROLE_COLLAB';
@@ -41,7 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Email(
         message:'Format de Email invalide',
         groups:[
-            'user:create', 'user:update'
+            'user:create', 'user:update', 'user:create-command'
         ]
     )]
     #[Groups(['user:detail'])]
@@ -60,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[NotBlank(
         message:'Le droit doit-être choisie',
-        groups:['user:create']
+        groups:['user:create',]
     )]
     private ?string $role = null;
 
@@ -68,6 +68,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+       #[NotBlank(
+        message:'Le mot de passe doit-être choisie',
+        groups:['user:create-command']
+    )]
     private ?string $password = null;
 
     /**
