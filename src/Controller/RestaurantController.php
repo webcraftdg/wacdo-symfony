@@ -118,7 +118,7 @@ final class RestaurantController extends AbstractController
         if ($form->isSubmitted() === true && $form->isValid() === true) {
             $this->entityManagerInterface->persist($restaurant);
             $this->entityManagerInterface->flush();
-            $response = $this->redirectToRoute('app_restaurant_home', ['id' => $restaurant->getId()]);
+            $response = $this->redirectToRoute('app_restaurant_home');
         }
         if ($response === null) {
             $response = $this->render('restaurant/update.html.twig', [

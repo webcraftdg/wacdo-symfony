@@ -1,0 +1,50 @@
+
+<tr
+    id="fonction_{{ item.id }}"
+    class="hover:bg-slate-50 {{ item.dateArchived is null ? '' : 'opacity-50' }}"
+    data-controller="archived"
+    data-archived-archived-url-value="{{ path('app_fonction_archived', {id: item.id}) }}"
+    data-archived-context-name-value="{{ item.name}}"
+    data-archived-csrf-value="{{ csrf_token('archived-fonction-' ~ item.id) }}"
+    data-archived-mode-value="turbo"
+>
+
+    <td class="px-5 py-4 font-semibold text-slate-900">
+        {{ item.name }}
+    </td>
+    <td class="px-5 py-4 text-slate-600 whitespace-nowrap">
+        {% if item.dateArchived %}
+            {{ item.dateArchived|date('d/m/Y') }}
+        {% else %}
+            —
+        {% endif %}
+    </td>
+
+    <td class="px-5 py-4">
+        <div class="flex justify-end gap-2">
+            <a
+                href="{{ path('app_fonction_update',{id: item.id}) }}"
+                class="inline-flex items-center justify-center
+                        rounded-lg bg-blue-600
+                        px-3 py-2 text-white
+                        hover:bg-blue-700"
+                data-turbo-prefetch="false"
+                title="Éditer"
+            >
+                <i data-controller="icon" data-icon-name-value="edit"></i>
+            </a>
+           <button
+                type="button"
+                data-action="click->archived#confirmDelete"
+                class="inline-flex items-center justify-center
+                        rounded-lg border border-orange-300
+                        px-3 py-2 text-orange-700
+                        hover:bg-orange-50"
+                title="Archiver"
+            >
+            <i data-controller="icon" data-icon-name-value="archive"></i>
+            </button>
+        </div>
+    </td>
+
+</tr>

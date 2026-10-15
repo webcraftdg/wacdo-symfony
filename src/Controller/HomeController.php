@@ -11,7 +11,6 @@
 
 namespace App\Controller;
 
-use App\Attribute\Breadcrumb;
 use App\Helper\ChartDataBuilder;
 use App\Repository\AssignmentRepository;
 use App\Repository\RestaurantRepository;
@@ -36,11 +35,6 @@ final class HomeController extends AbstractController
      * index
      */
     #[Route('/home', name: 'app_home')]
-    #[Breadcrumb([
-        [
-            'label' => 'Accueil',
-        ]
-    ])]
     public function index(): Response
     {
         $stats = [

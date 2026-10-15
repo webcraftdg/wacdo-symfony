@@ -32,8 +32,6 @@ class MenuBuilder
                 'activePattern' => 'app_assignment_',
             ];
         }
-
-
         if ($this->security->isGranted('ROLE_ADMIN')) {
             $items[] = [
                 'label' => 'Administration',
@@ -41,6 +39,15 @@ class MenuBuilder
                 'activePattern' => 'admin',
             ];
         }
+
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $items[] = [
+                'label' => 'Fonctions',
+                'route' => 'app_fonction_home',
+                'activePattern' => 'app_fonction_',
+            ];
+        }
+
         if ($this->security->isGranted('IS_AUTHENTICATED')) {
             $items[] = [
                 'label' => 'Mon compte',
