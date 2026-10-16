@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
- #[Route('/fonction', name: 'app_fonction_')]
+ #[Route('/fonctions', name: 'app_fonction_')]
  #[IsGranted('ROLE_ADMIN')]
 final class FonctionController extends AbstractController
 {
@@ -100,6 +100,9 @@ final class FonctionController extends AbstractController
                 'label' => 'liste des fonctions',
                 'route' => 'app_fonction_home'
             ],
+             [
+            'label' => 'création d\'une fonction',
+        ],
         ]
     )]
     public function create(Request $request): Response
@@ -114,7 +117,7 @@ final class FonctionController extends AbstractController
             $response = $this->redirectToRoute('app_fonction_home');
         }
         if ($response === null) {
-            $response = $this->render('fonction/update.html.twig', [
+            $response = $this->render('fonction/create.html.twig', [
                 'form' => $form
             ]);
         }

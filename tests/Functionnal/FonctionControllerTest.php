@@ -53,4 +53,78 @@ class FonctionControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Fonctions');
     }
+
+    public function testCreateOK()
+    {
+        $this->client->loginUser($this->admin);
+
+        $crawler = $this->client->request('GET', '/home');
+
+        $link = $crawler->selectLink('Fonctions')->link();
+
+        $crawler = $this->client->click($link);
+
+        $link = $crawler->selectLink('Créer')->link();
+
+        $crawler = $this->client->click($link);
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Créer une fonction');
+
+        $form = $crawler->selectButton('Enregistrer')->form([
+            'fonction[name]' => 'Cuisinier',
+        ]);
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects('/fonctions/accueil');
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('td', 'Cuisinier');
+    }
+
+    public function testCreateKO()
+    {
+        $this->client->loginUser($this->admin);
+
+        $crawler = $this->client->request('GET', '/home');
+
+        $link = $crawler->selectLink('Fonctions')->link();
+
+        $crawler = $this->client->click($link);
+        //CREATE OK
+        $link = $crawler->selectLink('Créer')->link();
+
+        $crawler = $this->client->click($link);
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Créer une fonction');
+
+        $form = $crawler->selectButton('Enregistrer')->form([
+            'fonction[name]' => 'Cuisinier',
+        ]);
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects('/fonctions/accueil');
+
+        $crawler = $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('td', 'Cuisinier');
+        // NO CREATE ERROR
+
+        $link = $crawler->selectLink('Créer')->link();
+
+        $crawler = $this->client->click($link);
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Créer une fonction');
+
+        $form = $crawler->selectButton('Enregistrer')->form([
+            'fonction[name]' => 'Cuisinier',
+        ]);
+        $this->client->submit($form);
+
+        $this->assertResponseIsUnprocessable();
+        $this->assertSelectorTextContains(
+            'ul.text-red-600 > li',
+            'Une fonction avec ce nom existe déjà.'
+        );
+    }
 }

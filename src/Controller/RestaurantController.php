@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
- #[Route('/restaurant', name: 'app_restaurant_')]
+ #[Route('/restaurants', name: 'app_restaurant_')]
  #[IsGranted('ROLE_RESTAURANT_OWNER')]
 final class RestaurantController extends AbstractController
 {
@@ -60,7 +60,7 @@ final class RestaurantController extends AbstractController
             'route' => 'app_dispatch',
         ],
         [
-            'label' => 'liste des restaurant',
+            'label' => 'liste des restaurants',
         ]
     ])]
     public function index(Request $request): Response
@@ -104,7 +104,7 @@ final class RestaurantController extends AbstractController
                 'route' => 'app_dispatch',
             ],
             [
-                'label' => 'liste des restaurant',
+                'label' => 'liste des restaurants',
                 'route' => 'app_restaurant_home'
             ],
         ],
@@ -145,7 +145,7 @@ final class RestaurantController extends AbstractController
                 'route' => 'app_dispatch',
             ],
             [
-                'label' => 'liste des restaurant',
+                'label' => 'liste des restaurants',
                 'route' => 'app_restaurant_home'
             ]
         ],

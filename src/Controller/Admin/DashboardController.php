@@ -66,7 +66,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkTo(FonctionCrudController::class, 'Les fonctions', 'fas fa-briefcase');
         yield MenuItem::linkTo(RestaurantCrudController::class, 'Les restaurants', 'fas fa-utensils');
         yield MenuItem::linkTo(AssignmentCrudController::class, 'Les affectations', 'fas fa-person-walking-luggage');
-        yield MenuItem::linkToRoute( 'Site restaurateurs', 'fas fa-shop', 'app_restaurant_home');
+        yield MenuItem::linkToUrl( 'Site restaurateurs', 'fas fa-shop', '/');
 
     }
 }
