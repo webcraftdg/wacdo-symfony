@@ -2,6 +2,7 @@
 
 namespace App\Tests\Functionnal;
 
+use App\Entity\Restaurant;
 use App\Entity\User;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,6 +35,7 @@ class AdminRestaurantControllerTest extends WebTestCase
         ->setDateUpdate(new DateTime())
         ->setRoles([User::ROLE_ADMIN]);
         $this->admin->setPassword($userPasswordHasher->hashPassword($this->admin, 'motDePasseTest'));
+        $this->entityManager->persist($this->admin);
 
         $this->owner = (new User())
         ->setDateCreate(new DateTime())
@@ -46,10 +48,8 @@ class AdminRestaurantControllerTest extends WebTestCase
         $this->owner->setPassword($userPasswordHasher->hashPassword($this->owner, 'motDePasseTest'));
 
         $this->entityManager->persist($this->owner);
+
         $this->entityManager->flush();
-
-
-
         parent::setUp();
     }
 
@@ -60,6 +60,9 @@ class AdminRestaurantControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/admin');
 
+        $code = $this->client->getResponse()->getStatusCode();
+        $this->assertEquals(200, $code);
+
         $link = $crawler->selectLink('Les restaurants')->link();
 
         $this->client->click($link);
@@ -68,7 +71,7 @@ class AdminRestaurantControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Administration : Liste des restaurant');
     }
 
-    public function testCreateOK()
+    public function testSumitComplete()
     {
         $this->client->loginUser($this->admin);
 
@@ -84,20 +87,54 @@ class AdminRestaurantControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Administration : Créer un restaurant');
 
-        $form = $crawler->selectButton('Enregistrer')->form([
+        $form = $crawler->filter('button[value="saveAndAddAnother"]')->form([
             'Restaurant[name]' => 'Mon restaurant',
             'Restaurant[address]' => '32 avenue des potirons',
             'Restaurant[zipCode]' => '84511',
             'Restaurant[city]' => 'La truffe',
             'Restaurant[owner]' => $this->owner->getId(),
         ]);
-        $this->client->submit($form);
+        $crawler = $this->client->submit($form);
+
+        $this->assertResponseRedirects('/admin/restaurant/creer');
+
+        $restaurant = $this->entityManager
+            ->getRepository(Restaurant::class)
+            ->findOneBy(['name' => 'Mon restaurant']);
+
+        self::assertNotNull($restaurant);
+
+        $crawler = $this->client->followRedirect();
+        //TEST KO
+        $form = $crawler->filter('button[value="saveAndReturn"]')->form([
+            'Restaurant[name]' => 'Mon restaurant',
+            'Restaurant[address]' => '32 avenue des potirons',
+            'Restaurant[zipCode]' => '84511',
+            'Restaurant[city]' => 'La truffe',
+            'Restaurant[owner]' => $this->owner->getId(),
+        ]);
+        $crawler = $this->client->submit($form);
+        $this->assertResponseIsUnprocessable();
+        $this->assertSelectorTextContains(
+            '.invalid-feedback',
+            'Un restaurant avec ce nom existe déjà.'
+        );
+        //TEST OK en return
+        $form = $crawler->filter('button[value="saveAndReturn"]')->form([
+            'Restaurant[name]' => 'Mon autre restaurant',
+            'Restaurant[address]' => '32 avenue des potirons',
+            'Restaurant[zipCode]' => '84511',
+            'Restaurant[city]' => 'La truffe',
+            'Restaurant[owner]' => $this->owner->getId(),
+        ]);
+        $crawler = $this->client->submit($form);
+        $restaurant = $this->entityManager
+            ->getRepository(Restaurant::class)
+            ->findOneBy(['name' => 'Mon autre restaurant']);
+
+        self::assertNotNull($restaurant);
 
         $this->assertResponseRedirects('/admin/restaurant/liste');
 
-        $this->client->followRedirect();
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('td', 'Mon restaurant');
     }
-
 }

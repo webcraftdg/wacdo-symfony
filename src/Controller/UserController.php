@@ -31,7 +31,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/users', name: 'app_user_')]
+#[Route('utilisateurs', name: 'app_user_')]
 #[IsGranted('ROLE_RESTAURANT_OWNER')]
 final class UserController extends AbstractController
 {

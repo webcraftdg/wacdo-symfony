@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(
     fields: ['email'],
-    message: 'Cette Email n\'est pas disponnible',
+    message: 'Cette Email n\'est pas disponible.',
     groups: ['user:create', 'user:update', 'user:create-command'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
