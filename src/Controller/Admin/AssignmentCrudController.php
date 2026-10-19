@@ -30,8 +30,8 @@ class AssignmentCrudController extends AbstractCrudController
         ->setPageTitle('edit', 'Administration : Modifier une affectation');
         //Ajout des groups selon l'action ('new', 'edit')
         $crud->setFormOptions(
-            ['validation_groups' => ['Default', 'create']], // Action NEW
-            ['validation_groups' => ['Default']]            // EDIT
+            ['validation_groups' => ['Default', 'assignement:create', 'assignement:update']], // Action NEW
+            ['validation_groups' => ['Default', 'assignement:create', 'assignement:update']]            // EDIT
         );
         return $crud;
     }

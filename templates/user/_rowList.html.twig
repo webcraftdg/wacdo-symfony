@@ -1,6 +1,8 @@
 
 <tr
-    class="hover:bg-slate-50 {{ item.dateArchived is null ? '' : 'opacity-50' }}"
+    class="block rounded-lg border border-slate-200 p-4
+           shadow-sm hover:bg-slate-50
+           md:table-row md:rounded-none md:border-0 md:p-0 md:shadow-none {{ item.dateArchived is null ? '' : 'opacity-50' }}"
     id="collaborator_{{ item.id }}"
     data-controller="archived"
     data-archived-archived-url-value="{{ path('app_user_archived', {id: item.id}) }}"
@@ -9,27 +11,54 @@
     data-archived-mode-value="turbo"
 >
 
-    <td class="px-5 py-4 font-semibold text-slate-900">
-        {{ item.lastname}}
+    <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Nom</span>
+        <span>{{ item.lastname }}</span>
     </td>
 
-    <td class="px-5 py-4 text-slate-700">
-        {{ item.firstname }}
+    <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4 text-slate-700">
+         <span class="text-sm font-semibold text-slate-500 md:hidden">
+            Prénom
+        </span>
+        <span>{{ item.firstname }}</span>
     </td>
 
-    <td class="px-5 py-4 text-slate-700">
-        {{ item.email }}
+    <td class="flex items-start justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4 text-slate-700">
+         <span class="shrink-0 text-sm font-semibold text-slate-500 md:hidden">
+            Email
+        </span>
+        <span class="min-w-0 break-all">
+            {{ item.email }}
+        </span>
     </td>
 
-    <td class="px-5 py-4 text-slate-600 whitespace-nowrap">
-        {{ item.dateRecruitment|date('d/m/Y') }}
+    <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               text-slate-600 md:whitespace-nowrap">
+        <span class="text-sm font-semibold text-slate-500 md:hidden">
+            Recrutement
+        </span>
+        <span>{{ item.dateRecruitment|date('d/m/Y') }}</span>
     </td>
     {% if is_granted('ROLE_ADMIN') %}
-        <td class="px-5 py-4 text-slate-600 whitespace-nowrap">
-            {{ (item.dateArchived) ? item.dateArchived|date('d/m/Y') : ' - ' }}
+        <td class="flex items-center justify-between gap-3 py-2
+                   md:table-cell md:px-5 md:py-4
+                   text-slate-600 md:whitespace-nowrap">
+        <span class="text-sm font-semibold text-slate-500 md:hidden">
+            Archivage
+        </span>
+
+        <span>
+            {{ item.dateArchived ? item.dateArchived|date('d/m/Y') : ' - ' }}
+        </span>
         </td>
     {% endif %}
-    <td class="px-5 py-4">
+    <td class="block border-t border-slate-200 pt-3 mt-3
+               md:table-cell md:border-0 md:px-5 md:py-4 md:mt-0">
         <div class="flex justify-center gap-2">
               <a
                 href="{{ path('app_user_detail',{id: item.id}) }}"
@@ -40,6 +69,7 @@
                 data-turbo-prefetch="false"
                 data-turbo-frame="_top"
                 title="Détail"
+                aria-label="Détail du collaborateur"
             >
                 <i data-controller="icon" data-icon-name-value="details"></i>
             </a>
@@ -52,6 +82,7 @@
                 data-turbo-prefetch="false"
                 data-turbo-frame="_top"
                 title="Éditer"
+                aria-label="Modifier le collaborateur"
             >
                 <i data-controller="icon" data-icon-name-value="edit"></i>
             </a>
@@ -65,11 +96,11 @@
                             px-3 py-2 text-orange-700
                             hover:bg-orange-50"
                     title="Archiver"
+                    aria-label="Archiver le collaborateur"
                 >
                     <i data-controller="icon" data-icon-name-value="archive"></i>
                 </button>
             {% endif %}
         </div>
     </td>
-
 </tr>

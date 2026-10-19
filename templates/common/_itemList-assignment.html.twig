@@ -1,48 +1,57 @@
 
 <tr
-    class="hover:bg-slate-50"
+    class="block rounded-lg border border-slate-200 p-4
+           shadow-sm hover:bg-slate-50
+           md:table-row md:rounded-none md:border-0 md:p-0 md:shadow-none"
     data-controller="delete"
     data-delete-delete-url-value="{{ path('app_assignment_delete', {id: assignment.id}) }}"
     data-delete-context-name-value="{{ assignment.fonction.name ~ ' : ' ~ assignment.user}}"
     data-delete-csrf-value="{{ csrf_token('delete-assignment-' ~ assignment.id) }}"
 >
 
-    <td class="px-5 py-4 font-semibold text-slate-900">
-        {{ assignment.restaurant.name }}
+    <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Nom de restaurant</span>
+        <span>{{ assignment.restaurant.name }}</span>
     </td>
 
-    <td class="px-5 py-4 text-slate-700">
-        {{ assignment.user }}
+    <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Collaborateur</span>
+        <span>{{ assignment.user }}</span>
     </td>
 
-    <td class="px-5 py-4 text-slate-700">
-        {{ assignment.fonction.name }}
+     <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Fonction</span>
+        <span>{{ assignment.fonction.name  }}</span>
     </td>
-
-    <td class="px-5 py-4 text-slate-600 whitespace-nowrap">
-        {{ assignment.dateStart|date('d/m/Y') }}
+    <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Date de début</span>
+        <span>  {{ assignment.dateStart|date('d/m/Y') }}</span>
     </td>
-
-    <td class="px-5 py-4 text-slate-600 whitespace-nowrap">
-        {% if assignment.dateEnd %}
-            {{ assignment.dateEnd|date('d/m/Y') }}
-        {% else %}
-            —
-        {% endif %}
+    <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Date de fin</span>
+        <span> {{ assignment.dateEnd ? assignment.dateEnd|date('d/m/Y') : ' - ' }}</span>
     </td>
-
-    <td class="px-5 py-4">
-        <span
-            class="inline-flex rounded-full px-3 py-1
+    <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Statut</span>
+        <span class="inline-flex rounded-full px-3 py-1
                     text-xs font-semibold
-                    {{ assignment.status.badgeClass }}"
-        >
-            {{ assignment.status.label }}
-        </span>
+                    {{ assignment.status.badgeClass }}"> {{ assignment.status.label }}</span>
     </td>
-
     {% if is_granted('ROLE_RESTAURANT_OWNER') %}
-        <td class="px-5 py-4">
+        <td class="block border-t border-slate-200 pt-3 mt-3
+               md:table-cell md:border-0 md:px-5 md:py-4 md:mt-0">
             <div class="flex justify-end gap-2">
             {% if is_granted('ROLE_ADMIN') %}
 
@@ -56,6 +65,7 @@
                     title="Supprimer"
                     data-turbo-prefetch="false"
                     data-turbo-frame="_top"
+                    aria-label="Supprimer l'affectation"
                 >
                     <i data-controller="icon" data-icon-name-value="trash"></i>
                 </button>
@@ -69,6 +79,7 @@
                     data-turbo-prefetch="false"
                     data-turbo-frame="_top"
                     title="Éditer"
+                    aria-label="Modifier l'affectation"
                 >
                     <i data-controller="icon" data-icon-name-value="edit"></i>
                 </a>

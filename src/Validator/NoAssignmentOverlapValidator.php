@@ -29,7 +29,6 @@ class NoAssignmentOverlapValidator extends ConstraintValidator
             if ($overlap) {
                 $this->context
                     ->buildViolation($constraint->message)
-                    ->setParameter('{{ collab }}', $value->getUser())
                     ->atPath('dateStart') // rattaché l'erreur à un champs (message sur le champs dans le form)
                     ->addViolation();
             }

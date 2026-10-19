@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[ORM\Entity(repositoryClass: AssignmentRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[NoAssignmentOverlap(
-    message:'Ce Collaborateur {{ collab }} est déjà plannifier sur toute ou en partie de la période sélectionnée',
+    message:'Ce Collaborateur est déjà plannifier sur toute ou en partie de la période sélectionnée.',
     groups:['assignement:create', 'assignement:update']
 )]
 class Assignment
@@ -47,7 +47,7 @@ class Assignment
         groups: ['assignement:create', 'assignement:update']
     )]
     #[GreaterThanOrEqual('today',
-        message:'la date de fin doit être postérieure à la date du jour',
+        message:'la date de fin doit être postérieure à la date du jour.',
         groups:['assignement:create', 'assignement:update'])
     ]
     private ?\DateTimeImmutable $dateEnd = null;

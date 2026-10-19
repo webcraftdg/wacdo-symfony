@@ -50,7 +50,7 @@ class MenuBuilder
 
         if ($this->security->isGranted('IS_AUTHENTICATED')) {
             $items[] = [
-                'label' => 'Mon compte',
+                'label' => 'Mon&nbsp;compte',
                 'route' => 'app_account',
                 'activePattern' => 'app_account',
             ];

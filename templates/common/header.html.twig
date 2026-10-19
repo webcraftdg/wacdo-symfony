@@ -1,91 +1,114 @@
-<header class="border-b border-slate-200 bg-white">
-    <div class="m-auto flex max-xl items-center justify-between px-6 py-4">
-        {% set menu = main_menu() %}
-        {% set currentRoute = app.request.attributes.get('_route') %}
-        {# Logo #}
-        <a
-            href="{{ path('app_dispatch') }}"
-            class="flex items-center gap-3"
-        >
-            <div class="flex h-10 w-10 items-center justify-center
-                        rounded-xl bg-blue-600 text-lg font-bold text-white">
-                W
-            </div>
+<header class="relative border-b border-slate-200 bg-white"
+        data-controller="navigation">
 
-            <span class="text-xl font-bold tracking-tight text-slate-900">
-                Wac<span class="text-blue-600">Do</span>
-            </span>
-        </a>
-        <nav class="flex items-center gap-6 text-sm font-medium">
-            {% for item in menu %}
-                <a
-                    href="{{ path(item.route) }}"
-                    class="text-sm font-medium rounded-lg border border-slate-300 px-4 py-2 {{ currentRoute starts with item.activePattern
-                        ? 'bg-gray-800 text-white'
-                        : 'text-gray-600 hover:bg-gray-200' }}"
-                >
-                    {{ item.label }}
-                </a>
-            {% endfor %}
-         </nav>
+    {% set menu = main_menu() %}
+    {% set currentRoute = app.request.attributes.get('_route') %}
 
-        {# Utilisateur connecté #}
-        {% if app.user %}
-            <div class="flex items-center gap-6">
+    <div class="mx-auto max-w-7xl px-4 py-4 lg:px-6">
 
-                <div class="flex items-center gap-3">
+        <div class="flex items-center justify-between gap-4">
 
-                    {# Icône utilisateur #}
-                    <div class="flex h-9 w-9 items-center justify-center
-                                rounded-full bg-slate-100 text-slate-600">
+            {# Logo #}
+            <a href="{{ path('app_dispatch') }}"
+               class="flex shrink-0 items-center gap-3">
 
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            class="h-5 w-5"
-                            aria-hidden="true"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M15.75 6a3.75 3.75 0 1 1-7.5 0
-                                   3.75 3.75 0 0 1 7.5 0ZM4.5
-                                   20.118a7.5 7.5 0 0 1 15 0
-                                   A17.933 17.933 0 0 1 12
-                                   21.75c-2.676 0-5.216-.584-7.5-1.632Z"
-                            />
-                        </svg>
-
-                    </div>
-
-                    <div class="text-sm">
-                        <div class="text-slate-500">
-                            Connecté
-                        </div>
-
-                        <div class="font-medium text-slate-900">
-                            {{ app.user.userIdentifier }}
-                        </div>
-                    </div>
-
+                <div class="flex h-10 w-10 items-center justify-center
+                            rounded-xl bg-blue-600 text-lg font-bold text-white">
+                    W
                 </div>
 
-                <a
-                    href="{{ path('app_logout') }}"
-                    class="rounded-lg border border-slate-300 bg-white
-                           px-4 py-2 text-sm font-medium text-slate-700
-                           transition hover:bg-slate-50
-                           focus:outline-none focus:ring-2
-                           focus:ring-blue-500 focus:ring-offset-2"
-                >
-                    Déconnexion
-                </a>
+                <span class="text-xl font-bold tracking-tight text-slate-900">
+                    Wac<span class="text-blue-600">Do</span>
+                </span>
+            </a>
 
-            </div>
-        {% endif %}
+            {# Navigation #}
+            <nav id="main-menu"
+                 data-navigation-target="menu"
+                 class="hidden lg:flex lg:items-center lg:gap-3
+                        max-lg:absolute max-lg:left-0 max-lg:right-0
+                        max-lg:top-full max-lg:z-50
+                        max-lg:flex-col max-lg:items-stretch
+                        max-lg:bg-white max-lg:p-4 max-lg:shadow-lg"
+                 aria-label="Menu principal">
+                     <ul class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-3">
+                      {% for item in menu %}
+                        <li>
+                            <a href="{{ path(item.route) }}"
+                            class="block rounded-lg border border-slate-300
+                                    px-4 py-2 text-sm font-medium
+                                    {{ currentRoute starts with item.activePattern
+                                        ? 'bg-gray-800 text-white'
+                                        : 'text-gray-600 hover:bg-gray-200' }}">
+                                {{ item.label | raw}}
+                            </a>
+                        </li>
+                    {% endfor %}
+                           {# Utilisateur connecté #}
+                    {% if app.user %}
+                    <li>
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-9 w-9 items-center justify-center
+                                        rounded-full bg-slate-100 text-slate-600">
 
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    class="h-5 w-5"
+                                    aria-hidden="true">
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0
+                                            3.75 3.75 0 0 1 7.5 0ZM4.5
+                                            20.118a7.5 7.5 0 0 1 15 0
+                                            A17.933 17.933 0 0 1 12
+                                            21.75c-2.676 0-5.216-.584-7.5-1.632Z"/>
+                                </svg>
+                            </div>
+
+                            <div class="text-sm">
+                                <div class="text-slate-500">Connecté</div>
+                                <div class="font-medium text-slate-900">
+                                    {{ app.user.userIdentifier }}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_logout') }}"
+                        class="rounded-lg border border-slate-300 bg-white
+                                px-4 py-2 text-sm font-medium text-slate-700
+                                hover:bg-slate-50">
+                            Déconnexion
+                        </a>
+                    </li>
+                    </ul>
+            </nav>
+            {% endif %}
+
+            {# Hamburger mobile #}
+            <button type="button"
+                    class="lg:hidden rounded-lg border border-slate-300 p-2"
+                    data-action="click->navigation#toggle"
+                    data-navigation-target="button"
+                    aria-controls="main-menu"
+                    aria-expanded="false"
+                    aria-label="Ouvrir le menu">
+
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-6 w-6"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+
+        </div>
     </div>
 </header>

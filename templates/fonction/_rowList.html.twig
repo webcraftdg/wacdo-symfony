@@ -1,26 +1,35 @@
 
 <tr
     id="fonction_{{ item.id }}"
-    class="hover:bg-slate-50 {{ item.dateArchived is null ? '' : 'opacity-50' }}"
+    class="block rounded-lg border border-slate-200 p-4
+           shadow-sm hover:bg-slate-50
+           md:table-row md:rounded-none md:border-0 md:p-0 md:shadow-none {{ item.dateArchived is null ? '' : 'opacity-50' }}"
     data-controller="archived"
     data-archived-archived-url-value="{{ path('app_fonction_archived', {id: item.id}) }}"
     data-archived-context-name-value="{{ item.name}}"
     data-archived-csrf-value="{{ csrf_token('archived-fonction-' ~ item.id) }}"
     data-archived-mode-value="turbo"
 >
-
-    <td class="px-5 py-4 font-semibold text-slate-900 item_name">
-        {{ item.name }}
+     <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Nom</span>
+        <span>{{ item.name }}</span>
     </td>
-    <td class="px-5 py-4 text-slate-600 whitespace-nowrap">
-        {% if item.dateArchived %}
-            {{ item.dateArchived|date('d/m/Y') }}
-        {% else %}
-            —
-        {% endif %}
+   <td class="flex items-center justify-between gap-3 py-2
+                   md:table-cell md:px-5 md:py-4
+                   text-slate-600 md:whitespace-nowrap">
+        <span class="text-sm font-semibold text-slate-500 md:hidden">
+            Archivage
+        </span>
+
+        <span>
+            {{ item.dateArchived ? item.dateArchived|date('d/m/Y') : ' - ' }}
+        </span>
     </td>
 
-    <td class="px-5 py-4">
+    <td class="block border-t border-slate-200 pt-3 mt-3
+               md:table-cell md:border-0 md:px-5 md:py-4 md:mt-0">
         <div class="flex justify-end gap-2">
             <a
                 href="{{ path('app_fonction_update',{id: item.id}) }}"
@@ -30,6 +39,7 @@
                         hover:bg-blue-700"
                 data-turbo-prefetch="false"
                 title="Éditer"
+                aria-label="Mettre à jour la fonction"
             >
                 <i data-controller="icon" data-icon-name-value="edit"></i>
             </a>
@@ -41,6 +51,7 @@
                         px-3 py-2 text-orange-700
                         hover:bg-orange-50"
                 title="Archiver"
+                aria-label="Archiver la fonction"
             >
             <i data-controller="icon" data-icon-name-value="archive"></i>
             </button>
