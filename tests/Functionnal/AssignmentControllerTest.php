@@ -240,9 +240,27 @@ class AssignmentControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Créer une affectation');
         $dateStart = new DateTime();
-        $dateStart->modify('tomorrow');
+        $dateStart->modify('today');
         $dateEnd = new DateTime();
-        $dateEnd->modify('+1 months');
+        $dateEnd->modify('+15 days');
+        $form = $crawler->selectButton('Enregistrer')->form([
+            'assignment[dateStart]' => $dateStart->format('Y-m-d'),
+            'assignment[dateEnd]' => $dateEnd->format('Y-m-d'),
+            'assignment[user]' => $this->collab->getId(),
+            'assignment[restaurant]' => $this->restaurant->getId(),
+            'assignment[fonction]' => $this->fonction->getId(),
+        ]);
+        $crawler = $this->client->submit($form);
+        $this->assertResponseIsUnprocessable();
+        $this->assertSelectorTextContains(
+            'ul.text-red-600 > li',
+            'Ce Collaborateur est déjà plannifier sur toute ou en partie de la période sélectionnée.'
+        );
+        //CREATE OK
+          $dateStart = new DateTime();
+        $dateStart->modify('today');
+        $dateEnd = new DateTime();
+        $dateEnd->modify('+15 days');
         $form = $crawler->selectButton('Enregistrer')->form([
             'assignment[dateStart]' => $dateStart->format('Y-m-d'),
             'assignment[dateEnd]' => $dateEnd->format('Y-m-d'),
@@ -251,11 +269,19 @@ class AssignmentControllerTest extends WebTestCase
             'assignment[fonction]' => $this->fonction->getId(),
         ]);
         $this->client->submit($form);
-        $this->client->submit($form);
-        $this->assertResponseIsUnprocessable();
-        $this->assertSelectorTextContains(
-            'ul.text-red-600 > li',
-            'Ce Collaborateur est déjà plannifier sur toute ou en partie de la période sélectionnée.'
-        );
+
+        $this->assertResponseRedirects('/affectations/accueil');
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+
+        $assignment = $this->entityManager
+            ->getRepository(Assignment::class)
+            ->findOneBy(['user' => $this->collab2]);
+
+        self::assertNotNull($assignment);
+        $selector = 'tr#assignment_'.$assignment->getId().' > td';
+        $this->assertSelectorTextContains($selector, $this->restaurant->getName());
     }
 }

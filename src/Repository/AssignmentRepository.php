@@ -182,15 +182,14 @@ class AssignmentRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('a')
             ->select('COUNT(a.id)')
             ->andWhere('a.user = :user')
-            ->setParameter('user', $user)
             // L'affectation existante ne doit pas être terminée
             // avant le début de la nouvelle.
-            ->andWhere('(a.dateStart >= :dateStart)')
-            ->setParameter('dateStart', $dateStart);
-            // L'affectation existante doit commencer
-            // avant la fin de la nouvelle.
-        $qb->andWhere('a.dateEnd <= :dateEnd')
-                ->setParameter('dateEnd', $dateEnd);
+            ->andWhere('(a.dateEnd >= :dateStart)')
+            ->andWhere('a.dateStart <= :dateEnd')
+            ->setParameter('dateEnd', $dateEnd)
+            ->setParameter('dateStart', $dateStart)
+            ->setParameter('dateEnd', $dateEnd)
+            ->setParameter('user', $user);
 
         //Si il s'agit d'une mis à jour, il faut exclure l'assignment de la requête
         if ($excludedAssignment?->getId() !== null) {
