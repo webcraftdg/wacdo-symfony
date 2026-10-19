@@ -176,7 +176,7 @@ class AssignmentRepository extends ServiceEntityRepository
     public function hasOverlappingAssignment(
         User $user,
         DateTimeImmutable $dateStart,
-        ?DateTimeImmutable $dateEnd,
+        DateTimeImmutable $dateEnd,
         ?Assignment $excludedAssignment = null
     ): bool {
         $qb = $this->createQueryBuilder('a')
@@ -185,15 +185,13 @@ class AssignmentRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             // L'affectation existante ne doit pas être terminée
             // avant le début de la nouvelle.
-            ->andWhere('(a.dateEnd >= :dateStart)')
+            ->andWhere('(a.dateStart >= :dateStart)')
             ->setParameter('dateStart', $dateStart);
-
-        if ($dateEnd !== null) {
             // L'affectation existante doit commencer
             // avant la fin de la nouvelle.
-            $qb->andWhere('a.dateStart <= :dateEnd')
+        $qb->andWhere('a.dateEnd <= :dateEnd')
                 ->setParameter('dateEnd', $dateEnd);
-        }
+
         //Si il s'agit d'une mis à jour, il faut exclure l'assignment de la requête
         if ($excludedAssignment?->getId() !== null) {
             $qb->andWhere('a.id != :excludedId')

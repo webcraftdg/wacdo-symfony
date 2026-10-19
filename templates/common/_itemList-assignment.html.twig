@@ -7,6 +7,7 @@
     data-delete-delete-url-value="{{ path('app_assignment_delete', {id: assignment.id}) }}"
     data-delete-context-name-value="{{ assignment.fonction.name ~ ' : ' ~ assignment.user}}"
     data-delete-csrf-value="{{ csrf_token('delete-assignment-' ~ assignment.id) }}"
+    id="assignment_{{ assignment.id }}"
 >
 
     <td class="flex items-center justify-between gap-3 py-2
