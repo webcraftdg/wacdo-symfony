@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * AppFixtures.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\DataFixtures
+ */
 namespace App\DataFixtures;
 
 use App\Entity\Assignment;

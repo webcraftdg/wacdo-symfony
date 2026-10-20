@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * PageTitleListener.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\EventListener
+ */
 namespace App\EventListener;
 
 use App\Attribute\PageTitle;

@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * ChartDataBuilder.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Helper
+ */
 namespace App\Helper;
 
 final class ChartDataBuilder

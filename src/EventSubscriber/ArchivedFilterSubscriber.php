@@ -1,4 +1,14 @@
 <?php
+/**
+ * ArchivedFilterSubscriber.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\EventSubscriber
+ */
+
 namespace App\EventSubscriber;
 
 use Doctrine\ORM\EntityManagerInterface;

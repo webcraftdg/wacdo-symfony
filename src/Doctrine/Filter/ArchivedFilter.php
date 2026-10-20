@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * ArchivedFilter.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Doctrine\Filter
+ */
 namespace App\Doctrine\Filter;
 
 use Doctrine\ORM\Mapping\ClassMetadata;

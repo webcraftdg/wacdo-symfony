@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * AssignmentStatus.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Enum
+ */
 namespace App\Enum;
 
 enum AssignmentStatus : string

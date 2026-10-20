@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * NoAssignmentOverlapValidator.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Validator
+ */
 namespace App\Validator;
 
 use App\Entity\Assignment;

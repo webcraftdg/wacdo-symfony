@@ -1,10 +1,17 @@
 <?php
-
+/**
+ * BreadcrumbListener.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\EventListener
+ */
 namespace App\EventListener;
 
 use App\Attribute\Breadcrumb;
 use App\Helper\BreadcrumbItem;
-use ReflectionClass;
 use ReflectionMethod;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;

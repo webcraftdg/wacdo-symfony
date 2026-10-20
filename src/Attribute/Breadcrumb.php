@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * Breadcrumb.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Attribute
+ */
 namespace App\Attribute;
 
 use App\Helper\BreadcrumbItem;

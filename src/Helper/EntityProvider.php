@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * EntityProvider.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Helper
+ */
 namespace App\Helper;
 
 use Doctrine\ORM\QueryBuilder;
