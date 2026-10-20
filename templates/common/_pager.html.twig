@@ -1,6 +1,5 @@
 {% if dataProvider.pageCount > 1 %}
-    <nav class="flex items-center justify-center gap-1 mt-4"
-         aria-label="Pagination">
+    <nav class="flex flex-wrap items-center justify-center gap-1 mt-4" aria-label="Pagination">
 
         {% for page in 1..dataProvider.pageCount %}
         {% set params = app.request.attributes.get('_route_params')|default({}) %}

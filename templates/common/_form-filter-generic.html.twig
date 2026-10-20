@@ -11,12 +11,19 @@
         Filtrer
     </button>
 
-    <div data-modal-target="modal" class="hidden fixed bg-gray-800 inset-0 flex items-center justify-center">
+    <div data-modal-target="modal" class="flex hidden fixed inset-0 z-50
+            bg-gray-800/80
+            items-center justify-center
+            p-4">
         {# fenêtre #}
-        <div class="relative bg-white p-6 rounded shadow-lg text-center">
+        <div class="relative w-full max-w-2xl
+            max-h-[90dvh] overflow-y-auto
+            rounded-xl bg-white
+            p-4 sm:p-6
+            shadow-lg">
             <button
                 type="button"
-                class=" absolute top-0 right-0  p-2 m-2 rounded-lg bg-red-600
+                class=" absolute top-0 right-0  m-2 rounded-lg bg-red-600
                                 text-white font-medium
                                 hover:bg-red-700
                                 focus:outline-none focus:ring-2

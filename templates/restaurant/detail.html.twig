@@ -2,86 +2,89 @@
 
 {% block body %}
 <div class="max-w-7xl mx-auto px-6 py-2">
-<section class="
-    bg-white
-    rounded-xl
-    shadow-sm
-    ring-1 ring-slate-200
-    p-6
-    mb-8
-">
+    <h1 class="text-2xl font-bold text-slate-900 mb-2">
+        Détail du restaurant
+    </h1>
+    <section class="
+        bg-white
+        rounded-xl
+        shadow-sm
+        ring-1 ring-slate-200
+        p-6
+        mb-8
+    ">
 
-    <div class="flex items-start justify-between gap-4 mb-6">
+        <div class="flex items-start justify-between gap-4 mb-6">
 
-        <h2 class="text-lg font-semibold text-slate-900">
-            Informations
-        </h2>
+            <h2 class="text-lg font-semibold text-slate-900">
+                Informations
+            </h2>
 
-        {% if restaurant.dateArchived %}
-            <span class="
-                inline-flex items-center
-                rounded-full
-                bg-slate-100
-                px-3 py-1
-                text-xs font-medium text-slate-600
-            ">
-                Archivé
-            </span>
-        {% endif %}
+            {% if restaurant.dateArchived %}
+                <span class="
+                    inline-flex items-center
+                    rounded-full
+                    bg-slate-100
+                    px-3 py-1
+                    text-xs font-medium text-slate-600
+                ">
+                    Archivé
+                </span>
+            {% endif %}
 
-    </div>
-
-    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-
-        <div>
-            <dt class="text-sm font-medium text-slate-500">
-                Nom
-            </dt>
-            <dd class="mt-1 text-slate-900">
-                {{ restaurant.name }}
-            </dd>
         </div>
 
-        <div>
-            <dt class="text-sm font-medium text-slate-500">
-                Adresse
-            </dt>
-            <dd class="mt-1 text-slate-900">
-                {{ restaurant.address }}
-            </dd>
-        </div>
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
 
-        <div>
-            <dt class="text-sm font-medium text-slate-500">
-                Code postal
-            </dt>
-            <dd class="mt-1 text-slate-900">
-                {{ restaurant.zipCode }}
-            </dd>
-        </div>
-
-        <div>
-            <dt class="text-sm font-medium text-slate-500">
-                Ville
-            </dt>
-            <dd class="mt-1 text-slate-900">
-                {{ restaurant.city }}
-            </dd>
-        </div>
-
-        {% if restaurant.dateArchived %}
             <div>
                 <dt class="text-sm font-medium text-slate-500">
-                    Date d'archivage
+                    Nom
                 </dt>
                 <dd class="mt-1 text-slate-900">
-                    {{ restaurant.dateArchived|date('d/m/Y') }}
+                    {{ restaurant.name }}
                 </dd>
             </div>
-        {% endif %}
 
-    </dl>
-</section>
+            <div>
+                <dt class="text-sm font-medium text-slate-500">
+                    Adresse
+                </dt>
+                <dd class="mt-1 text-slate-900">
+                    {{ restaurant.address }}
+                </dd>
+            </div>
+
+            <div>
+                <dt class="text-sm font-medium text-slate-500">
+                    Code postal
+                </dt>
+                <dd class="mt-1 text-slate-900">
+                    {{ restaurant.zipCode }}
+                </dd>
+            </div>
+
+            <div>
+                <dt class="text-sm font-medium text-slate-500">
+                    Ville
+                </dt>
+                <dd class="mt-1 text-slate-900">
+                    {{ restaurant.city }}
+                </dd>
+            </div>
+
+            {% if restaurant.dateArchived %}
+                <div>
+                    <dt class="text-sm font-medium text-slate-500">
+                        Date d'archivage
+                    </dt>
+                    <dd class="mt-1 text-slate-900">
+                        {{ restaurant.dateArchived|date('d/m/Y') }}
+                    </dd>
+                </div>
+            {% endif %}
+
+        </dl>
+    </section>
 
 </div>
 

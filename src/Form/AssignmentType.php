@@ -1,8 +1,16 @@
 <?php
-
+/**
+ * AssignmentType.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Form
+ */
 namespace App\Form;
 
-use App\Entity\Assigment;
+use App\Entity\Assignment;
 use App\Entity\Fonction;
 use App\Entity\Restaurant;
 use App\Entity\User;
@@ -79,7 +87,7 @@ class AssignmentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Assigment::class,
+            'data_class' => Assignment::class,
             'user' => null
         ]);
         $resolver->setAllowedTypes('user', ['null', User::class]);

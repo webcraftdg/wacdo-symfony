@@ -1,8 +1,15 @@
 <?php
-
+/**
+ * DispatchController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller
+ */
 namespace App\Controller;
 
-use App\Attribute\PageTitle;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +18,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class DispatchController extends AbstractController
 {
+    /**
+     * Dispatch
+     *
+     * Dispatch user connected to available route
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('', name: 'app_dispatch')]
     #[IsGranted('IS_AUTHENTICATED')]
     public function index(): Response

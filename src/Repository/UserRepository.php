@@ -1,4 +1,13 @@
 <?php
+/**
+ * UserRepository.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Repository
+ */
 
 namespace App\Repository;
 
@@ -83,7 +92,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         if ($noAffected === true) {
             $today = new DateTimeImmutable('today');
             $queryBuilder->leftJoin(
-                'u.assigments',
+                'u.assignments',
                 'a',
                 Expr\Join::WITH,
                 'a.dateStart <= :today AND (a.dateEnd IS NULL OR a.dateEnd >= :today)'
@@ -121,7 +130,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         $today = new DateTimeImmutable();
         return (int)$this->createCollaboratorQuery()->select('count(u.id)')->innerJoin(
-                'u.assigments',
+                'u.assignments',
                 'a',
                 Expr\Join::WITH,
                 'a.dateStart <= :today AND (a.dateEnd IS NULL OR a.dateEnd >= :today)'

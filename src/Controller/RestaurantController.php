@@ -1,4 +1,13 @@
 <?php
+/**
+ * RestaurantController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller
+ */
 
 namespace App\Controller;
 
@@ -11,7 +20,7 @@ use App\Form\GenericSearchType;
 use App\Form\RestaurantType;
 use App\Helper\EntityHydrator;
 use App\Helper\EntityProvider;
-use App\Repository\AssigmentRepository;
+use App\Repository\AssignmentRepository;
 use App\Repository\RestaurantRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,19 +30,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
- #[Route('/restaurant', name: 'app_restaurant_')]
+ #[Route('/restaurants', name: 'app_restaurant_')]
  #[IsGranted('ROLE_RESTAURANT_OWNER')]
 final class RestaurantController extends AbstractController
 {
 
     public function __construct(
         private RestaurantRepository $restaurantRepository,
-        private AssigmentRepository $assigmentRepository,
+        private AssignmentRepository $assignmentRepository,
         private EntityManagerInterface $entityManagerInterface
     )
     {}
 
 
+    /**
+     * index
+     *
+     * List restaurant
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/accueil', name: 'home')]
     #[PageTitle(title:'Liste', section:'Restaurant')]
     #[Breadcrumb([
@@ -42,7 +60,7 @@ final class RestaurantController extends AbstractController
             'route' => 'app_dispatch',
         ],
         [
-            'label' => 'liste des restaurant',
+            'label' => 'liste des restaurants',
         ]
     ])]
     public function index(Request $request): Response
@@ -69,6 +87,14 @@ final class RestaurantController extends AbstractController
         ]);
     }
 
+    /**
+     * update restaurant
+     *
+     * @param Restaurant $restaurant
+     * @param Request  $request
+     *
+     * @requires Response
+     */
     #[Route('/{id}/mettre-a-jour', name: 'update')]
     #[PageTitle(title:'Mettre à jour', section:'Restaurant')]
     #[Breadcrumb(
@@ -78,7 +104,7 @@ final class RestaurantController extends AbstractController
                 'route' => 'app_dispatch',
             ],
             [
-                'label' => 'liste des restaurant',
+                'label' => 'liste des restaurants',
                 'route' => 'app_restaurant_home'
             ],
         ],
@@ -92,7 +118,7 @@ final class RestaurantController extends AbstractController
         if ($form->isSubmitted() === true && $form->isValid() === true) {
             $this->entityManagerInterface->persist($restaurant);
             $this->entityManagerInterface->flush();
-            $response = $this->redirectToRoute('app_restaurant_home', ['id' => $restaurant->getId()]);
+            $response = $this->redirectToRoute('app_restaurant_home');
         }
         if ($response === null) {
             $response = $this->render('restaurant/update.html.twig', [
@@ -102,6 +128,14 @@ final class RestaurantController extends AbstractController
         return $response;
     }
 
+    /**
+     * detail restaurant
+     *
+     * @param Restaurant $restaurant
+     * @param Request  $request
+     *
+     * @requires Response
+     */
     #[Route('/{id}/detail', name: 'detail')]
     #[PageTitle(title:'detail', section:'Restaurant')]
     #[Breadcrumb(
@@ -111,7 +145,7 @@ final class RestaurantController extends AbstractController
                 'route' => 'app_dispatch',
             ],
             [
-                'label' => 'liste des restaurant',
+                'label' => 'liste des restaurants',
                 'route' => 'app_restaurant_home'
             ]
         ],
@@ -128,7 +162,7 @@ final class RestaurantController extends AbstractController
             ]);
         $searchForm->handleRequest($request);
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
-        $queryBuilder = $this->assigmentRepository->createBuilderforUserWithCriteria(
+        $queryBuilder = $this->assignmentRepository->createBuilderforUserWithCriteria(
             user:$this->getUser(),
             restaurant:$restaurant,
             criteria:$criteria
@@ -145,13 +179,31 @@ final class RestaurantController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/supprimer', name: 'delete', methods: ['DELETE'])]
+    /**
+     * archive restaurant
+     *
+     * Set date archirverd
+     *
+     * @param Restaurant $restaurant
+     * @param Request  $request
+     *
+     * @requires Response
+     */
+    #[Route('/{id}/archiver', name: 'archived', methods: ['PATCH'])]
     #[IsGranted(User::ROLE_ADMIN)]
-    public function delete(Restaurant $restaurant) : Response
+    public function archived(Restaurant $restaurant, Request $request) : Response
     {
         $restaurant->setDateArchived(new DateTime());
         $this->entityManagerInterface->persist($restaurant);
         $this->entityManagerInterface->flush();
-        return $this->json(null, Response::HTTP_NO_CONTENT);;
+        $response =  new Response(status: Response::HTTP_NO_CONTENT);
+        if ($request->headers->contains('Accept', 'text/vnd.turbo-stream.html') === true) {
+            $response =  $this->render('restaurant/_rowList.stream.html.twig', [
+                'item' => $restaurant,
+            ], new Response(headers: [
+                'Content-Type' => 'text/vnd.turbo-stream.html',
+            ]));
+        }
+        return $response;
     }
 }

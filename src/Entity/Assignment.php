@@ -1,41 +1,45 @@
 <?php
-
+/**
+ * Assignment.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Entity
+ */
 namespace App\Entity;
 
-use App\Enum\AssisnmentStatus;
-use App\Repository\AssigmentRepository;
+use App\Enum\AssignmentStatus;
+use App\Repository\AssignmentRepository;
 use App\Validator\NoAssignmentOverlap;
 use DateTime;
-use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
-use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
-
-#[ORM\Entity(repositoryClass: AssigmentRepository::class)]
+#[ORM\Entity(repositoryClass: AssignmentRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[NoAssignmentOverlap(
-    message:'Ce Collaborateur {{ collab }} est déjà plannifier sur toute ou en partie de la période sélectionnée',
+    message:'Ce Collaborateur est déjà plannifier sur toute ou en partie de la période sélectionnée.',
     groups:['assignement:create', 'assignement:update']
 )]
-class Assigment
+class Assignment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'assigments')]
+    #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[NotBlank(message:'Veuillez choisir un utilisateur')]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'assigments')]
+    #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[NotBlank(message:'Veuillez choisir un restaurant')]
     private ?Restaurant $restaurant = null;
 
-    #[ORM\ManyToOne(inversedBy: 'assigments')]
+    #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[NotBlank(message:'Veuillez choisir une fonction')]
     private ?Fonction $fonction = null;
 
@@ -51,7 +55,7 @@ class Assigment
         groups: ['assignement:create', 'assignement:update']
     )]
     #[GreaterThanOrEqual('today',
-        message:'la date de fin doit être postérieure à la date du jour',
+        message:'la date de fin doit être postérieure à la date du jour.',
         groups:['assignement:create', 'assignement:update'])
     ]
     private ?\DateTimeImmutable $dateEnd = null;
@@ -163,16 +167,16 @@ class Assigment
         $this->dateCreate = new DateTime();
     }
 
-    public function getStatus(): ?AssisnmentStatus
+    public function getStatus(): ?AssignmentStatus
     {
         $today = new DateTime('today');
-        $status = AssisnmentStatus::EN_COURS;
+        $status = AssignmentStatus::EN_COURS;
         if ($this->dateStart > $today) {
-            $status = AssisnmentStatus::EN_ATTENTE;
+            $status = AssignmentStatus::EN_ATTENTE;
         }
 
         if ($this->dateEnd !== null && $this->dateEnd < $today) {
-            $status = AssisnmentStatus::FINI;
+            $status = AssignmentStatus::FINI;
         }
         return $status;
     }

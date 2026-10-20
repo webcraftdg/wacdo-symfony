@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * User.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Entity
+ */
 namespace App\Entity;
 
 use App\Repository\UserRepository;
@@ -19,8 +27,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(
     fields: ['email'],
-    message: 'Cette Email n\'est pas disponnible',
-    groups: ['user:create', 'user:update'])]
+    message: 'Cette Email n\'est pas disponible.',
+    groups: ['user:create', 'user:update', 'user:create-command'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const ROLE_COLLAB = 'ROLE_COLLAB';
@@ -41,7 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Email(
         message:'Format de Email invalide',
         groups:[
-            'user:create', 'user:update'
+            'user:create', 'user:update', 'user:create-command'
         ]
     )]
     #[Groups(['user:detail'])]
@@ -60,7 +68,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[NotBlank(
         message:'Le droit doit-être choisie',
-        groups:['user:create']
+        groups:['user:create',]
     )]
     private ?string $role = null;
 
@@ -68,6 +76,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+       #[NotBlank(
+        message:'Le mot de passe doit-être choisie',
+        groups:['user:create-command']
+    )]
     private ?string $password = null;
 
     /**
@@ -103,10 +115,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTime $dateUpdate = null;
 
     /**
-     * @var Collection<int, Assigment>
+     * @var Collection<int, Assignment>
      */
-    #[ORM\OneToMany(targetEntity: Assigment::class, mappedBy: 'user')]
-    private Collection $assigments;
+    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'user')]
+    private Collection $assignments;
 
     /**
      * @var Collection<int, Restaurant>
@@ -122,7 +134,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->assigments = new ArrayCollection();
+        $this->assignments = new ArrayCollection();
         $this->restaurants = new ArrayCollection();
     }
 
@@ -310,29 +322,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Assigment>
+     * @return Collection<int, Assignment>
      */
-    public function getAssigments(): Collection
+    public function getAssignments(): Collection
     {
-        return $this->assigments;
+        return $this->assignments;
     }
 
-    public function addAssigment(Assigment $assigment): static
+    public function addAssignment(Assignment $assignment): static
     {
-        if (!$this->assigments->contains($assigment)) {
-            $this->assigments->add($assigment);
-            $assigment->setUser($this);
+        if (!$this->assignments->contains($assignment)) {
+            $this->assignments->add($assignment);
+            $assignment->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeAssigment(Assigment $assigment): static
+    public function removeAssignment(Assignment $assignment): static
     {
-        if ($this->assigments->removeElement($assigment)) {
+        if ($this->assignments->removeElement($assignment)) {
             // set the owning side to null (unless already changed)
-            if ($assigment->getUser() === $this) {
-                $assigment->setUser(null);
+            if ($assignment->getUser() === $this) {
+                $assignment->setUser(null);
             }
         }
 

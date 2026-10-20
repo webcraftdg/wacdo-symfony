@@ -1,4 +1,13 @@
 <?php
+/**
+ * AuthenticationController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller
+ */
 
 namespace App\Controller;
 
@@ -10,6 +19,13 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthenticationController extends AbstractController
 {
+    /**
+     * Login
+     *
+     * @param  \Symfony\Component\Security\Http\Authentication\AuthenticationUtils $authenticationUtils
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route(path: '/login', name: 'app_login')]
     #[PageTitle(title:'Connexion')]
     public function login(AuthenticationUtils $authenticationUtils): Response
@@ -26,6 +42,11 @@ class AuthenticationController extends AbstractController
         ]);
     }
 
+    /**
+     * lgout
+     *
+     * @return void
+     */
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {

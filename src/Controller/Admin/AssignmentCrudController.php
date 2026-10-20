@@ -1,8 +1,16 @@
 <?php
-
+/**
+ * AssignmentCrudController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller\Admin
+ */
 namespace App\Controller\Admin;
 
-use App\Entity\Assigment;
+use App\Entity\Assignment;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -10,15 +18,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class AssigmentCrudController extends AbstractCrudController
+class AssignmentCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Assigment::class;
+        return Assignment::class;
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -30,8 +35,8 @@ class AssigmentCrudController extends AbstractCrudController
         ->setPageTitle('edit', 'Administration : Modifier une affectation');
         //Ajout des groups selon l'action ('new', 'edit')
         $crud->setFormOptions(
-            ['validation_groups' => ['Default', 'create']], // Action NEW
-            ['validation_groups' => ['Default']]            // EDIT
+            ['validation_groups' => ['Default', 'assignement:create', 'assignement:update']], // Action NEW
+            ['validation_groups' => ['Default', 'assignement:create', 'assignement:update']]            // EDIT
         );
         return $crud;
     }

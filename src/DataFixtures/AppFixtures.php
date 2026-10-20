@@ -1,8 +1,16 @@
 <?php
-
+/**
+ * AppFixtures.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\DataFixtures
+ */
 namespace App\DataFixtures;
 
-use App\Entity\Assigment;
+use App\Entity\Assignment;
 use App\Entity\Fonction;
 use App\Entity\Restaurant;
 use App\Entity\User;
@@ -123,16 +131,16 @@ class AppFixtures extends Fixture
                 '+' . random_int(1, 12) . ' months'
             );
 
-            $assigment = new Assigment();
+            $assignment = new Assignment();
 
-            $assigment
+            $assignment
                 ->setFonction($fonctColla[array_rand($fonctColla)])
                 ->setRestaurant($restos[array_rand($restos)])
                 ->setUser($collabs[array_rand($collabs)])
                 ->setDateStart(DateTimeImmutable::createFromMutable($dateStart))
                 ->setDateEnd(DateTimeImmutable::createFromMutable($dateEnd));
 
-            $manager->persist($assigment);
+            $manager->persist($assignment);
         }
         $manager->flush();
     }

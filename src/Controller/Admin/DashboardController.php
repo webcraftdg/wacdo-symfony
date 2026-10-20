@@ -1,19 +1,23 @@
 <?php
-
+/**
+ * DashboardController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller\Admin
+ */
 namespace App\Controller\Admin;
 
-use App\Attribute\PageTitle;
-use App\Controller\RestaurantController;
-use App\Repository\AssigmentRepository;
+use App\Repository\AssignmentRepository;
 use App\Repository\FonctionRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\UserRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-use Override;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -29,7 +33,7 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         private UserRepository $userRepository,
-        private AssigmentRepository $assigmentRepository,
+        private AssignmentRepository $assignmentRepository,
         private FonctionRepository $fonctionRepository,
         private RestaurantRepository $restaurantRepository
     )
@@ -43,12 +47,12 @@ class DashboardController extends AbstractDashboardController
                 'statistics' => [
                     'users' => $this->userRepository->count(['isAdmin' => false]),
                     'restaurants' => $this->restaurantRepository->count(),
-                    'assignments' => $this->assigmentRepository->count(),
+                    'assignments' => $this->assignmentRepository->count(),
                     'functions' => $this->fonctionRepository->count()
                 ],
-                'pastAssignments' => $this->assigmentRepository->findCriteriaAssignments()->getQuery()->getResult(),
-                'upcomingAssignments' => $this->assigmentRepository->findCriteriaAssignments(criteria:'a.dateStart >= :today')->getQuery()->getResult(),
-                'inProgressAssignments' => $this->assigmentRepository->findCriteriaAssignments(criteria:'a.dateStart <= :today AND a.dateEnd >= :today')->getQuery()->getResult()
+                'pastAssignments' => $this->assignmentRepository->findCriteriaAssignments()->getQuery()->getResult(),
+                'upcomingAssignments' => $this->assignmentRepository->findCriteriaAssignments(criteria:'a.dateStart >= :today')->getQuery()->getResult(),
+                'inProgressAssignments' => $this->assignmentRepository->findCriteriaAssignments(criteria:'a.dateStart <= :today AND a.dateEnd >= :today')->getQuery()->getResult()
             ]);
     }
 
@@ -65,8 +69,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkTo(UserCrudController::class, 'Les utilisateurs', 'fas fa-users');
         yield MenuItem::linkTo(FonctionCrudController::class, 'Les fonctions', 'fas fa-briefcase');
         yield MenuItem::linkTo(RestaurantCrudController::class, 'Les restaurants', 'fas fa-utensils');
-        yield MenuItem::linkTo(AssigmentCrudController::class, 'Les affectations', 'fas fa-person-walking-luggage');
-        yield MenuItem::linkToRoute( 'Site restaurateurs', 'fas fa-shop', 'app_restaurant_home');
+        yield MenuItem::linkTo(AssignmentCrudController::class, 'Les affectations', 'fas fa-person-walking-luggage');
+        yield MenuItem::linkToUrl( 'Site restaurateurs', 'fas fa-shop', '/');
 
     }
 }

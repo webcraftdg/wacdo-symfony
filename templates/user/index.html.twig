@@ -3,49 +3,54 @@
 {% block body %}
 
 
-<div class="max-w-7xl mx-auto px-6 py-10">
+<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       {% include 'common/_form-filter-generic.html.twig'
             with { form: searchForm } %}
 
-    <div class=" flex justify-between mb-8 w-full">
+    <div class="flex flex-col gap-2 mb-2 w-full
+            md:flex-row md:items-center md:justify-between">
         <div class="">
             <h1 class="text-2xl font-bold text-slate-900">Les collaborateurs{% if(noAffected == true)%} non affectés {%endif%}</h1>
             <p class="mt-1 text-slate-500">
                 Consultez les collaborateurs{% if(noAffected == true)%} non affectés {%endif%}.
             </p>
         </div>
-        <div class="flex">
-            <div class="mt-6 mr-2">
+        <div class="flex w-full flex-col gap-2 md:w-auto md:flex-row md:items-center md:shrink-0">
+            <div class="w-full md:w-auto">
                 {% if(noAffected == true)%}
                     <a href="{{ path('app_user_home', {noAffected:false}) }}"
-                        class="px-4 py-2 rounded-lg bg-blue-600
-                            hover:bg-blue-700 text-white">
+                        class="inline-flex w-full md:w-auto items-center justify-center
+       rounded-lg bg-blue-600 px-4 py-2
+       text-center text-white hover:bg-blue-700">
                         Tous les collaborateurs
                     </a>
                 {% else %}
                     <a href="{{ path('app_user_home', {noAffected:true}) }}"
-                        class="px-4 py-2 rounded-lg bg-blue-600
-                            hover:bg-blue-700 text-white">
+                        class="inline-flex w-full md:w-auto items-center justify-center
+       rounded-lg bg-blue-600 px-4 py-2
+       text-center text-white hover:bg-blue-700">
                         Collaborateurs non affectés
                     </a>
                 {% endif %}
             </div>
-            <div class="mt-6">
+            <div class="w-full md:w-auto">
                 <a href="{{ path('app_user_create') }}"
-                    class="px-4 py-2 rounded-lg bg-blue-600
-                        hover:bg-blue-700 text-white">
+                    class="inline-flex w-full md:w-auto items-center justify-center
+       rounded-lg bg-blue-600 px-4 py-2
+       text-center text-white hover:bg-blue-700">
                     Créer
                 </a>
             </div>
         </div>
 
     </div>
+    <turbo-frame id="users-list" data-turbo-action="advance">
+        {% include 'user/_list.html.twig'
+                        with { dataProvider: dataProvider } %}
 
-    {% include 'user/_list.html.twig'
-                    with { dataProvider: dataProvider } %}
-    {% include 'common/_pager.html.twig'
-                    with { dataProvider: dataProvider, route: 'app_user_home'} %}
-
+        {% include 'common/_pager.html.twig'
+                        with { dataProvider: dataProvider, route: 'app_user_home'} %}
+    </turbo-frame>
 </div>
 
 {% endblock %}

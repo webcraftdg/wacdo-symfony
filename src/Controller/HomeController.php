@@ -1,10 +1,18 @@
 <?php
+/**
+ * HomeController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller
+ */
 
 namespace App\Controller;
 
-use App\Attribute\Breadcrumb;
 use App\Helper\ChartDataBuilder;
-use App\Repository\AssigmentRepository;
+use App\Repository\AssignmentRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,16 +26,15 @@ final class HomeController extends AbstractController
     public function __construct(
         private RestaurantRepository $restaurantRepository,
         private UserRepository $userRepository,
-        private AssigmentRepository $assignmentRepository
+        private AssignmentRepository $assignmentRepository
     )
     {
     }
+
+    /**
+     * index
+     */
     #[Route('/home', name: 'app_home')]
-    #[Breadcrumb([
-        [
-            'label' => 'Accueil',
-        ]
-    ])]
     public function index(): Response
     {
         $stats = [

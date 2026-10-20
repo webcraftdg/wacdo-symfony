@@ -1,27 +1,33 @@
 <?php
-
+/**
+ * AssignmentRepository.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Repository
+ */
 namespace App\Repository;
 
-use App\Entity\Assigment;
+use App\Entity\Assignment;
 use App\Entity\Restaurant;
 use App\Entity\User;
 use App\Helper\CriteriaBuilder;
 use App\Helper\CriteriaField;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Assigment>
+ * @extends ServiceEntityRepository<Assignment>
  */
-class AssigmentRepository extends ServiceEntityRepository
+class AssignmentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Assigment::class);
+        parent::__construct($registry, Assignment::class);
     }
 
     public function createBuilderforUserWithCriteria(
@@ -169,31 +175,28 @@ class AssigmentRepository extends ServiceEntityRepository
      * @param  \App\Entity\User           $user
      * @param  \DateTimeImmutable         $dateStart
      * @param  \DateTimeImmutable|null    $dateEnd
-     * @param  \App\Entity\Assigment|null $excludedAssignment
+     * @param  \App\Entity\Assignment|null $excludedAssignment
      *
      * @return bool
      */
     public function hasOverlappingAssignment(
         User $user,
         DateTimeImmutable $dateStart,
-        ?DateTimeImmutable $dateEnd,
-        ?Assigment $excludedAssignment = null
+        DateTimeImmutable $dateEnd,
+        ?Assignment $excludedAssignment = null
     ): bool {
         $qb = $this->createQueryBuilder('a')
             ->select('COUNT(a.id)')
             ->andWhere('a.user = :user')
-            ->setParameter('user', $user)
             // L'affectation existante ne doit pas être terminée
             // avant le début de la nouvelle.
-            ->andWhere('(a.dateEnd IS NULL OR a.dateEnd >= :dateStart)')
-            ->setParameter('dateStart', $dateStart);
+            ->andWhere('(a.dateEnd >= :dateStart)')
+            ->andWhere('a.dateStart <= :dateEnd')
+            ->setParameter('dateEnd', $dateEnd)
+            ->setParameter('dateStart', $dateStart)
+            ->setParameter('dateEnd', $dateEnd)
+            ->setParameter('user', $user);
 
-        if ($dateEnd !== null) {
-            // L'affectation existante doit commencer
-            // avant la fin de la nouvelle.
-            $qb->andWhere('a.dateStart <= :dateEnd')
-                ->setParameter('dateEnd', $dateEnd);
-        }
         //Si il s'agit d'une mis à jour, il faut exclure l'assignment de la requête
         if ($excludedAssignment?->getId() !== null) {
             $qb->andWhere('a.id != :excludedId')

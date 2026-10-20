@@ -1,0 +1,5 @@
+<turbo-stream action="replace" target="fonction_{{ item.id }}">
+    <template>
+        {% include 'fonction/_rowList.html.twig' with { item: item } %}
+    </template>
+</turbo-stream>

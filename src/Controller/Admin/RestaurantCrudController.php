@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * RestaurantCrudController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller\Admin
+ */
 namespace App\Controller\Admin;
 
 use App\Entity\Restaurant;

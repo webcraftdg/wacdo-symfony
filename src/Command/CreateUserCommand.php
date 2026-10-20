@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * Breadcrumb.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Command
+ */
 namespace App\Command;
 
 use App\Entity\User;
@@ -60,7 +68,7 @@ class CreateUserCommand extends Command
 
         if (in_array($role, array_values($rolesAvailables)) === false) {
             $output->writeln([
-                'Les roles autorisés sont "ROLE_ADMIN", "ROLE_COLLAB", "ROLE_RESTAURANT_OWNER" '
+                'Les roles autorisés sont "ROLE_ADMIN", "ROLE_COLLAB", "ROLE_RESTAURANT_OWNER"'
             ]);
             $success = Command::FAILURE;
         } else {
@@ -74,7 +82,7 @@ class CreateUserCommand extends Command
                 ->setDateRecruitment(new DateTime('now'))
                 ->setRoles($roles);
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $password));
-            $errors = $this->validator->validate($user);
+            $errors = $this->validator->validate(value:$user, groups:['user:create-command']);
             if ($errors->count() === 0) {
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();

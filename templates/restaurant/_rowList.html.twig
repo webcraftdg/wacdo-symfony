@@ -1,0 +1,95 @@
+
+<tr
+    id="restaurant_{{ item.id }}"
+    class="block rounded-lg border border-slate-200 p-4
+           shadow-sm hover:bg-slate-50
+           md:table-row md:rounded-none md:border-0 md:p-0 md:shadow-none {{ item.dateArchived is null ? '' : 'opacity-50' }}"
+    data-controller="archived"
+    data-archived-archived-url-value="{{ path('app_restaurant_archived', {id: item.id}) }}"
+    data-archived-context-name-value="{{ item.name ~ ' : ' ~ item.city}}"
+    data-archived-csrf-value="{{ csrf_token('archived-restaurant-' ~ item.id) }}"
+    data-archived-mode-value="turbo"
+>
+     <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Nom</span>
+        <span>{{ item.name }}</span>
+    </td>
+   <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Adresse</span>
+        <span>{{ item.address }}</span>
+    </td>
+   <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Code postal</span>
+        <span>{{ item.zipCode }}</span>
+    </td>
+     <td class="flex items-center justify-between gap-3 py-2
+               md:table-cell md:px-5 md:py-4
+               font-semibold text-slate-900">
+        <span class="text-sm text-slate-500 md:hidden">Ville</span>
+        <span>{{ item.city }}</span>
+    </td>
+     <td class="flex items-center justify-between gap-3 py-2
+                   md:table-cell md:px-5 md:py-4
+                   text-slate-600 md:whitespace-nowrap">
+        <span class="text-sm font-semibold text-slate-500 md:hidden">
+            Archivage
+        </span>
+
+        <span>
+            {{ item.dateArchived ? item.dateArchived|date('d/m/Y') : ' - ' }}
+        </span>
+        </td>
+
+    {% if is_granted('ROLE_RESTAURANT_OWNER') %}
+        <td class="block border-t border-slate-200 pt-3 mt-3
+               md:table-cell md:border-0 md:px-5 md:py-4 md:mt-0">
+            <div class="flex justify-end gap-2">
+               <a
+                    href="{{ path('app_restaurant_detail',{id: item.id}) }}"
+                    class="inline-flex items-center justify-center
+                            rounded-lg bg-blue-600
+                            px-3 py-2 text-white
+                            hover:bg-blue-700"
+                    data-turbo-prefetch="false"
+                    title="Détail"
+                    aria-label="Détail de l'affectation"
+                >
+                    <i data-controller="icon" data-icon-name-value="details"></i>
+                </a>
+               <a
+                    href="{{ path('app_restaurant_update',{id: item.id}) }}"
+                    class="inline-flex items-center justify-center
+                            rounded-lg bg-blue-600
+                            px-3 py-2 text-white
+                            hover:bg-blue-700"
+                    data-turbo-prefetch="false"
+                    title="Éditer"
+                    aria-label="Modifier l'affectation"
+                >
+                    <i data-controller="icon" data-icon-name-value="edit"></i>
+                </a>
+            {% if is_granted('ROLE_ADMIN') and item.dateArchived is null %}
+
+                <button
+                    type="button"
+                    data-action="click->archived#confirmDelete"
+                    class="inline-flex items-center justify-center
+                            rounded-lg border border-orange-300
+                            px-3 py-2 text-orange-700
+                            hover:bg-orange-50"
+                    title="Archiver"
+                >
+                    <i data-controller="icon" data-icon-name-value="archive"></i>
+                </button>
+            {% endif %}
+            </div>
+        </td>
+    {% endif %}
+
+</tr>

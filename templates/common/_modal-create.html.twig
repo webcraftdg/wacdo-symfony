@@ -1,25 +1,34 @@
 <div>
-    <div data-modal-create-target="modal" class="hidden fixed bg-gray-800 inset-0 flex items-center justify-center">
-        <div class="relative bg-white p-6 rounded shadow-lg text-center">
-            <div>
-                <h3 class="text-xl font-bold text-slate-900">{{(title is defined) ? title : 'Ajouter un élément'}}</h3>
+    <div data-modal-create-target="modal" class="hidden fixed inset-0 z-50 flex
+                items-center justify-center
+                bg-gray-800/80 p-4">
+        <div class="relative w-full max-w-lg min-w-0
+                    max-h-[90dvh] overflow-y-auto
+                    rounded-xl bg-white p-4 sm:p-6
+                    shadow-lg text-left">
+             <div class="mb-4 pr-12">
+                <h3 class="text-xl font-bold text-slate-900">
+                    {{ title is defined ? title : 'Ajouter un élément' }}
+                </h3>
             </div>
-            <button
+             <button
                 type="button"
-                class=" absolute top-0 right-0  p-2 m-2 rounded-lg bg-red-600
-                                text-white font-medium
-                                hover:bg-red-700
-                                focus:outline-none focus:ring-2
-                                focus:ring-red-500 focus:ring-offset-2"
-                data-action="modal-create#close">
+                class="absolute top-3 right-3
+                       rounded-lg bg-red-600 p-2
+                       text-white font-medium
+                       hover:bg-red-700
+                       focus:outline-none focus:ring-2
+                       focus:ring-red-500 focus:ring-offset-2"
+                data-action="modal-create#close"
+                aria-label="Fermer la fenêtre">
+
                 <i data-controller="icon" data-icon-name-value="delete"></i>
             </button>
-            <div
-                data-modal-create-target="content"
-            >
+            {# Formulaire injecté par Stimulus #}
+            <div data-modal-create-target="content"
+                 class="w-full min-w-0">
                 Formulaire !!
             </div>
         </div>
     </div>
 </div>
-

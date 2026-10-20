@@ -1,9 +1,17 @@
 <?php
-
+/**
+ * NoAssignmentOverlapValidator.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Validator
+ */
 namespace App\Validator;
 
-use App\Entity\Assigment;
-use App\Repository\AssigmentRepository;
+use App\Entity\Assignment;
+use App\Repository\AssignmentRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -11,13 +19,13 @@ class NoAssignmentOverlapValidator extends ConstraintValidator
 {
 
     public function __construct(
-        private AssigmentRepository $repository)
+        private AssignmentRepository $repository)
     {
     }
 
 	public function validate(mixed $value, Constraint $constraint)
     {
-        if ($value instanceof Assigment && $value->getUser() !== null && $value->getDateStart() !== null) {
+        if ($value instanceof Assignment && $value->getUser() !== null && $value->getDateStart() !== null) {
 
              $overlap = $this->repository->hasOverlappingAssignment(
                 $value->getUser(),
@@ -29,7 +37,6 @@ class NoAssignmentOverlapValidator extends ConstraintValidator
             if ($overlap) {
                 $this->context
                     ->buildViolation($constraint->message)
-                    ->setParameter('{{ collab }}', $value->getUser())
                     ->atPath('dateStart') // rattaché l'erreur à un champs (message sur le champs dans le form)
                     ->addViolation();
             }

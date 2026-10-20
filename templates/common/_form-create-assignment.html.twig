@@ -1,24 +1,27 @@
 
    {{ form_start(form) }}
         <div class="space-y-5">
-            <div class="grid items-center gap-3 {{ (addModelNewUser is true) ? 'grid-cols-2' : 'grid-cols-1' }}">
-                <div>
-                      {{ form_row(form.user) }}
-                </div>
-                {% if (addModelNewUser is true ) %}
-                <div class="mt-2 text-center">
-                    <button
-                        type="button"
-                        class="px-4 py-2 rounded-lg bg-blue-600
-                                        text-white font-medium
-                                        hover:bg-blue-700
-                                        focus:outline-none focus:ring-2
-                                        focus:ring-blue-500 focus:ring-offset-2"
-                        data-action="modal-create#open">
-                        Créer un collaborateur
-                    </button>
-                </div>
+           <div class="grid grid-cols-1 items-center gap-3
+                {{ addModelNewUser is true ? 'md:grid-cols-2' : '' }}">
+                {% if addModelNewUser is true %}
+                    <div class="order-1 md:order-2">
+                        <button
+                            type="button"
+                            class="w-full rounded-lg bg-blue-600 px-4 py-2
+                                font-medium text-white
+                                hover:bg-blue-700
+                                focus:outline-none focus:ring-2
+                                focus:ring-blue-500 focus:ring-offset-2"
+                            data-action="modal-create#open">
+                            Créer un collaborateur
+                        </button>
+                    </div>
                 {% endif %}
+
+                <div class="order-2 min-w-0 md:order-1">
+                    {{ form_row(form.user) }}
+                </div>
+
             </div>
             {{ form_row(form.restaurant) }}
             {{ form_row(form.fonction) }}

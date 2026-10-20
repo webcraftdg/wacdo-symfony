@@ -1,4 +1,13 @@
 <?php
+/**
+ * UserController.php
+ *
+ * PHP Version 8.3+
+ *
+ * @author David Ghyse <david.ghyse@webcraftdg.fr>
+ * @version XXX
+ * @package App\Controller
+ */
 
 namespace App\Controller;
 
@@ -9,8 +18,9 @@ use App\Form\AssignmentSearchType;
 use App\Form\GenericSearchType;
 use App\Form\UserCollaboratorType;
 use App\Helper\EntityProvider;
-use App\Repository\AssigmentRepository;
+use App\Repository\AssignmentRepository;
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -21,7 +31,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/user', name: 'app_user_')]
+#[Route('utilisateurs', name: 'app_user_')]
 #[IsGranted('ROLE_RESTAURANT_OWNER')]
 final class UserController extends AbstractController
 {
@@ -29,11 +39,20 @@ final class UserController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepository,
-        private AssigmentRepository $assigmentRepository,
+        private AssignmentRepository $assignmentRepository,
         private UserPasswordHasherInterface $userPasswordHasher
     )
     {}
 
+    /**
+     * index
+     *
+     * List user
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/accueil', name: 'home')]
     #[PageTitle(title:'Accueil', section:'Collaborateurs')]
     #[Breadcrumb([
@@ -73,6 +92,13 @@ final class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * create
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/creer', name: 'create')]
     #[PageTitle(title:'Collaborateurs', section:'créer')]
     #[Breadcrumb([
@@ -103,6 +129,15 @@ final class UserController extends AbstractController
         return $response;
     }
 
+    /**
+     * async-create
+     *
+     * Create user with ajax
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/async-creer', name: 'async_create')]
     public function asyncCreate(Request $request): Response
     {
@@ -120,6 +155,14 @@ final class UserController extends AbstractController
     }
 
 
+    /**
+     * Update
+     *
+     * @param  \App\Entity\User                           $user
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     #[Route('/{id}/mise_a_jour', name: 'update')]
     #[PageTitle(title:'Collaborateurs', section:'Mettre à jour')]
     #[Breadcrumb(
@@ -150,6 +193,14 @@ final class UserController extends AbstractController
         return $response;
     }
 
+    /**
+     * Detail
+     *
+     * @param User $user
+     * @param Request $request
+     *
+     * @return Response
+     */
     #[Route('/{id}/detail', name: 'detail')]
     #[PageTitle(title:'Collaborateurs', section:'Détail')]
     #[Breadcrumb(
@@ -176,7 +227,7 @@ final class UserController extends AbstractController
             ]);
         $searchForm->handleRequest($request);
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
-        $queryBuilder = $this->assigmentRepository->createBuilderforUserWithCriteria(
+        $queryBuilder = $this->assignmentRepository->createBuilderforUserWithCriteria(
             user:$user,
             criteria:$criteria
         );
@@ -192,17 +243,36 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/supprimer', name: 'delete', methods: ['DELETE'])]
+    /**
+     * Archived
+     *
+     * Set date archived
+     *
+     * @param User $user
+     * @param Request $request
+     *
+     * @requires Response
+     */
+    #[Route('/{id}/archiver', name: 'archived', methods: ['PATCH'])]
     #[IsGranted(User::ROLE_ADMIN)]
-    public function delete(User $user) : Response
+    public function archived(User $user, Request $request) : Response
     {
-        $this->entityManager->remove($user);
+        $user->setDateArchived(new DateTime());
+        $this->entityManager->persist($user);
         $this->entityManager->flush();
-        return $this->json(null, Response::HTTP_NO_CONTENT);;
+        $response =  new Response(status: Response::HTTP_NO_CONTENT);
+        if ($request->headers->contains('Accept', 'text/vnd.turbo-stream.html') == true) {
+                $response =  $this->render('user/_rowList.stream.html.twig', [
+                    'item' => $user,
+                ], new Response(headers: [
+                    'Content-Type' => 'text/vnd.turbo-stream.html',
+                ]));
+        }
+        return $response;
     }
 
     /**
-     * mange user
+     * manage user
      *
      * @param  \Symfony\Component\Form\FormInterface           $form
      * @param  \App\Entity\User                                $user
