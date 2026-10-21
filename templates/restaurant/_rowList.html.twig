@@ -34,6 +34,7 @@
         <span class="text-sm text-slate-500 md:hidden">Ville</span>
         <span>{{ item.city }}</span>
     </td>
+    {% if is_granted('ROLE_ADMIN') %}
      <td class="flex items-center justify-between gap-3 py-2
                    md:table-cell md:px-5 md:py-4
                    text-slate-600 md:whitespace-nowrap">
@@ -44,8 +45,8 @@
         <span>
             {{ item.dateArchived ? item.dateArchived|date('d/m/Y') : ' - ' }}
         </span>
-        </td>
-
+    </td>
+    {% endif %}
     {% if is_granted('ROLE_RESTAURANT_OWNER') %}
         <td class="block border-t border-slate-200 pt-3 mt-3
                md:table-cell md:border-0 md:px-5 md:py-4 md:mt-0">

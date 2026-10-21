@@ -71,7 +71,7 @@ final class FonctionController extends AbstractController
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
         $items = new EntityHydrator(
             queryBuilder:$this->fonctionrepository->createBuilder(
-                displayArchived:false,
+                displayArchived:$this->isGranted(User::ROLE_ADMIN),
                 criteria:$criteria
             )
         );

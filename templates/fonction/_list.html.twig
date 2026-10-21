@@ -9,9 +9,11 @@
                     <th class="px-5 py-3 font-semibold">
                         Fonction
                     </th>
+            {% if is_granted('ROLE_ADMIN') %}
                     <th class="px-5 py-3 font-semibold">
                         Archivé le
                     </th>
+            {% endif %}
                      <th class="px-5 py-3 font-semibold text-right">
                         Actions
                     </th>

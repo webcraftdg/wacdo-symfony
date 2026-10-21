@@ -31,8 +31,14 @@ final class Breadcrumb
                 $route['params'] ?? [],
             );
         }
-        if (count($finalItem) === 2) {
-            $this->finalItem = new BreadcrumbItem($finalItem[0], $finalItem[1]);
+        if (count($finalItem) >= 2) {
+            $finalItemParams = ($finalItem['params']) ?? [];
+            unset($finalItem['params']);
+            $this->finalItem = new BreadcrumbItem(
+                class: $finalItem[0],
+                attributes: $finalItem[1],
+                attributSeparator: ($finalItemParams['attributSeparator']) ?? ',',
+                itemSeparator: ($finalItemParams['itemSeparator']) ?? '-');
         }
     }
 
