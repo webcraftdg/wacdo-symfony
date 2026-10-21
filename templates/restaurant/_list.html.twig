@@ -21,9 +21,11 @@
                     <th class="px-5 py-3 font-semibold">
                         Ville
                     </th>
+            {% if is_granted('ROLE_ADMIN') %}
                     <th class="px-5 py-3 font-semibold">
                         Archivé le
                     </th>
+            {% endif %}
 
                     {% if is_granted('ROLE_RESTAURANT_OWNER') %}
                         <th class="px-5 py-3 font-semibold text-right">

@@ -27,7 +27,7 @@ class RestaurantRepository extends ServiceEntityRepository
         parent::__construct($registry, Restaurant::class);
     }
 
-    public function createBuilderForUser(User $user, $diplayArchived = true, ?array $criteria = null): QueryBuilder
+    public function createBuilderForUser(User $user, bool $displayArchived = true, ?array $criteria = null): QueryBuilder
     {
         $queryBuilder =  match ($user->getRole()) {
             User::ROLE_RETAURANT_OWNER => $this->createQueryBuilder('r')
@@ -36,7 +36,7 @@ class RestaurantRepository extends ServiceEntityRepository
                 ->orderBy('r.name', 'asc'),
             default => $this->createQueryBuilder('r'),
         };
-        if ($diplayArchived === false) {
+        if ($displayArchived === false) {
             $queryBuilder->andWhere('r.dateArchived IS NULL');
         }
 

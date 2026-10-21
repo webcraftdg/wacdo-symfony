@@ -17,6 +17,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -26,8 +27,10 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    private Security $security;
+    public function __construct(ManagerRegistry $registry, Security $security)
     {
+        $this->security = $security;
         parent::__construct($registry, User::class);
     }
 
@@ -45,7 +48,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-
     /**
      * findByUserWithRole
      *
@@ -57,7 +59,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function findByUserWithRole(User $user) : QueryBuilder
     {
-        $queryBuilder = $this->createQueryBuilder('u');
+        $queryBuilder = $this->prepareQueryBuilder();
         $queryBuilder = match ($user->getRole()) {
             User::ROLE_COLLAB => $queryBuilder
                 ->andWhere('u = :user')
@@ -80,7 +82,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         bool $noAffected = false,
         ?array $criteria = null) : QueryBuilder
     {
-        $queryBuilder = $this->createQueryBuilder('u');
+        $queryBuilder = $this->prepareQueryBuilder();
         if ($user instanceof User) {
             $queryBuilder = match ($user->getRole()) {
                 User::ROLE_COLLAB => $queryBuilder
@@ -135,6 +137,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 Expr\Join::WITH,
                 'a.dateStart <= :today AND (a.dateEnd IS NULL OR a.dateEnd >= :today)'
             )->setParameter('today', $today)->getQuery()->getSingleScalarResult();
+    }
+
+    private function prepareQueryBuilder() : QueryBuilder
+    {
+        $queryBuilder = $this->createQueryBuilder('u');
+        if ($this->security instanceof Security && $this->security->isGranted(User::ROLE_ADMIN) === false) {
+            $queryBuilder->andWhere('u.dateArchived is NULL');
+        }
+        return $queryBuilder;
     }
 
 
