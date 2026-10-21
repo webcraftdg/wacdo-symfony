@@ -77,8 +77,9 @@ final class RestaurantController extends AbstractController
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
         $items = new EntityHydrator(
             queryBuilder:$this->restaurantRepository->createBuilderForUser(
-                user: $user,
-                criteria:$criteria
+                user:$user,
+                displayArchived:$this->isGranted(User::ROLE_ADMIN),
+                criteria: $criteria
             )
         );
         return $this->render('restaurant/index.html.twig', [

@@ -43,6 +43,7 @@
             >
                 <i data-controller="icon" data-icon-name-value="edit"></i>
             </a>
+            {% if is_granted('ROLE_ADMIN') %}
            <button
                 type="button"
                 data-action="click->archived#confirmDelete"
@@ -55,6 +56,7 @@
             >
             <i data-controller="icon" data-icon-name-value="archive"></i>
             </button>
+            {% endif %}
         </div>
     </td>
 
