@@ -14,7 +14,10 @@
             <div class="sm:col-span-2">
                 {{ form_row(form.city) }}
             </div>
-            {% if(is_granted('ROLA_ADMIN')) %}
+            {% if(is_granted('ROLE_ADMIN')) %}
+                <div class="sm:col-span-2">
+                    {{ form_row(form.owner) }}
+                </div>
                 <div class="sm:col-span-2">
                     {{ form_row(form.dateArchived) }}
                 </div>

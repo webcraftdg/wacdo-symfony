@@ -57,11 +57,7 @@ class AssignmentType extends AbstractType
                 'autocomplete' => true,
                 'no_results_found_text' => 'Aucun collaborateurs trouvé',
                 'query_builder' => function (UserRepository $repository) {
-                        return $repository
-                            ->createQueryBuilder('u')
-                            ->andWhere('u.roles LIKE :role')
-                            ->setParameter('role', '%ROLE_COLLAB%')
-                            ->orderBy('u.lastname', 'ASC');
+                        return $repository->getUsersListInputByRole(User::ROLE_COLLAB);
                 }
             ];
             if ($user !== null) {
