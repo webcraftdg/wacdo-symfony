@@ -9,3 +9,10 @@ Release 1.0.0 20/10/2026 <davidg@webcraftdg.fr>
 * create unit tests
 * create functionnal tests
 * Add deploiement DOC
+
+Release 1.1.0 21/10/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* Fix dateArchived
+* Fix Roles
+* Fix Responsive 
