@@ -144,7 +144,7 @@ final class AssignmentController extends AbstractController
                 'route' => 'app_assignment_home'
             ],
         ],
-        finalItem: [Assignment::class, 'user']
+        finalItem: [Assignment::class, 'user, fonction', 'params' => ['itemSeparator' => ' : ']]
     )]
     #[IsGranted(User::ROLE_RETAURANT_OWNER)]
     public function update(Assignment $assignment, Request $request): Response

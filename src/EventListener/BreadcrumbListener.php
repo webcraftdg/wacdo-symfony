@@ -51,7 +51,7 @@ class BreadcrumbListener
                 if ($argument instanceof $class) {
                     $labels = [];
                     foreach($finalItem->getAttributes() as $attribute) {
-                        $method = 'get'.ucfirst($attribute);
+                        $method = 'get'.ucfirst(trim($attribute));
                         if (method_exists($argument, $method)=== true) {
                             $labels[] = $argument->$method();
                         }
