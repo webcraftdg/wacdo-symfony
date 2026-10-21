@@ -139,6 +139,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             )->setParameter('today', $today)->getQuery()->getSingleScalarResult();
     }
 
+    public function getUsersListInputByRole(string $role = 'ROLE_COLLAB')
+    {
+        return $this->prepareQueryBuilder()
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%'.$role.'%')
+            ->orderBy('u.lastname', 'ASC');
+    }
+
     private function prepareQueryBuilder() : QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('u');

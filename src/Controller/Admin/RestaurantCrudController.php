@@ -60,17 +60,17 @@ class RestaurantCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('name'),
+            TextField::new('name')->setLabel('Nom du restaurant'),
             AssociationField::new('owner')->setLabel('Propriétaire')
                 ->setQueryBuilder(
                     fn (QueryBuilder $qb) => $qb
                         ->andWhere('entity.roles LIKE :role')
                         ->setParameter('role', '%ROLE_RESTAURANT_OWNER%')
                         ->orderBy('entity.lastname', 'ASC')),
-            TextField::new('address'),
-            NumberField::new('zipCode')->onlyOnForms(),
-            TextField::new('postalCode')->onlyOnDetail(),
-            TextField::new('city'),
+            TextField::new('address')->setLabel('Adresse'),
+            NumberField::new('zipCode')->setLabel('Code Postal')->onlyOnForms(),
+            TextField::new('postalCode')->setLabel('Code Postal')->onlyOnDetail(),
+            TextField::new('city')->setLabel('Ville'),
             DateTimeField::new('dateArchived')->setLabel('Date archivée')->setFormat('dd/MM/Y'),
         ];
     }

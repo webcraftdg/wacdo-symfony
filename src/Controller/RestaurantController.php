@@ -129,6 +129,50 @@ final class RestaurantController extends AbstractController
         return $response;
     }
 
+       /**
+     * create fonction
+     *
+     * @param Request  $request
+     *
+     * @requires Response
+     */
+    #[Route('/creer', name: 'create')]
+    #[PageTitle(title:'Créer', section:'Fonction')]
+    #[Breadcrumb(
+        routes: [
+            [
+                'label' => 'Accueil',
+                'route' => 'app_dispatch',
+            ],
+            [
+                'label' => 'liste des restaurants',
+                'route' => 'app_restaurant_home'
+            ],
+             [
+            'label' => 'création d\'un restaurant',
+            ],
+        ]
+    )]
+    #[IsGranted('ROLE_ADMIN')]
+    public function create(Request $request): Response
+    {
+        $fonction = new Restaurant();
+        $form = $this->createForm(RestaurantType::class, $fonction);
+        $form->handleRequest($request);
+        $response = null;
+        if ($form->isSubmitted() === true && $form->isValid() === true) {
+            $this->entityManagerInterface->persist($fonction);
+            $this->entityManagerInterface->flush();
+            $response = $this->redirectToRoute('app_restaurant_home');
+        }
+        if ($response === null) {
+            $response = $this->render('restaurant/create.html.twig', [
+                'form' => $form
+            ]);
+        }
+        return $response;
+    }
+
     /**
      * detail restaurant
      *

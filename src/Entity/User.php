@@ -321,6 +321,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->dateCreate = new DateTime();
     }
 
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateIsAdmin(): void
+    {
+        $isAdmin = $this->getRole() === self::ROLE_ADMIN ? 1 : 0;
+        $this->setIsAdmin($isAdmin);
+    }
+
     /**
      * @return Collection<int, Assignment>
      */

@@ -12,6 +12,8 @@ namespace App\Form;
 
 use App\Entity\Restaurant;
 use App\Entity\User;
+use App\Repository\UserRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -30,11 +32,12 @@ class RestaurantType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user = ($options['user']) ?? null;
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom',
-            ])
-            ->add('address', TextType::class, [
+            ]);
+        $builder->add('address', TextType::class, [
                 'label' => 'Adresse',
             ])
             ->add('zipCode', IntegerType::class, [
@@ -45,6 +48,20 @@ class RestaurantType extends AbstractType
             ]);
 
             if ($this->security->isGranted(User::ROLE_ADMIN) === true) {
+                $optionsUserField = [
+                'label' => 'Propiétaire',
+                'class' => User::class,
+                'placeholder' => 'Sélectionner un Propiétaire',
+                'autocomplete' => true,
+                'no_results_found_text' => 'Aucun Propiétaire trouvé',
+                'query_builder' => function (UserRepository $repository) {
+                            return $repository->getUsersListInputByRole(User::ROLE_RETAURANT_OWNER);
+                    }
+                ];
+            if ($user !== null) {
+                $optionsUserField['data'] = $user;
+            }
+            $builder->add('owner', EntityType::class, $optionsUserField);
                 $builder->add('dateArchived', DateType::class, [
                     'label' => 'Archiver la fonction',
                     'required' => false,

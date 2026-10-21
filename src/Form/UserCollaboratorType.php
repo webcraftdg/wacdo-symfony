@@ -26,7 +26,7 @@ class UserCollaboratorType extends AbstractType
     {
        $builder
             ->add('email', TextType::class, [
-                'label' => 'Votre amail',
+                'label' => 'Votre email',
             ])
             ->add('lastname', TextType::class, [
                 'label' => 'Nom',
