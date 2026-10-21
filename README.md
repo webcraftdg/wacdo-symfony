@@ -1,6 +1,6 @@
 # Application WacDo
 
-## Prérequis
+## Prérequis
 
 * PHP +8.3
     * ext-ctype
@@ -9,13 +9,19 @@
 
 ## Installation
 
+### Composer
+
+```bash
+git clone https://github.com/webcraftdg/wacdo-symfony.git
+``` 
+
 ### Ajouter et amender le fichier .env.local avec vos informations serveurs
 
 ```dotenv
 APP_ENV=prod
 APP_DEBUG=0
 APP_SECRET=REMPLACER_PAR_UN_SECRET_ALEATOIRE_LONG
-DATABASE_URL="mysql://user_name:MOT_DE_PASSE_URL_ENCODE@127.0.0.1:3306/base_name?serverVersion=12.1.2-MariaDB&charset=utf8mb4"
+DATABASE_URL="mysql://user_name:MOT_DE_PASSE_URL_ENCODE@localhost:3306/base_name?serverVersion=12.1.2-MariaDB&charset=utf8mb4"
 ```
 **Important :** `serverVersion=12.1.2-MariaDB` est seulement un exemple MariaDB ; l'adapter à la version réelle de MySQL ou MariaDB et à la configuration Doctrine du projet. Encoder les caractères spéciaux du mot de passe dans l'URL (par exemple `@` → `%40`). Conserver toute autre variable requise par les fichiers `.env` et `config/` du projet.
 
@@ -40,9 +46,19 @@ php bin/console about
 
 #### SQL
 
+**Créer un la base de donneés**
+
 ```sql
 CREATE DATABASE base_name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+**Créer un utilisateur**
+
+```sql
 CREATE USER 'user_name'@'localhost' IDENTIFIED BY 'REMPLACER_PAR_UN_MOT_DE_PASSE_LONG';
+```
+**Données les droits à l'utilisateur**
+
+```sql
 GRANT ALL PRIVILEGES ON base_name.* TO 'user_name'@'localhost';
 ```
 
@@ -63,12 +79,15 @@ La commande définit automatiquement la date de recrutement, hache le mot de pas
 Rôles reconnus par le code : `ROLE_ADMIN`, `ROLE_COLLAB`, `ROLE_RESTAURANT_OWNER`.
 
 
-## Assets (si nécessaire)
+## Compiler les assets
 
-**Les assets sont compilés lors de la préparation du livrable. Aucune compilation n'est nécessaire sur le serveur de production si les fichiers générés sont inclus et correspondent à la version déployée.**
+**Les assets doivent-être compilés sur le serveur**
 
 ```bash
 php bin/console tailwind:build --minify
+```
+
+```bash
 php bin/console asset-map:compile
 ```
 

@@ -1,6 +1,7 @@
 
 ###> symfony/framework-bundle ###
 /.DS_Store
+/.env.local
 /.vscode
 /.env.local
 /.env.local.php
