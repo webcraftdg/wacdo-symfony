@@ -19,7 +19,7 @@ export default class extends Controller {
     }
 
    async confirmDelete() {
-        if (confirm('Attention, cet élément dera archivé : '+this.contextNameValue+' !')) {
+        if (confirm('Attention, cet élément sera archivé : '+this.contextNameValue+' !')) {
             try {
                 const headers = {};
 
