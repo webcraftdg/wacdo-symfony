@@ -21,9 +21,9 @@ git clone https://github.com/webcraftdg/wacdo-symfony.git
 APP_ENV=prod
 APP_DEBUG=0
 APP_SECRET=REMPLACER_PAR_UN_SECRET_ALEATOIRE_LONG
-DATABASE_URL="mysql://user_name:MOT_DE_PASSE_URL_ENCODE@localhost:3306/base_name?serverVersion=12.1.2-MariaDB&charset=utf8mb4"
+DATABASE_URL="mysql://user_name:MOT_DE_PASSE@localhost:3306/base_name?serverVersion=12.1.2-MariaDB&charset=utf8mb4"
 ```
-**Important :** `serverVersion=12.1.2-MariaDB` est seulement un exemple MariaDB ; l'adapter à la version réelle de MySQL ou MariaDB et à la configuration Doctrine du projet. Encoder les caractères spéciaux du mot de passe dans l'URL (par exemple `@` → `%40`). Conserver toute autre variable requise par les fichiers `.env` et `config/` du projet.
+**Important :** `serverVersion=12.1.2-MariaDB` est seulement un exemple MariaDB ; l'adapter à la version réelle de MySQL ou MariaDB et à la configuration Doctrine du projet.
 
 **Générer un secret, par exemple :**
 
