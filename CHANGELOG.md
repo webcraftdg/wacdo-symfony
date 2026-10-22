@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+Release v1.0.3 22/10/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* fix deploy file exclud
+
+
 Release v1.0.2 22/10/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
