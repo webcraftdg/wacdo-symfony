@@ -76,13 +76,13 @@ jobs:
       - name: Run PHPUnit
         run: php bin/phpunit
 
-      - name: Display Symfony test logs
+      - name: Display Symfony errors
         if: failure()
         run: |
           if [ -f var/log/test.log ]; then
-            tail -n 150 var/log/test.log
+            grep -E 'request.CRITICAL|php.CRITICAL|app.CRITICAL' var/log/test.log | head -n 10 || true
           else
-            echo "Aucun fichier var/log/test.log trouvé"
+            echo "Aucun fichier de log Symfony trouvé"
           fi
 
 
