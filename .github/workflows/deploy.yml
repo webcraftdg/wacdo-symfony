@@ -161,8 +161,8 @@ jobs:
             **/.github/**
             **/node_modules/**
             **/tests/**
-            **/.env
-            **/.env.*
+            **/.env.local
+            **/.env.*.local
             **/var/cache/**
             **/var/log/**
             **/var/tailwind/**
