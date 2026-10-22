@@ -94,6 +94,9 @@ class AdminAssignmentControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/admin');
 
         $code = $this->client->getResponse()->getStatusCode();
+        if ($code === 500) {
+            fwrite(STDERR, $this->client->getResponse()->getContent());
+        }
         $this->assertEquals(200, $code);
 
         $link = $crawler->selectLink('Les affectations')->link();
