@@ -64,6 +64,9 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
 
+      - name: Install bundle assets
+        run: php bin/console assets:install public
+
       - name: Install Importmap dependencies
         run: php bin/console importmap:install
 
@@ -136,6 +139,9 @@ jobs:
             --no-interaction \
             --prefer-dist \
             --no-progress
+
+      - name: Install bundle assets
+        run: php bin/console assets:install public
 
       - name: Install Importmap dependencies
         run: php bin/console importmap:install

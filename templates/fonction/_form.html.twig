@@ -1,7 +1,7 @@
 {{ form_start(form) }}
     <div class="space-y-5">
         {{ form_row(form.name) }}
-        {% if(is_granted('ROLA_ADMIN')) %}
+        {% if(is_granted('ROLE_ADMIN')) %}
             {{ form_row(form.dateArchived) }}
         {% endif %}
     </div>
