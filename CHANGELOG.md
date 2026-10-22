@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+Release v1.0.1 22/10/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* update deploy php verion 8.4
+
 Release v1.0.0 22/10/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
