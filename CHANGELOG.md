@@ -1,5 +1,11 @@
 CHANGELOG
 =========
+
+Release v1.0.0 22/10/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* create script test and deploy
+
 Release 1.0.0 20/10/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
