@@ -64,6 +64,9 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
 
+      - name: Install Importmap dependencies
+        run: php bin/console importmap:install
+
       - name: Build Tailwind CSS
         run: php bin/console tailwind:build --minify
 
@@ -133,6 +136,9 @@ jobs:
             --no-interaction \
             --prefer-dist \
             --no-progress
+
+      - name: Install Importmap dependencies
+        run: php bin/console importmap:install
 
       - name: Build Tailwind CSS
         run: php bin/console tailwind:build --minify
