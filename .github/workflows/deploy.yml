@@ -38,8 +38,8 @@ jobs:
     env:
       APP_ENV: test
       APP_DEBUG: 1
-      APP_SECRET: test_secret_for_ci
-      DATABASE_URL: "mysql://root:root@127.0.0.1:3306/wacdo_test?serverVersion=8.4.0&charset=utf8mb4"
+      APP_SECRET: 961e20e4a5e43c9312abebbf803952f8aa581c4ad0b1b5bc6a4f8a86cf0d134f
+      DATABASE_URL: "mysql://root:root@127.0.0.1:3306/wacdo?serverVersion=8.4.0&charset=utf8mb4"
 
     steps:
       - name: Checkout repository
