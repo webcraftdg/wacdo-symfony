@@ -1,10 +1,18 @@
 CHANGELOG
 =========
 
+Release v1.0.4 22/10/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* fix deploy bundle asset
+* add DOC
+* fix form create Fonction
+
+
 Release v1.0.3 22/10/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
-* fix deploy file exclud
+* fix deploy file exclude
 
 
 Release v1.0.2 22/10/2026 <davidg@webcraftdg.fr>
