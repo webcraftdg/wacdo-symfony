@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+Release v1.0.2 22/10/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* update deploy, add asset-map:compile
+
 Release v1.0.1 22/10/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
