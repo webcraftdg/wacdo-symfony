@@ -64,11 +64,26 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
 
+      - name: Build Tailwind CSS
+        run: php bin/console tailwind:build --minify
+
+      - name: Compile AssetMapper
+        run: php bin/console asset-map:compile
+
       - name: Run Doctrine migrations
         run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
       - name: Run PHPUnit
         run: php bin/phpunit
+
+      - name: Display Symfony test logs
+        if: failure()
+        run: |
+          if [ -f var/log/test.log ]; then
+            tail -n 150 var/log/test.log
+          else
+            echo "Aucun fichier var/log/test.log trouvé"
+          fi
 
 
   # ==========================================
