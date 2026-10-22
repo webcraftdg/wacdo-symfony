@@ -100,11 +100,14 @@ class AssignmentRepository extends ServiceEntityRepository
 
     public function findCriteriaAssignments(
         string $criteria = 'a.dateEnd <= :today',
-        array $parameters = ['today' => new DateTimeImmutable()]): QueryBuilder
+        array $parameters = ['today' => new DateTimeImmutable()],
+        array $orderBy = ['a.dateEnd' => 'ASC']): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('a')
-            ->andWhere($criteria)
-            ->orderBy('a.dateEnd', 'ASC');
+            ->andWhere($criteria);
+        foreach($orderBy as $key => $sort) {
+            $queryBuilder->addOrderBy($key, $sort);
+        }
         foreach($parameters as $key => $value) {
             $queryBuilder->setParameter($key, $value);
         }
@@ -128,9 +131,9 @@ class AssignmentRepository extends ServiceEntityRepository
         return (int)$this->findCriteriaAssignments()->select('count(a.id)')->getQuery()->getSingleScalarResult();
     }
 
-     public function countCurrentByRestaurant() : mixed
+    public function countCurrentByRestaurant() : mixed
     {
-        return $this->findCriteriaAssignments(criteria:'a.dateStart <= :today AND a.dateEnd >= :today')
+        return $this->findCriteriaAssignments(criteria:'a.dateStart <= :today AND a.dateEnd >= :today',orderBy: [])
             ->join('a.restaurant', 'r')
             ->groupBy('r.name')
             ->select('count(a.id) as nb, r.name')
