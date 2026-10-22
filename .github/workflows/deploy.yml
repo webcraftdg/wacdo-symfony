@@ -1,0 +1,151 @@
+
+name: WacDo - CI/CD
+
+on:
+  pull_request:
+    branches:
+      - devel
+      - master
+
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+
+  # ==========================================
+  # 1. TESTS AUTOMATIQUES
+  # ==========================================
+
+  tests:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wacdo_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      APP_ENV: test
+      APP_DEBUG: 1
+      APP_SECRET: test_secret_for_ci
+      DATABASE_URL: "mysql://root:root@127.0.0.1:3306/wacdo_test?serverVersion=8.4.0&charset=utf8mb4"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, pdo_mysql
+          coverage: none
+          tools: composer:v2
+
+      - name: Configure Composer authentication
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+        run: |
+          if [ -n "$GH_TOKEN" ]; then
+            composer config --global github-oauth.github.com "$GH_TOKEN"
+          fi
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Run Doctrine migrations
+        run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
+
+      - name: Run PHPUnit
+        run: php bin/phpunit
+
+
+  # ==========================================
+  # 2. PREPARATION ET DEPLOIEMENT OVH
+  # ==========================================
+
+  deploy:
+    name: Deploy to OVH
+    needs: tests
+
+    if: >-
+      github.event_name == 'push' &&
+      startsWith(github.ref, 'refs/tags/v')
+
+    runs-on: ubuntu-latest
+
+    env:
+      APP_ENV: prod
+      APP_DEBUG: 0
+      APP_SECRET: build_only_secret
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, pdo_mysql
+          tools: composer:v2
+
+      - name: Configure Composer authentication
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+        run: |
+          if [ -n "$GH_TOKEN" ]; then
+            composer config --global github-oauth.github.com "$GH_TOKEN"
+          fi
+
+      - name: Install production dependencies
+        run: |
+          composer install \
+            --no-dev \
+            --no-scripts \
+            --optimize-autoloader \
+            --no-interaction \
+            --prefer-dist \
+            --no-progress
+
+      - name: Build Tailwind CSS
+        run: php bin/console tailwind:build --minify
+
+      - name: Compile AssetMapper
+        run: php bin/console asset-map:compile
+
+      - name: Deploy to OVH
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          protocol: ftp
+          local-dir: ./
+          server-dir: /www/wacdo/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git/**
+            **/.github/**
+            **/node_modules/**
+            **/tests/**
+            **/.env
+            **/.env.*
+            **/var/cache/**
+            **/var/log/**
+            **/var/tailwind/**
+            **/phpunit.xml
+            **/phpunit.xml.dist
+            **/phpunit.dist.xml
+            **/.phpunit.cache/**
