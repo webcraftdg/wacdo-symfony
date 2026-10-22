@@ -81,6 +81,11 @@ Rôles reconnus par le code : `ROLE_ADMIN`, `ROLE_COLLAB`, `ROLE_RESTAURANT_OWNE
 
 ## Compiler les assets
 
+
+**Installation des assets publics des bundles Symfony (EasyAdmin, etc.)**
+
+php bin/console assets:install public
+
 **Les assets doivent-être compilés sur le serveur**
 
 ```bash
