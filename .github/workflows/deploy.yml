@@ -152,9 +152,6 @@ jobs:
       - name: Compile AssetMapper
         run: php bin/console asset-map:compile
 
-      - name: Ccear cache
-        run: php bin/console cache:clear
-
       - name: Deploy to OVH
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
