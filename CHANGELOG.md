@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+
+Release v1.1.0 27/10/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* refactor code
+* remove code not used
+* fix csrf in function archived
+
 Release v1.0.4 22/10/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
