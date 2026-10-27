@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+Release v1.1.2 27/10/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* Deploy : remove cache:clear
+
 Release v1.1.1 27/10/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
