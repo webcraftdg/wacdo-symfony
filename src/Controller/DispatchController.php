@@ -31,7 +31,7 @@ final class DispatchController extends AbstractController
     {
         if ($this->isGranted(User::ROLE_ADMIN) === true) {
             $response = $this->redirectToRoute('app_home');
-        } elseif($this->isGranted(User::ROLE_RETAURANT_OWNER) === true) {
+        } elseif($this->isGranted(User::ROLE_RESTAURANT_OWNER) === true) {
             $response =$this->redirectToRoute('app_restaurant_home');
         }  else {
             $response =$this->redirectToRoute('app_assignment_home');

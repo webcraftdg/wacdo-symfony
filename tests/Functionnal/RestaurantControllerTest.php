@@ -45,7 +45,7 @@ class RestaurantControllerTest extends WebTestCase
         ->setFirstname('Owner')
         ->setLastname('Owner')
         ->setDateUpdate(new DateTime())
-        ->setRoles([User::ROLE_RETAURANT_OWNER]);
+        ->setRoles([User::ROLE_RESTAURANT_OWNER]);
         $this->owner->setPassword($userPasswordHasher->hashPassword($this->owner, 'motDePasseTest'));
 
         $this->entityManager->persist($this->owner);

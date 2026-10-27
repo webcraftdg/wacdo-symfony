@@ -32,9 +32,9 @@ class UserTest extends TestCase
             ->setLastname('Test')
             ->setFirstname('Owner')
             ->setDateRecruitment(new DateTime())
-            ->setRoles([User::ROLE_RETAURANT_OWNER]);
+            ->setRoles([User::ROLE_RESTAURANT_OWNER]);
         $this->assertIsArray($owner->getRoles());
-        $this->assertArraysHaveEqualValues([User::ROLE_RETAURANT_OWNER], $owner->getRoles());
+        $this->assertArraysHaveEqualValues([User::ROLE_RESTAURANT_OWNER], $owner->getRoles());
     }
 
     public function testAdmin()

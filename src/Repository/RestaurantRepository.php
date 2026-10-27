@@ -30,7 +30,7 @@ class RestaurantRepository extends ServiceEntityRepository
     public function createBuilderForUser(User $user, bool $displayArchived = true, ?array $criteria = null): QueryBuilder
     {
         $queryBuilder =  match ($user->getRole()) {
-            User::ROLE_RETAURANT_OWNER => $this->createQueryBuilder('r')
+            User::ROLE_RESTAURANT_OWNER => $this->createQueryBuilder('r')
                 ->andWhere('r.owner = :owner')
                 ->setParameter('owner', $user)
                 ->orderBy('r.name', 'asc'),
