@@ -54,7 +54,7 @@ class AppFixtures extends Fixture
             ->setFirstname(ucFirst($faker->word().'-'.$code))
             ->setLastname(ucFirst($faker->word().'-'.$code))
             ->setPassword($this->userPaswwordHasher->hashPassword($userOwner, 'redcat'))
-            ->setRoles([User::ROLE_RETAURANT_OWNER]);
+            ->setRoles([User::ROLE_RESTAURANT_OWNER]);
             $manager->persist($userOwner);
             $owners[] = $userOwner;
         }

@@ -7,7 +7,7 @@
     data-controller="archived"
     data-archived-archived-url-value="{{ path('app_user_archived', {id: item.id}) }}"
     data-archived-context-name-value="{{ item.lastname ~ ' : ' ~ item.firstname}}"
-    data-archived-csrf-value="{{ csrf_token('delete-user-' ~ item.id) }}"
+    data-archived-csrf-value="{{ csrf_token('archived-user-' ~ item.id) }}"
     data-archived-mode-value="turbo"
 >
 

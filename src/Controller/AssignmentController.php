@@ -93,7 +93,7 @@ final class AssignmentController extends AbstractController
             'label' => 'création d\'une affectations',
         ],
     ])]
-    #[IsGranted(User::ROLE_RETAURANT_OWNER)]
+    #[IsGranted(User::ROLE_RESTAURANT_OWNER)]
     public function create(Request $request, ?User $user): Response
     {
         $assignment = new Assignment();
@@ -146,7 +146,7 @@ final class AssignmentController extends AbstractController
         ],
         finalItem: [Assignment::class, 'user, fonction', 'params' => ['itemSeparator' => ' : ']]
     )]
-    #[IsGranted(User::ROLE_RETAURANT_OWNER)]
+    #[IsGranted(User::ROLE_RESTAURANT_OWNER)]
     public function update(Assignment $assignment, Request $request): Response
     {
         $form = $this->createForm(
@@ -164,7 +164,7 @@ final class AssignmentController extends AbstractController
     }
 
     #[Route('/{id}/supprimer', name: 'delete', methods: ['DELETE'])]
-    #[IsGranted(User::ROLE_RETAURANT_OWNER)]
+    #[IsGranted(User::ROLE_RESTAURANT_OWNER)]
     public function delete(Assignment $assignment) : Response
     {
         /**@var USer $user */

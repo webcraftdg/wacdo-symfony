@@ -21,7 +21,9 @@
         </div>
     </div>
         {% include 'fonction/_list.html.twig'
-                    with { items: items } %}
+                    with { dataProvider: dataProvider } %}
+        {% include 'common/_pager.html.twig'
+                    with { dataProvider: dataProvider, route: 'app_fonction_home'} %}
 
 </div>
 {% endblock %}

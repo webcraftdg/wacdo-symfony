@@ -25,7 +25,7 @@ export default class extends Controller {
                     method: 'DELETE',
                 });
                 if (!reponse.ok) {
-                    throw new Error("Une erreur c'est produite : statut de réponse : ${reponse.status}");
+                    throw new Error(`Une erreur c'est produite : statut de réponse : ${reponse.status}`);
                 }
                 if (Boolean(this.keepElementValue) === false) {
                     this.element.remove();
