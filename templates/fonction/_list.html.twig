@@ -22,7 +22,7 @@
 
             <tbody class="block space-y-3 md:table-row-group md:space-y-0 md:divide-y md:divide-slate-200">
 
-                {% for item in items %}
+                {% for item in dataProvider %}
                         {% include 'fonction/_rowList.html.twig'
                         with { item: item } %}
 
