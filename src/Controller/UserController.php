@@ -257,6 +257,9 @@ final class UserController extends AbstractController
     #[IsGranted(User::ROLE_ADMIN)]
     public function archived(User $user, Request $request) : Response
     {
+        if (!$this->isCsrfTokenValid('archived-user-' . $user->getId(), $request->request->getString('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
         $user->setDateArchived(new DateTime());
         $this->entityManager->persist($user);
         $this->entityManager->flush();

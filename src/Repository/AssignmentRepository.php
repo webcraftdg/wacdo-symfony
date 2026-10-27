@@ -155,7 +155,7 @@ class AssignmentRepository extends ServiceEntityRepository
             ->join('a.user', 'u')
             ->join('a.fonction', 'f');
         $queryBuilder = match ($user->getRole()) {
-            User::ROLE_RETAURANT_OWNER => $queryBuilder
+            User::ROLE_RESTAURANT_OWNER => $queryBuilder
                 ->andWhere('r.owner = :owner')
                 ->setParameter('owner', $user),
             User::ROLE_COLLAB => $queryBuilder

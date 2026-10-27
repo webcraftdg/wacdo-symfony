@@ -36,7 +36,7 @@ export default class extends Controller {
                 });
 
                 if (!response.ok) {
-                    throw new Error("Une erreur c'est produite : statut de réponse : ${reponse.status}");
+                    throw new Error(`Une erreur c'est produite : statut de réponse : ${response.status}`);
                 }
                 if (String(this.modeValue) === 'turbo') {
                     Turbo.renderStreamMessage(await response.text());

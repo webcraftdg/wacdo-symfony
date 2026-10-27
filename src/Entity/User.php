@@ -33,7 +33,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const ROLE_COLLAB = 'ROLE_COLLAB';
     const ROLE_ADMIN = 'ROLE_ADMIN';
-    const ROLE_RETAURANT_OWNER = 'ROLE_RESTAURANT_OWNER';
+    const ROLE_RESTAURANT_OWNER = 'ROLE_RESTAURANT_OWNER';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -141,7 +141,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public static function getAvailableRoles() : array
     {
         return [
-            'Propriétaire' => self::ROLE_RETAURANT_OWNER,
+            'Propriétaire' => self::ROLE_RESTAURANT_OWNER,
             'Collaborateur' => self::ROLE_COLLAB,
         ];
     }

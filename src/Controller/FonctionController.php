@@ -17,7 +17,7 @@ use App\Entity\Fonction;
 use App\Entity\User;
 use App\Form\FonctionType;
 use App\Form\GenericSearchType;
-use App\Helper\EntityHydrator;
+use App\Helper\EntityProvider;
 use App\Repository\FonctionRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -69,14 +69,16 @@ final class FonctionController extends AbstractController
             ]);
         $searchForm->handleRequest($request);
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
-        $items = new EntityHydrator(
-            queryBuilder:$this->fonctionrepository->createBuilder(
-                displayArchived:$this->isGranted(User::ROLE_ADMIN),
-                criteria:$criteria
-            )
+        $queryBuilder = $this->fonctionrepository->createBuilder(
+            displayArchived:$this->isGranted(User::ROLE_ADMIN),
+            criteria:$criteria
         );
+        $dataProvider = new EntityProvider(
+            queryBuilder: $queryBuilder,
+            request: $request,
+            pageSize: 15);
         return $this->render('fonction/index.html.twig', [
-            'items' => $items,
+            'dataProvider' => $dataProvider,
             'searchForm' => $searchForm
         ]);
     }
@@ -179,6 +181,9 @@ final class FonctionController extends AbstractController
     #[IsGranted(User::ROLE_ADMIN)]
     public function archived(Fonction $fonction, Request $request) : Response
     {
+        if (!$this->isCsrfTokenValid('archived-fonction-' . $fonction->getId(), $request->request->getString('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
         $fonction->setDateArchived(new DateTime());
         $this->entityManagerInterface->persist($fonction);
         $this->entityManagerInterface->flush();

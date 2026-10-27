@@ -55,7 +55,7 @@ class RestaurantType extends AbstractType
                 'autocomplete' => true,
                 'no_results_found_text' => 'Aucun Propiétaire trouvé',
                 'query_builder' => function (UserRepository $repository) {
-                            return $repository->getUsersListInputByRole(User::ROLE_RETAURANT_OWNER);
+                            return $repository->getUsersListInputByRole(User::ROLE_RESTAURANT_OWNER);
                     }
                 ];
             if ($user !== null) {

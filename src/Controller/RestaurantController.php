@@ -18,7 +18,6 @@ use App\Entity\User;
 use App\Form\AssignmentSearchType;
 use App\Form\GenericSearchType;
 use App\Form\RestaurantType;
-use App\Helper\EntityHydrator;
 use App\Helper\EntityProvider;
 use App\Repository\AssignmentRepository;
 use App\Repository\RestaurantRepository;
@@ -75,15 +74,17 @@ final class RestaurantController extends AbstractController
             ]);
         $searchForm->handleRequest($request);
         $criteria = $searchForm->isSubmitted() && $searchForm->isValid() ? $searchForm->getData()  : null;
-        $items = new EntityHydrator(
-            queryBuilder:$this->restaurantRepository->createBuilderForUser(
-                user:$user,
-                displayArchived:$this->isGranted(User::ROLE_ADMIN),
-                criteria: $criteria
-            )
+        $queryBuilder =$this->restaurantRepository->createBuilderForUser(
+            user:$user,
+            displayArchived:$this->isGranted(User::ROLE_ADMIN),
+            criteria: $criteria
         );
+        $dataProvider = new EntityProvider(
+            queryBuilder: $queryBuilder,
+            request: $request,
+            pageSize: 15);
         return $this->render('restaurant/index.html.twig', [
-            'items' => $items,
+            'dataProvider' => $dataProvider,
             'searchForm' => $searchForm
         ]);
     }
@@ -238,6 +239,9 @@ final class RestaurantController extends AbstractController
     #[IsGranted(User::ROLE_ADMIN)]
     public function archived(Restaurant $restaurant, Request $request) : Response
     {
+        if (!$this->isCsrfTokenValid('archived-restaurant-' . $restaurant->getId(), $request->request->getString('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
         $restaurant->setDateArchived(new DateTime());
         $this->entityManagerInterface->persist($restaurant);
         $this->entityManagerInterface->flush();
