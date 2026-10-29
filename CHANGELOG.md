@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+Release v1.1.3 29/10/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* fix popo position
+* Update tests , add access test, add stub test
+
 Release v1.1.2 27/10/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
