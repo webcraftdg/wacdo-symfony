@@ -7,9 +7,14 @@ use App\Entity\Fonction;
 use App\Entity\Restaurant;
 use App\Entity\User;
 use App\Enum\AssignmentStatus;
+use App\Repository\AssignmentRepository;
+use App\Validator\NoAssignmentOverlap;
+use App\Validator\NoAssignmentOverlapValidator;
 use DateTime;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 
 class AssignmentTest extends TestCase
 {
@@ -207,5 +212,36 @@ class AssignmentTest extends TestCase
         ->setDateEnd(DateTimeImmutable::createFromMutable($dateEnd));
         $this->assertSame(AssignmentStatus::FINI, $assignment->getStatus());
 
+    }
+
+    public function stubTest()
+    {
+        $repository = $this->createStub(AssignmentRepository::class);
+
+        $repository->method('hasOverlappingAssignment')
+            ->willReturn(false);
+
+        $validator = new NoAssignmentOverlapValidator($repository);
+
+        $context = $this->createMock(ExecutionContextInterface::class);
+
+        $violation = $this->createMock(
+            ConstraintViolationBuilderInterface::class
+        );
+
+        $context->expects($this->once())
+            ->method('addViolation')
+            ->willReturn($violation);
+
+        $validator->initialize($context);
+
+        $newAssignment = (new Assignment())
+            ->setDateStart(new DateTimeImmutable('+10 days'))
+            ->setDateEnd(new DateTimeImmutable('+1 month'));
+
+        $validator->validate(
+            $newAssignment,
+            new NoAssignmentOverlap(message:'Impossible de créer l\'affectation')
+        );
     }
 }
