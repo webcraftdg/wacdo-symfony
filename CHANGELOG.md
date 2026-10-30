@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+Release v1.3.0 30/10/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* fix not affected SQL
+* fix Status display
+
 Release v1.2.0 30/10/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
