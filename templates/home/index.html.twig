@@ -28,7 +28,7 @@
                 </p>
 
                 <p class="mt-2 text-3xl font-semibold text-slate-900">
-                    Nombre total de restaurant : {{ stats.restaurants }}
+                    Nombre total de restaurants : {{ stats.restaurants }}
                 </p>
                 <div class="relative w-full h-80">
                     <canvas
@@ -36,6 +36,15 @@
                         data-chartjs-type-value="doughnut"
                         data-chartjs-data-value="{{ charDataRestaurant|json_encode|e('html_attr') }}"
                     ></canvas>
+                     {# Nombre d'affectations au centre #}
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-3xl font-bold text-slate-900">
+                            {{ stats.assignments.total }}
+                        </span>
+                        <span class="text-xs text-slate-500">
+                            Affectations
+                        </span>
+                    </div>
                 </div>
             </div>
 
