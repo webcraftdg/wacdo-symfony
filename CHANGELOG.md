@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+Release v1.2.0 30/10/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* Wording
+* Update Query for restaurant chartjs
+
 Release v1.1.3 29/10/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
