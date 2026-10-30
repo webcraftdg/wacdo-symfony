@@ -99,8 +99,8 @@ class AssignmentRepository extends ServiceEntityRepository
     }
 
     public function findCriteriaAssignments(
-        string $criteria = 'a.dateEnd <= :today',
-        array $parameters = ['today' => new DateTimeImmutable()],
+        string $criteria = 'a.dateEnd < :today',
+        array $parameters = ['today' => new DateTimeImmutable('today')],
         array $orderBy = ['a.dateEnd' => 'ASC']): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('a')
@@ -188,7 +188,6 @@ class AssignmentRepository extends ServiceEntityRepository
             ->andWhere('a.dateStart <= :dateEnd')
             ->setParameter('dateEnd', $dateEnd)
             ->setParameter('dateStart', $dateStart)
-            ->setParameter('dateEnd', $dateEnd)
             ->setParameter('user', $user);
 
         //Si il s'agit d'une mis à jour, il faut exclure l'assignment de la requête

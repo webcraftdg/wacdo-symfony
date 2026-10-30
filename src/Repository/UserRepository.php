@@ -97,7 +97,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 'u.assignments',
                 'a',
                 Expr\Join::WITH,
-                'a.dateStart <= :today AND (a.dateEnd IS NULL OR a.dateEnd >= :today)'
+                'a.dateStart <= :today AND a.dateEnd >= :today'
             )->andWhere('a.id IS NULL')
             ->setParameter('today', $today);
         }
@@ -116,7 +116,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $queryBuilder;
     }
 
-    public function countTotat() : int
+    public function countTotal() : int
     {
         return (int) $this->createCollaboratorQuery()->select('count(u.id)')->getQuery()->getSingleScalarResult();
     }
