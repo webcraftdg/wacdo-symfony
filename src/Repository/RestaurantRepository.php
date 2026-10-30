@@ -13,6 +13,7 @@ namespace App\Repository;
 
 use App\Entity\Restaurant;
 use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -49,5 +50,16 @@ class RestaurantRepository extends ServiceEntityRepository
             ))->setParameter('keyword', '%'.$criteria['keyword'].'%');
         }
         return $queryBuilder;
+    }
+
+    public function countAssignmentCurrentByRestaurant() : mixed
+    {
+        $today = new DateTimeImmutable();
+        return $this->createQueryBuilder('r')
+        ->select('count(a.id) as nb, r.name')
+        ->leftJoin('r.assignments', 'a')
+        ->andWhere('(a.dateStart <= :today AND a.dateEnd >= :today) OR a.id IS NULL')
+        ->orderBy('r.name', 'ASC')->groupBy('r.name')
+        ->setParameter('today', $today)->getQuery()->getScalarResult();
     }
 }
