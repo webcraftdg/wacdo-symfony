@@ -54,12 +54,13 @@ class RestaurantRepository extends ServiceEntityRepository
 
     public function countAssignmentCurrentByRestaurant() : mixed
     {
-        $today = new DateTimeImmutable();
+        $today = new DateTimeImmutable('today');
         return $this->createQueryBuilder('r')
         ->select('count(a.id) as nb, r.name')
         ->leftJoin('r.assignments', 'a')
         ->andWhere('(a.dateStart <= :today AND a.dateEnd >= :today) OR a.id IS NULL')
-        ->orderBy('r.name', 'ASC')->groupBy('r.name')
+        ->orderBy('r.name', 'ASC')
+        ->groupBy('r.name')
         ->setParameter('today', $today)->getQuery()->getScalarResult();
     }
 }

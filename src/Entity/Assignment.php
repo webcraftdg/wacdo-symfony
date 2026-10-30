@@ -14,6 +14,7 @@ use App\Enum\AssignmentStatus;
 use App\Repository\AssignmentRepository;
 use App\Validator\NoAssignmentOverlap;
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
@@ -169,13 +170,11 @@ class Assignment
 
     public function getStatus(): ?AssignmentStatus
     {
-        $today = new DateTime('today');
+        $today = new DateTimeImmutable('today');
         $status = AssignmentStatus::EN_COURS;
         if ($this->dateStart > $today) {
             $status = AssignmentStatus::EN_ATTENTE;
-        }
-
-        if ($this->dateEnd !== null && $this->dateEnd < $today) {
+        } else if ($this->dateEnd < $today) {
             $status = AssignmentStatus::FINI;
         }
         return $status;

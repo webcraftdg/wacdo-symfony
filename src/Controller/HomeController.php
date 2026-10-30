@@ -40,7 +40,7 @@ final class HomeController extends AbstractController
         $stats = [
             'restaurants' => $this->restaurantRepository->count(),
             'collaborators' => [
-                'total' => $this->userRepository->countTotat(),
+                'total' => $this->userRepository->countTotal(),
                 'busy' => $this->userRepository->countBusy(),
                 'available' => $this->userRepository->countAvailable(),
             ],
