@@ -45,10 +45,11 @@ final class HomeController extends AbstractController
                 'available' => $this->userRepository->countAvailable(),
             ],
             'assignments' => [
+                'total' => $this->assignmentRepository->count(),
                 'pending' => $this->assignmentRepository->countPending(),
                 'current' => $this->assignmentRepository->countCurrent(),
                 'finished' => $this->assignmentRepository->countFinished(),
-                'repartitionByrestaurant' => $this->assignmentRepository->countCurrentByRestaurant(),
+                'repartitionByrestaurant' => $this->restaurantRepository->countAssignmentCurrentByRestaurant(),
             ],
         ];
         $charDataCollab = (new ChartDataBuilder())
