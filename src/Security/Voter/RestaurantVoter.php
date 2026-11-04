@@ -41,17 +41,9 @@ final class RestaurantVoter extends Voter
         }
         if ($this->security->isGranted(User::ROLE_ADMIN) === true) {
             $success = true;
-        } else if($this->security->isGranted(User::ROLE_RESTAURANT_OWNER) === true ){
-             // ... (check conditions and return true to grant permission) ...
-            switch ($attribute) {
-                case self::EDIT:
-                    $success = $user->getId() === $subject->getOwner()->getId();
-                    break;
-                case self::VIEW:
-                    $success = $user->getId() === $subject->getOwner()->getId();
-                    // logic to determine if the user can VIEW
-                    // return true or false
-                    break;
+        } elseif($this->security->isGranted(User::ROLE_RESTAURANT_OWNER) === true ){
+            if (in_array($attribute, [self::EDIT, self::VIEW]) === true) {
+                $success = $user->getId() === $subject->getOwner()->getId();
             }
         }
 
