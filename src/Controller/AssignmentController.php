@@ -164,7 +164,7 @@ final class AssignmentController extends AbstractController
     }
 
     #[Route('/{id}/supprimer', name: 'delete', methods: ['DELETE'])]
-    #[IsGranted(User::ROLE_RESTAURANT_OWNER)]
+    #[IsGranted(User::ROLE_ADMIN)]
     public function delete(Assignment $assignment) : Response
     {
         /**@var USer $user */

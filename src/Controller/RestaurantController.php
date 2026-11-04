@@ -21,6 +21,7 @@ use App\Form\RestaurantType;
 use App\Helper\EntityProvider;
 use App\Repository\AssignmentRepository;
 use App\Repository\RestaurantRepository;
+use App\Security\Voter\RestaurantVoter;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -112,6 +113,7 @@ final class RestaurantController extends AbstractController
         ],
         finalItem:[Restaurant::class, 'name']
     )]
+    #[IsGranted(RestaurantVoter::EDIT, subject: 'restaurant')]
     public function update(Restaurant $restaurant, Request $request): Response
     {
         $form = $this->createForm(RestaurantType::class, $restaurant);
@@ -197,6 +199,7 @@ final class RestaurantController extends AbstractController
         ],
         finalItem:[Restaurant::class, 'name']
     )]
+    #[IsGranted(RestaurantVoter::VIEW, subject: 'restaurant')]
     public function detail(Restaurant $restaurant, Request $request): Response
     {
         $searchForm = $this->createForm(
@@ -236,7 +239,7 @@ final class RestaurantController extends AbstractController
      * @requires Response
      */
     #[Route('/{id}/archiver', name: 'archived', methods: ['PATCH'])]
-    #[IsGranted(User::ROLE_ADMIN)]
+    #[IsGranted(RestaurantVoter::ARCHIVED, subject: 'restaurant')]
     public function archived(Restaurant $restaurant, Request $request) : Response
     {
         if (!$this->isCsrfTokenValid('archived-restaurant-' . $restaurant->getId(), $request->request->getString('_token'))) {
