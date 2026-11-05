@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+Release v1.4.0 05/11/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* Add security voter
+* Update unit tests 
+
 Release v1.3.0 30/10/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
