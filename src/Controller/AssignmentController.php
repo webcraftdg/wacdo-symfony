@@ -18,6 +18,7 @@ use App\Form\AssignmentSearchType;
 use App\Form\AssignmentType;
 use App\Helper\EntityProvider;
 use App\Repository\AssignmentRepository;
+use App\Security\Voter\AssignmentVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -131,7 +132,7 @@ final class AssignmentController extends AbstractController
     }
 
 
-    #[Route('/{id}/mise_a_jour', name: 'update')]
+    #[Route('/{id}/mettre-a-jour', name: 'update')]
     #[PageTitle(title:'Affectations', section:'Mettre à jour')]
     #[Breadcrumb(
         routes:[
@@ -146,7 +147,7 @@ final class AssignmentController extends AbstractController
         ],
         finalItem: [Assignment::class, 'user, fonction', 'params' => ['itemSeparator' => ' : ']]
     )]
-    #[IsGranted(User::ROLE_RESTAURANT_OWNER)]
+    #[IsGranted(AssignmentVoter::EDIT, subject: 'assignment')]
     public function update(Assignment $assignment, Request $request): Response
     {
         $form = $this->createForm(
@@ -164,7 +165,7 @@ final class AssignmentController extends AbstractController
     }
 
     #[Route('/{id}/supprimer', name: 'delete', methods: ['DELETE'])]
-    #[IsGranted(User::ROLE_RESTAURANT_OWNER)]
+    #[IsGranted(AssignmentVoter::DELETE, subject: 'assignment')]
     public function delete(Assignment $assignment) : Response
     {
         /**@var USer $user */
