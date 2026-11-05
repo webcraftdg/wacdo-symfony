@@ -5,7 +5,6 @@ namespace App\Security\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Assignment;
 use App\Entity\User;
 use App\Repository\RestaurantRepository;
@@ -14,7 +13,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 final class AssignmentVoter extends Voter
 {
     public const EDIT = 'ASSIGNMENT_EDIT';
-    public const DELETE = 'ASSIGNMENT_EDIT';
+    public const DELETE = 'ASSIGNMENT_DELETE';
     public const VIEW = 'ASSIGNMENT_VIEW';
 
     public function __construct(
@@ -36,7 +35,7 @@ final class AssignmentVoter extends Voter
         $user = $token->getUser();
         $success = false;
         // if the user is anonymous, do not grant access
-        if (!$user instanceof UserInterface) {
+        if (!$user instanceof User) {
             $vote?->addReason('The user must be logged in to access this resource.');
             return $success;
         }
@@ -45,19 +44,8 @@ final class AssignmentVoter extends Voter
         } elseif ($this->security->isGranted(User::ROLE_RESTAURANT_OWNER) === true) {
             $ids = $this->restaurantRepository
             ->createBuilderForUser($user)->select('r.id')->getQuery()->getSingleColumnResult();
-             // ... (check conditions and return true to grant permission) ...
-            switch ($attribute) {
-                case self::EDIT:
-                    // logic to determine if the user can EDIT
-                    // return true or false
-                    $success = in_array($subject->getRestaurant()->getId(), $ids);
-                    break;
-
-                case self::VIEW:
-                    // logic to determine if the user can VIEW
-                    // return true or false
-                    $success = in_array($subject->getRestaurant()->getId(), $ids);
-                    break;
+            if (in_array($attribute, [self::EDIT, self::VIEW]) === true) {
+                $success = in_array($subject->getRestaurant()->getId(), $ids);
             }
         }
         return $success;

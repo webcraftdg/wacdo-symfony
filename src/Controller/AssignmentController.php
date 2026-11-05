@@ -132,7 +132,7 @@ final class AssignmentController extends AbstractController
     }
 
 
-    #[Route('/{id}/mise_a_jour', name: 'update')]
+    #[Route('/{id}/mettre-a-jour', name: 'update')]
     #[PageTitle(title:'Affectations', section:'Mettre à jour')]
     #[Breadcrumb(
         routes:[

@@ -5,7 +5,6 @@ namespace App\Security\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Restaurant;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -24,7 +23,7 @@ final class RestaurantVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::VIEW])
+        return in_array($attribute, [self::EDIT, self::VIEW, self::ARCHIVED])
             && $subject instanceof Restaurant;
     }
 
@@ -35,7 +34,7 @@ final class RestaurantVoter extends Voter
         $success = false;
 
         // if the user is anonymous, do not grant access
-        if (!$user instanceof UserInterface) {
+        if (!$user instanceof User) {
             $vote?->addReason('The user must be logged in to access this resource.');
             return $success;
         }
