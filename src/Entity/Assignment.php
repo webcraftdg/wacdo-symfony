@@ -57,7 +57,7 @@ class Assignment
     )]
     #[GreaterThanOrEqual('today',
         message:'la date de fin doit être postérieure à la date du jour.',
-        groups:['assignement:create', 'assignement:update'])
+        groups:['assignement:create'])
     ]
     private ?\DateTimeImmutable $dateEnd = null;
 

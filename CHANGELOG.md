@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+Release v1.4.1 08/11/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* Change rule for assignment dateEnd 
+
 Release v1.4.0 05/11/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
