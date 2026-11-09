@@ -116,7 +116,7 @@ class AssignmentRepository extends ServiceEntityRepository
 
     public function countPending() : int
     {
-        return (int)$this->findCriteriaAssignments(criteria:'a.dateStart >= :today')
+        return (int)$this->findCriteriaAssignments(criteria:'a.dateStart > :today')
         ->select('count(a.id)')->getQuery()->getSingleScalarResult();
     }
 

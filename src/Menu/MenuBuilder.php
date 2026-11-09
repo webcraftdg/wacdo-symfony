@@ -12,11 +12,13 @@
 namespace App\Menu;
 
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class MenuBuilder
 {
     public function __construct(
-        private readonly Security $security
+        private readonly Security $security,
+         #[Autowire('%wacdo_enable_admin%')]private readonly bool $enableAdminMenu
     ) {}
 
     public function build(): array
@@ -41,7 +43,7 @@ class MenuBuilder
                 'activePattern' => 'app_assignment_',
             ];
         }
-        if ($this->security->isGranted('ROLE_ADMIN')) {
+        if ($this->security->isGranted('ROLE_ADMIN') && $this->enableAdminMenu === true) {
             $items[] = [
                 'label' => 'Administration',
                 'route' => 'admin',
