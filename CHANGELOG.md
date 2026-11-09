@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+Release v1.4.2 09/11/2026 <davidg@webcraftdg.fr>
+----------------------------------------------
+
+* Fix sql pending assignment
+* Add flag in .env to display administration menu
+
 Release v1.4.1 08/11/2026 <davidg@webcraftdg.fr>
 ----------------------------------------------
 
